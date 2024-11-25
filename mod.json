@@ -1,0 +1,17 @@
+{
+	"geode": "4.0.1",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "cubicstudios.avalancheindex",
+	"name": "Avalanche Index",
+	"version": "1.0.0",
+	"developers": [
+		"Cheeseworks",
+		"ArcticWoof"
+	],
+	"description": "Avalance-associated accounts and levels."
+}

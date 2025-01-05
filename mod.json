@@ -16,7 +16,6 @@
 	"description": "Avalanche-associated accounts and levels.",
 	"tags": [
 		"online",
-		"offline",
 		"enhancement"
 	],
 	"links": {
@@ -36,12 +35,12 @@
 	"dependencies": [
 		{
 			"id": "geode.node-ids",
-			"version": ">=1.17.0",
+			"version": ">=1.18.0",
 			"importance": "required"
 		},
 		{
 			"id": "jouca.badgesapi",
-			"version": ">=1.2.0-beta.1",
+			"version": ">=1.2.0",
 			"importance": "required"
 		}
 	],

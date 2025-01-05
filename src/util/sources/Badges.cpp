@@ -34,7 +34,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Cubic Studios",
-            "This user is a <cj>staff member</c> of <cc>Cubic Studios</c>. They partake in the activities of a department of Cubic.",
+            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -48,7 +48,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Director",
-            "This user is the <cj>director</c> of <cl>Avalanche</c>. They manage and supervise everything.",
+            "This user is the <co>director</c> of <cl>Avalanche</c>. They manage and supervise everything.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -62,7 +62,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Manager",
-            "This user is a <cy>manager</c> of <cb>Avalanche</c>. They manage group projects and collaborations.",
+            "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage group projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -76,7 +76,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Team Member",
-            "This user is a <cg>member</c> of <cb>Avalanche</c>. They partake in group projects and collaborations.",
+            "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in group projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -90,7 +90,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Collaborator",
-            "This user is a <cg>collaborator</c> of <cb>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.",
+            "This user is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {

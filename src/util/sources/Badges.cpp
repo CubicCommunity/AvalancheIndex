@@ -10,7 +10,7 @@
 using namespace geode::prelude;
 
 std::map<Badges::BadgeID, std::string> Badges::badgeStringID{
-    {Badges::BadgeID::Cubic, "cubic"},
+    {Badges::BadgeID::Cubic, "cubic-studios"},
     {Badges::BadgeID::Director, "director"},
     {Badges::BadgeID::Manager, "team-manager"},
     {Badges::BadgeID::Member, "team-member"},

@@ -1,5 +1,5 @@
 {
-	"geode": "4.0.1",
+	"geode": "4.1.2",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -13,5 +13,88 @@
 		"Cheeseworks",
 		"ArcticWoof"
 	],
-	"description": "Avalance-associated accounts and levels."
+	"description": "Display Avalanche profiles and levels.",
+	"tags": [
+		"online",
+		"offline",
+		"enhancement"
+	],
+	"links": {
+		"source": "https://www.github.com/CubicCommunity/AvalancheIndex/",
+		"community": "https://www.discord.com/invite/nhtyT6hDwa",
+		"homepage": "https://avalanche.cubicstudios.xyz/"
+	},
+	"issues": {
+		"info": "You may report issues with the mod in the AvalancheIndex repository.",
+		"url": "https://www.github.com/CubicCommunity/AvalancheIndex/issues/"
+	},
+	"resources": {
+		"sprites": [
+			"resources/*.png"
+		]
+	},
+	"dependencies": [
+		{
+			"id": "geode.node-ids",
+			"version": ">=1.17.0",
+			"importance": "required"
+		},
+		{
+			"id": "jouca.badgesapi",
+			"version": ">=1.2.0-beta.1",
+			"importance": "required"
+		}
+	],
+	"settings": {
+		"display": {
+			"name": "Display",
+			"description": "Customize badge display.",
+			"type": "title"
+		},
+		"show-profile": {
+			"name": "Display On Profile",
+			"description": "Display member badges on the profile page.",
+			"type": "bool",
+			"default": true
+		},
+		"show-comments": {
+			"name": "Display On Comments",
+			"description": "Display member badges on comment cells.",
+			"type": "bool",
+			"default": true
+		},
+		"ui": {
+			"name": "Interface",
+			"description": "UI-related functions.",
+			"type": "title"
+		},
+		"err-notifs": {
+			"name": "Web Error Notifications",
+			"description": "Display a notification when the badge web request fails.",
+			"type": "bool",
+			"default": true
+		},
+		"data": {
+			"name": "Data",
+			"description": "Functions for storing data.",
+			"type": "title"
+		},
+		"web-once": {
+			"name": "Check Badges Once",
+			"description": "Only send one web request to check a user's badge, instead of checking as much as the rate limit supports.",
+			"type": "bool",
+			"default": true
+		},
+		"dev": {
+			"name": "Developers",
+			"description": "Utilities for development purposes.",
+			"type": "title"
+		},
+		"console": {
+			"name": "Log In Console",
+			"description": "Log all mod actions in the console.",
+			"type": "bool",
+			"default": false
+		}
+	}
 }

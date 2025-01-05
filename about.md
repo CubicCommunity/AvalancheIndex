@@ -3,7 +3,7 @@
 
 View a user's profile to see if they are a member of Avalanche!
 
-This mod fetches data for badges remotely from a [remote repository](https://www.obsidianmg.cc/gd-team/#gdps), to ensure that all information is always up-to-date without the need of manual mod updates. You may also press the badge for more information on the member's role.
+This mod fetches data for badges remotely from a remote repository, to ensure that all information is always up-to-date without the need of constant manual mod updates. You may also press the badge for more information on the member's role.
 
 ### Badges
 ###### What role each badge represents.
@@ -15,5 +15,4 @@ This mod fetches data for badges remotely from a [remote repository](https://www
 - ![icon](cubicstudios.avalancheindex/cubic-studios.png) **Cubic Studios** Staff
 
 ### Developers
-###### This mod is developed and maintained by members of the [Avalanche](https://www.cubicstudios.xyz/) team.
-**[Cheeseworks](https://www.github.com/BlueWitherer/)** - Developer
+###### This mod is developed and maintained by members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.

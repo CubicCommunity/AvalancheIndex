@@ -12,13 +12,19 @@
 
 #include <Geode/modify/ProfilePage.hpp>
 #include <Geode/modify/CommentCell.hpp>
+#include <Geode/modify/LevelInfoLayer.hpp>
+#include <Geode/modify/LevelCell.hpp>
+#include <Geode/modify/CCLayerColor.hpp>
 
 #include <Geode/binding/ProfilePage.hpp>
 #include <Geode/binding/CommentCell.hpp>
+#include <Geode/binding/LevelInfoLayer.hpp>
+#include <Geode/binding/LevelCell.hpp>
 
 using namespace geode::prelude;
 
 // its modding time :3
+auto getLoader = geode::Loader::get();
 auto getThisMod = geode::getMod();
 
 // array for ppl who've been checked
@@ -170,7 +176,7 @@ void checkForBadge(CCMenu *username_menu, float size, auto pointer, int accID)
 class $modify(Profile, ProfilePage)
 {
 	// modified vanilla loadPageFromUserInfo function
-	void loadPageFromUserInfo(GJUserScore * user)
+	void loadPageFromUserInfo(GJUserScore *user)
 	{
 		ProfilePage::loadPageFromUserInfo(user);
 
@@ -191,7 +197,7 @@ class $modify(Profile, ProfilePage)
 class $modify(Comment, CommentCell)
 {
 	// modified vanilla loadFromComment function
-	void loadFromComment(GJComment * comment)
+	void loadFromComment(GJComment *comment)
 	{
 		CommentCell::loadFromComment(comment);
 
@@ -206,5 +212,39 @@ class $modify(Comment, CommentCell)
 			if (getThisMod->getSettingValue<bool>("console"))
 				log::debug("Viewing comment profile of ID {}", comment->m_accountID);
 		};
+	};
+};
+
+// TODO: Make this detect Avalanche team projects
+class $modify(LevelInfo, LevelInfoLayer)
+{
+	bool init(GJGameLevel *level, bool challenge)
+	{
+		if (LevelInfoLayer::init(level, challenge))
+		{
+			auto bg = this->getChildByID("background");
+			auto background = as<CCSprite *>(bg);
+
+			background->setColor({66, 94, 255});
+
+			return true;
+		}
+		else
+		{
+			return false;
+		};
+	};
+};
+
+// TODO: Make this work and detect Avalanche team projects
+class $modify(Level, LevelCell)
+{
+	void loadFromLevel(GJGameLevel *p0)
+	{
+		LevelCell::loadFromLevel(p0);
+
+		CCLayerColor *color = this->getChildByType<CCLayerColor *>(0);
+		color->setColor({15, 22, 61});
+		color->updateDisplayedColor({15, 22, 61});
 	};
 };

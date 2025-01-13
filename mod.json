@@ -10,8 +10,7 @@
 	"name": "Avalanche Index",
 	"version": "1.0.0",
 	"developers": [
-		"Cheeseworks",
-		"ArcticWoof"
+		"Cheeseworks"
 	],
 	"description": "Avalanche-associated accounts and levels.",
 	"tags": [

@@ -11,7 +11,7 @@ This mod fetches data for badges from a remote repository, to ensure that all in
 |:------------------------------------------------------------------------------:|----------------------|
 | <img src="resources/director.png" width="25" alt="Director badge" />           | Director             |
 | <img src="resources/team-manager.png" width="25" alt="Manager badge" />        | Manager              |
-| <img src="resources/team-member.png" width="25" alt="Team member badge" />     | Manager              |
+| <img src="resources/team-member.png" width="25" alt="Team member badge" />     | Team Member          |
 | <img src="resources/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | Cubic Studios Staff  |
 
 You may also view levels that are Avalanche team projects.

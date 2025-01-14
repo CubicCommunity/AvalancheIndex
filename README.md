@@ -1,9 +1,9 @@
 # <img src="logo.png" width="30" alt="The mod's logo." /> Avalanche Index
 Avalanche-associated accounts and levels.
 
-> <img alt="GitHub Release" src="https://img.shields.io/github/v/release/CubicCommunity/AvalancheIndex?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">    <img alt="GitHub License" src="https://img.shields.io/github/license/CubicCommunity/AvalancheIndex?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">
+> [<img alt="Latest Version" src="https://img.shields.io/github/v/release/CubicCommunity/AvalancheIndex?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](https://www.github.com/CubicCommunity/AvalancheIndex/releases/)    [<img alt="GitHub License" src="https://img.shields.io/github/license/CubicCommunity/AvalancheIndex?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
 >  
-> <img alt="Geode Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/cubicstudios.avalancheindex.geode?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">
+> [<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/cubicstudios.avalancheindex.geode?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
 
 View a user's profile to see if they are a member of Avalanche!
 

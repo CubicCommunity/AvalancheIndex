@@ -11,8 +11,8 @@ This mod fetches data for badges from a remote repository, to ensure that all in
 - ![icon](cubicstudios.avalancheindex/team-manager.png) Team Manager
 - ![icon](cubicstudios.avalancheindex/team-member.png) Team Member
 - ![icon](cubicstudios.avalancheindex/collaborator.png) Collaborator
-
 - ![icon](cubicstudios.avalancheindex/cubic-studios.png) **Cubic Studios** Staff
 
 ### Developers
 ###### This mod is developed and maintained by members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.
+- **[Cheeseworks](user:6408873)**

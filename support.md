@@ -1,2 +1,2 @@
-# Visit [Avalanche](https://www.obsidianmg.cc/gd-team/)
+# Visit [Avalanche](https://avalanche.cubicstudios.xyz/)
 ### **[Check Out Our Latest Project!](https://cubiccommunity.github.io/WebLPS/lps-project/)**

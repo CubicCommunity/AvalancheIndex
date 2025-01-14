@@ -1,5 +1,5 @@
 # ![Avalanche Badges](cubicstudios.avalancheindex/banner.png)
-**Adds a badge to Avalanche members' profiles.**
+**Avalanche-associated accounts and levels.**
 
 View a user's profile to see if they are a member of Avalanche!
 

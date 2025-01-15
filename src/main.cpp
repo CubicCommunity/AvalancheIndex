@@ -243,8 +243,7 @@ class $modify(Level, LevelCell)
 	{
 		LevelCell::loadFromLevel(p0);
 
-		CCLayerColor *color = this->getChildByType<CCLayerColor *>(0);
+		auto color = this->getChildByType<CCLayerColor>(0);
 		color->setColor({15, 22, 61});
-		color->updateDisplayedColor({15, 22, 61});
 	};
 };

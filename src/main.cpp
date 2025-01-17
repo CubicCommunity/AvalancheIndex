@@ -231,7 +231,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 			auto background = as<CCSprite *>(bg);
 
 			auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)thisLevel->m_accountID.value()));
-			bool notSolo = Badges::badgeSpriteName[cacheSolo].empty();
+			bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Collaborator]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Cubic]];
 
 			bool displaySoloLayers = getThisMod->getSettingValue<bool>("solo-layers");
 			bool displayTeamLayers = getThisMod->getSettingValue<bool>("team-layers");
@@ -303,7 +303,7 @@ class $modify(Level, LevelCell)
 		auto thisLevel = this->m_level;
 
 		auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)thisLevel->m_accountID.value()));
-		bool notSolo = Badges::badgeSpriteName[cacheSolo].empty();
+		bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Collaborator]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Cubic]];
 
 		bool displaySoloCells = getThisMod->getSettingValue<bool>("solo-cells");
 		bool displayTeamCells = getThisMod->getSettingValue<bool>("team-cells");

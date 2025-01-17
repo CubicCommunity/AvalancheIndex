@@ -26,8 +26,10 @@ You can also press the icon of the badge itself in-game to get more information 
 ###### The Avalanche team projects.
 When viewing level cells or pages, you may notice the background color changes. The level is published by a team member and it can be either a solo or a collaboration they hosted independently. Here are the colors you may find highlighting such.
 
-<b><span style="background-color: rgb(66, 94, 255);">This is a team project!</span></b>     
-<b><span style="background-color: rgb(70, 77, 117);">This is a team member's solo level!</span></b>
+| **Color**                | **Type**     |
+|--------------------------|:------------:|
+| **Azure Blue `#425EFF`** | Team Project |
+| **Slate blue `#464D75`** | Solo Level   |
 
 Unlisted or unrated levels will not be highlighted.
 

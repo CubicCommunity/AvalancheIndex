@@ -46,18 +46,42 @@
 	"settings": {
 		"display": {
 			"name": "Display",
-			"description": "Customize badge display.",
+			"description": "Customize highlight display.",
 			"type": "title"
 		},
-		"show-profile": {
-			"name": "Display On Profile",
+		"badge-profile": {
+			"name": "Badge On Profiles",
 			"description": "Display member badges on the profile page.",
 			"type": "bool",
 			"default": true
 		},
-		"show-comments": {
-			"name": "Display On Comments",
+		"badge-comments": {
+			"name": "Badge On Comments",
 			"description": "Display member badges on comment cells.",
+			"type": "bool",
+			"default": true
+		},
+		"solo-cells": {
+			"name": "Solo Level Cells",
+			"description": "Highlight level cells for team members' solo levels.",
+			"type": "bool",
+			"default": true
+		},
+		"solo-layers": {
+			"name": "Solo Level Info Layers",
+			"description": "Highlight level information layers for team members' solo levels.",
+			"type": "bool",
+			"default": true
+		},
+		"team-cells": {
+			"name": "Team Project Cells",
+			"description": "Highlight level cells for team projects.",
+			"type": "bool",
+			"default": true
+		},
+		"team-layers": {
+			"name": "Team Project Info Layers",
+			"description": "Highlight level information layers for team projects.",
 			"type": "bool",
 			"default": true
 		},

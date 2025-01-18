@@ -1,4 +1,4 @@
-#include "../Badges.hpp"
+#include "../TeamData.hpp"
 
 #include <string>
 #include <map>
@@ -8,20 +8,21 @@
 #include <Geode/utils/web.hpp>
 
 using namespace geode::prelude;
+using namespace TeamData;
 
-std::map<Badges::BadgeID, std::string> Badges::badgeStringID{
-    {Badges::BadgeID::Cubic, "cubic-studios"},
-    {Badges::BadgeID::Director, "director"},
-    {Badges::BadgeID::Manager, "team-manager"},
-    {Badges::BadgeID::Member, "team-member"},
-    {Badges::BadgeID::Collaborator, "collaborator"}};
+std::map<BadgeID, std::string> Badges::badgeStringID{
+    {BadgeID::CUBIC, "cubic-studios"},
+    {BadgeID::DIRECTOR, "director"},
+    {BadgeID::MANAGER, "team-manager"},
+    {BadgeID::MEMBER, "team-member"},
+    {BadgeID::COLLABORATOR, "collaborator"}};
 
 std::map<std::string, std::string> Badges::badgeSpriteName{
-    {Badges::badgeStringID[Badges::BadgeID::Cubic], "cubic-studios.png"_spr},
-    {Badges::badgeStringID[Badges::BadgeID::Director], "director.png"_spr},
-    {Badges::badgeStringID[Badges::BadgeID::Manager], "team-manager.png"_spr},
-    {Badges::badgeStringID[Badges::BadgeID::Member], "team-member.png"_spr},
-    {Badges::badgeStringID[Badges::BadgeID::Collaborator], "collaborator.png"_spr}};
+    {Badges::badgeStringID[BadgeID::CUBIC], "cubic-studios.png"_spr},
+    {Badges::badgeStringID[BadgeID::DIRECTOR], "director.png"_spr},
+    {Badges::badgeStringID[BadgeID::MANAGER], "team-manager.png"_spr},
+    {Badges::badgeStringID[BadgeID::MEMBER], "team-member.png"_spr},
+    {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr}};
 
 // badge button event
 void Badges::onInfoBadge(CCObject *sender)
@@ -30,11 +31,11 @@ void Badges::onInfoBadge(CCObject *sender)
     auto nodeObject = as<CCNode *>(sender);
     auto badge_ID = nodeObject->getID();
 
-    if (badge_ID == Badges::badgeStringID[Badges::BadgeID::Cubic])
+    if (badge_ID == Badges::badgeStringID[BadgeID::CUBIC])
     {
         geode::createQuickPopup(
-            "Cubic Studios",
-            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.",
+            "CUBIC Studios",
+            "This user is a <cy>staff member</c> of <cj>CUBIC Studios</c>. They partake in the activities of a department of CUBIC, and may supervise or join projects such as <cl>Avalanche</c>.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -44,10 +45,10 @@ void Badges::onInfoBadge(CCObject *sender)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[Badges::BadgeID::Director])
+    else if (badge_ID == Badges::badgeStringID[BadgeID::DIRECTOR])
     {
         geode::createQuickPopup(
-            "Avalanche Director",
+            "Avalanche DIRECTOR",
             "This user is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.",
             "OK", "Learn More",
             [](auto, bool btn2)
@@ -58,10 +59,10 @@ void Badges::onInfoBadge(CCObject *sender)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[Badges::BadgeID::Manager])
+    else if (badge_ID == Badges::badgeStringID[BadgeID::MANAGER])
     {
         geode::createQuickPopup(
-            "Avalanche Manager",
+            "Avalanche MANAGER",
             "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
@@ -72,10 +73,10 @@ void Badges::onInfoBadge(CCObject *sender)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[Badges::BadgeID::Member])
+    else if (badge_ID == Badges::badgeStringID[BadgeID::MEMBER])
     {
         geode::createQuickPopup(
-            "Avalanche Team Member",
+            "Avalanche TEAM MEMBER",
             "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
@@ -86,10 +87,10 @@ void Badges::onInfoBadge(CCObject *sender)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[Badges::BadgeID::Collaborator])
+    else if (badge_ID == Badges::badgeStringID[BadgeID::COLLABORATOR])
     {
         geode::createQuickPopup(
-            "Team Collaborator",
+            "TEAM COLLABORATOR",
             "This user is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.",
             "OK", "Learn More",
             [](auto, bool btn2)

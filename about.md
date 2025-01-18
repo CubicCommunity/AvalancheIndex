@@ -8,11 +8,11 @@ Easily verify the legitimacy of users' and levels' associations to Avalanche at 
 
 When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of such person.
 
-- ![icon](cubicstudios.avalancheindex/director.png) Director
+- ![icon](cubicstudios.avalancheindex/director.png) DIRECTOR
 - ![icon](cubicstudios.avalancheindex/team-manager.png) Team Manager
 - ![icon](cubicstudios.avalancheindex/team-member.png) Team Member
 - ![icon](cubicstudios.avalancheindex/collaborator.png) Collaborator
-- ![icon](cubicstudios.avalancheindex/cubic-studios.png) **Cubic Studios** Staff
+- ![icon](cubicstudios.avalancheindex/cubic-studios.png) **CUBIC Studios** Staff
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
 

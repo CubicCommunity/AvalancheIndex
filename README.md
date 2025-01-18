@@ -14,11 +14,11 @@ When viewing someone's profile or comment, you'll likely see a badge next to the
 
 | **Icon**                                                                       | **Role**             |
 |:------------------------------------------------------------------------------:|----------------------|
-| <img src="resources/director.png" width="25" alt="Director badge" />           | Director             |
+| <img src="resources/director.png" width="25" alt="DIRECTOR badge" />           | DIRECTOR             |
 | <img src="resources/team-manager.png" width="25" alt="Manager badge" />        | Manager              |
 | <img src="resources/team-member.png" width="25" alt="Team member badge" />     | Team Member          |
 | <img src="resources/collaborator.png" width="25" alt="Team member badge" />    | Collaborator         |
-| <img src="resources/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | Cubic Studios Staff  |
+| <img src="resources/cubic-studios.png" width="25" alt="CUBIC Studios badge" /> | CUBIC Studios Staff  |
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
 

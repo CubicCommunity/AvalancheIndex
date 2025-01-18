@@ -1,5 +1,4 @@
-#include "util/Badges.hpp"
-#include "util/Levels.hpp"
+#include "../incl/TeamData.hpp"
 
 #include <string>
 #include <vector>
@@ -23,6 +22,7 @@
 #include <Geode/binding/LevelCell.hpp>
 
 using namespace geode::prelude;
+using namespace TeamData;
 
 // its modding time :3
 auto getLoader = geode::Loader::get();
@@ -220,11 +220,11 @@ class $modify(Comment, CommentCell)
 };
 
 // attempts to fetch badge locally to verify ownership of the level
-Levels::Project scanForLevelCreator(GJGameLevel *level)
+Project scanForLevelCreator(GJGameLevel *level)
 {
 	// get the member's badge data
 	auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)level->m_accountID.value()));
-	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Collaborator]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Cubic]];
+	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::COLLABORATOR]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::CUBIC]];
 
 	// must be public
 	if (level->m_unlisted)
@@ -232,7 +232,7 @@ Levels::Project scanForLevelCreator(GJGameLevel *level)
 		if (getThisMod->getSettingValue<bool>("console"))
 			log::error("Level {} is unlisted", level->m_levelID.value());
 
-		return Levels::Project::None;
+		return Project::NONE;
 	}
 	else
 	{
@@ -242,7 +242,7 @@ Levels::Project scanForLevelCreator(GJGameLevel *level)
 			if (getThisMod->getSettingValue<bool>("console"))
 				log::debug("Level {} is Avalanche team project", level->m_levelID.value());
 
-			return Levels::Project::Team;
+			return Project::TEAM;
 		}
 		else
 		{
@@ -252,7 +252,7 @@ Levels::Project scanForLevelCreator(GJGameLevel *level)
 				if (getThisMod->getSettingValue<bool>("console"))
 					log::error("Level {} not associated with Avalanche", level->m_levelID.value());
 
-				return Levels::Project::None;
+				return Project::NONE;
 			}
 			else
 			{
@@ -262,14 +262,14 @@ Levels::Project scanForLevelCreator(GJGameLevel *level)
 					if (getThisMod->getSettingValue<bool>("console"))
 						log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
 
-					return Levels::Project::Solo;
+					return Project::SOLO;
 				}
 				else
 				{
 					if (getThisMod->getSettingValue<bool>("console"))
 						log::error("Level {} is unrated", level->m_levelID.value());
 
-					return Levels::Project::None;
+					return Project::NONE;
 				};
 			};
 		};
@@ -291,14 +291,14 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 			auto levelType = scanForLevelCreator(this->m_level);
 
-			if (levelType == Levels::Project::Solo)
+			if (levelType == Project::SOLO)
 			{
 				if (displaySoloLayers)
 				{
 					background->setColor({70, 77, 117});
 				};
 			}
-			else if (levelType == Levels::Project::Team)
+			else if (levelType == Project::TEAM)
 			{
 				if (displayTeamLayers)
 				{
@@ -331,7 +331,7 @@ class $modify(Level, LevelCell)
 		{
 			auto levelType = scanForLevelCreator(this->m_level);
 
-			if (levelType == Levels::Project::Solo)
+			if (levelType == Project::SOLO)
 			{
 				if (displaySoloCells)
 				{
@@ -347,7 +347,7 @@ class $modify(Level, LevelCell)
 					this->addChild(newColor);
 				};
 			}
-			else if (levelType == Levels::Project::Team)
+			else if (levelType == Project::TEAM)
 			{
 				if (displayTeamCells)
 				{

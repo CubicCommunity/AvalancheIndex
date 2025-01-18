@@ -8,6 +8,7 @@ project(AvalancheIndex VERSION 1.0.0)
 
 file(GLOB_RECURSE SOURCES
     src/*.cpp
+    incl/*.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED

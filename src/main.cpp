@@ -1,4 +1,5 @@
 #include "util/Badges.hpp"
+#include "util/Levels.hpp"
 
 #include <string>
 #include <vector>
@@ -218,69 +219,90 @@ class $modify(Comment, CommentCell)
 	};
 };
 
-// highlights the level info layers
+// attempts to fetch badge locally to verify ownership of the level
+Levels::Project scanForLevelCreator(GJGameLevel *level)
+{
+	// get the member's badge data
+	auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)level->m_accountID.value()));
+	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Collaborator]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Cubic]];
+
+	// must be public
+	if (level->m_unlisted)
+	{
+		if (getThisMod->getSettingValue<bool>("console"))
+			log::error("Level {} is unlisted", level->m_levelID.value());
+
+		return Levels::Project::None;
+	}
+	else
+	{
+		// checks if owned by publisher account
+		if (level->m_accountID.value() == projectAccount)
+		{
+			if (getThisMod->getSettingValue<bool>("console"))
+				log::debug("Level {} is Avalanche team project", level->m_levelID.value());
+
+			return Levels::Project::Team;
+		}
+		else
+		{
+			// checks if level is published by a team member
+			if (notSolo)
+			{
+				if (getThisMod->getSettingValue<bool>("console"))
+					log::error("Level {} not associated with Avalanche", level->m_levelID.value());
+
+				return Levels::Project::None;
+			}
+			else
+			{
+				// checks if level is rated
+				if (level->m_stars.value() >= 1)
+				{
+					if (getThisMod->getSettingValue<bool>("console"))
+						log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
+
+					return Levels::Project::Solo;
+				}
+				else
+				{
+					if (getThisMod->getSettingValue<bool>("console"))
+						log::error("Level {} is unrated", level->m_levelID.value());
+
+					return Levels::Project::None;
+				};
+			};
+		};
+	};
+};
+
 class $modify(LevelInfo, LevelInfoLayer)
 {
+	// modified vanilla init function
 	bool init(GJGameLevel *level, bool challenge)
 	{
 		if (LevelInfoLayer::init(level, challenge))
 		{
-			auto thisLevel = this->m_level;
-
 			auto bg = this->getChildByID("background");
 			auto background = as<CCSprite *>(bg);
-
-			auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)thisLevel->m_accountID.value()));
-			bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Collaborator]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Cubic]];
 
 			bool displaySoloLayers = getThisMod->getSettingValue<bool>("solo-layers");
 			bool displayTeamLayers = getThisMod->getSettingValue<bool>("team-layers");
 
-			if (thisLevel->m_unlisted)
-			{
-				if (getThisMod->getSettingValue<bool>("console"))
-					log::error("Level {} is unlisted", thisLevel->m_levelID.value());
-			}
-			else
+			auto levelType = scanForLevelCreator(this->m_level);
+
+			if (levelType == Levels::Project::Solo)
 			{
 				if (displaySoloLayers)
 				{
-					if (notSolo)
-					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Level {} is not an Avalanche team member solo", thisLevel->m_levelID.value());
-					}
-					else
-					{
-						if (thisLevel->m_stars.value() >= 1)
-						{
-							if (getThisMod->getSettingValue<bool>("console"))
-								log::debug("Level {} is Avalanche team member solo", thisLevel->m_levelID.value());
-
-							background->setColor({70, 77, 117});
-						}
-						else
-						{
-							if (getThisMod->getSettingValue<bool>("console"))
-								log::error("Level {} not associated with Avalanche", thisLevel->m_levelID.value());
-						};
-					};
+					background->setColor({70, 77, 117});
 				};
-
+			}
+			else if (levelType == Levels::Project::Team)
+			{
 				if (displayTeamLayers)
 				{
-					if (thisLevel->m_accountID.value() == projectAccount)
-					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::debug("Level {} is Avalanche team project", thisLevel->m_levelID.value());
-
-						background->setColor({66, 94, 255});
-					}
-					else
-					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Level {} not associated with Avalanche", thisLevel->m_levelID.value());
-					};
+					background->setColor({66, 94, 255});
 				};
 			};
 
@@ -293,17 +315,12 @@ class $modify(LevelInfo, LevelInfoLayer)
 	};
 };
 
-// highlights the level cells
 class $modify(Level, LevelCell)
 {
+	// modified vanilla loadFromLevel function
 	void loadFromLevel(GJGameLevel *p0)
 	{
 		LevelCell::loadFromLevel(p0);
-
-		auto thisLevel = this->m_level;
-
-		auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)thisLevel->m_accountID.value()));
-		bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Collaborator]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Badges::BadgeID::Cubic]];
 
 		bool displaySoloCells = getThisMod->getSettingValue<bool>("solo-cells");
 		bool displayTeamCells = getThisMod->getSettingValue<bool>("team-cells");
@@ -312,67 +329,38 @@ class $modify(Level, LevelCell)
 
 		if (color)
 		{
-			if (thisLevel->m_unlisted)
-			{
-				if (getThisMod->getSettingValue<bool>("console"))
-					log::error("Level {} is unlisted", thisLevel->m_levelID.value());
-			}
-			else
+			auto levelType = scanForLevelCreator(this->m_level);
+
+			if (levelType == Levels::Project::Solo)
 			{
 				if (displaySoloCells)
 				{
-					if (notSolo)
-					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Level {} is not an Avalanche team member solo", thisLevel->m_levelID.value());
-					}
-					else
-					{
-						if (displaySoloCells && thisLevel->m_stars.value() >= 1)
-						{
-							if (getThisMod->getSettingValue<bool>("console"))
-								log::debug("Level {} is an Avalanche team member solo", thisLevel->m_levelID.value());
+					auto newColor = CCLayerColor::create({70, 77, 117, 255});
+					newColor->setScaledContentSize(color->getScaledContentSize());
+					newColor->setAnchorPoint(color->getAnchorPoint());
+					newColor->setPosition(color->getPosition());
+					newColor->setZOrder(color->getZOrder() - 2);
+					newColor->setScale(color->getScale());
+					newColor->setID("solo_color"_spr);
 
-							auto newColor = CCLayerColor::create({70, 77, 117, 255});
-							newColor->setScaledContentSize(color->getScaledContentSize());
-							newColor->setAnchorPoint(color->getAnchorPoint());
-							newColor->setPosition(color->getPosition());
-							newColor->setZOrder(color->getZOrder() - 1);
-							newColor->setID("solo_color"_spr);
-
-							color->removeMeAndCleanup();
-							this->addChild(newColor);
-						}
-						else
-						{
-							if (getThisMod->getSettingValue<bool>("console"))
-								log::error("Level {} not associated with Avalanche", thisLevel->m_levelID.value());
-						};
-					};
+					color->removeMeAndCleanup();
+					this->addChild(newColor);
 				};
-
+			}
+			else if (levelType == Levels::Project::Team)
+			{
 				if (displayTeamCells)
 				{
-					if (thisLevel->m_accountID.value() == projectAccount)
-					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::debug("Level {} is Avalanche team project", thisLevel->m_levelID.value());
+					auto newColor = CCLayerColor::create({66, 94, 255, 255});
+					newColor->setScaledContentSize(color->getScaledContentSize());
+					newColor->setAnchorPoint(color->getAnchorPoint());
+					newColor->setPosition(color->getPosition());
+					newColor->setZOrder(color->getZOrder() - 2);
+					newColor->setScale(color->getScale());
+					newColor->setID("team_color"_spr);
 
-						auto newColor = CCLayerColor::create({66, 94, 255, 255});
-						newColor->setScaledContentSize(color->getScaledContentSize());
-						newColor->setAnchorPoint(color->getAnchorPoint());
-						newColor->setPosition(color->getPosition());
-						newColor->setZOrder(color->getZOrder() - 1);
-						newColor->setID("solo_color"_spr);
-
-						color->removeMeAndCleanup();
-						this->addChild(newColor);
-					}
-					else
-					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Level {} not associated with Avalanche", thisLevel->m_levelID.value());
-					};
+					color->removeMeAndCleanup();
+					this->addChild(newColor);
 				};
 			};
 		}

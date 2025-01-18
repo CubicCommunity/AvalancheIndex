@@ -1,12 +1,12 @@
 # ![Avalanche Badges](cubicstudios.avalancheindex/banner.png)
 **Avalanche-associated accounts and levels.**
 
-View a user's profile to see if they are a member of Avalanche!
+Easily verify the legitimacy of users' and levels' associations to Avalanche at a glance. No more need to double-check everyone and everything.
 
 ### Badges
 ###### The members of Avalanche.
 
-When viewing a profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of such person.
+When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of such person.
 
 - ![icon](cubicstudios.avalancheindex/director.png) Director
 - ![icon](cubicstudios.avalancheindex/team-manager.png) Team Manager
@@ -18,7 +18,7 @@ You can also press the icon of the badge itself in-game to get more information 
 
 ### Levels
 ###### The Avalanche team projects.
-When viewing level cells or pages, you may notice the background color changes. The level is published by a team member and it can be either a solo or a collaboration they hosted independently. Here are the colors you may find highlighting such.
+When viewing level cells or pages, you may notice the changes in the background color. The level is either a team project on Avalanche's publisher account, or a solo or a collaboration hosted and published independently by a team member. These are the colors you may find highlighting such.
 
 - **Azure Blue `#425EFF`** - Team project
 - **Slate Blue `#464D75`** - Solo level

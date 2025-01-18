@@ -34,7 +34,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Cubic Studios",
-            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic.",
+            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -48,7 +48,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Director",
-            "This user is the <co>director</c> of <cl>Avalanche</c>. They manage and supervise everything.",
+            "This user is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -62,7 +62,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Manager",
-            "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage group projects and collaborations.",
+            "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -76,7 +76,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Avalanche Team Member",
-            "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in group projects and collaborations.",
+            "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -89,7 +89,7 @@ void Badges::onInfoBadge(CCObject *sender)
     else if (badge_ID == Badges::badgeStringID[Badges::BadgeID::Collaborator])
     {
         geode::createQuickPopup(
-            "Avalanche Collaborator",
+            "Team Collaborator",
             "This user is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.",
             "OK", "Learn More",
             [](auto, bool btn2)

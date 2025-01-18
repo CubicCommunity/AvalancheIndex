@@ -34,8 +34,8 @@ void Badges::onInfoBadge(CCObject *sender)
     if (badge_ID == Badges::badgeStringID[BadgeID::CUBIC])
     {
         geode::createQuickPopup(
-            "CUBIC Studios",
-            "This user is a <cy>staff member</c> of <cj>CUBIC Studios</c>. They partake in the activities of a department of CUBIC, and may supervise or join projects such as <cl>Avalanche</c>.",
+            "Cubic Studios",
+            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of CUBIC, and may supervise or join projects such as <cl>Avalanche</c>.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {
@@ -48,7 +48,7 @@ void Badges::onInfoBadge(CCObject *sender)
     else if (badge_ID == Badges::badgeStringID[BadgeID::DIRECTOR])
     {
         geode::createQuickPopup(
-            "Avalanche DIRECTOR",
+            "Avalanche Director",
             "This user is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.",
             "OK", "Learn More",
             [](auto, bool btn2)
@@ -62,7 +62,7 @@ void Badges::onInfoBadge(CCObject *sender)
     else if (badge_ID == Badges::badgeStringID[BadgeID::MANAGER])
     {
         geode::createQuickPopup(
-            "Avalanche MANAGER",
+            "Avalanche Manager",
             "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
@@ -76,7 +76,7 @@ void Badges::onInfoBadge(CCObject *sender)
     else if (badge_ID == Badges::badgeStringID[BadgeID::MEMBER])
     {
         geode::createQuickPopup(
-            "Avalanche TEAM MEMBER",
+            "Avalanche Team Member",
             "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.",
             "OK", "Learn More",
             [](auto, bool btn2)
@@ -90,7 +90,7 @@ void Badges::onInfoBadge(CCObject *sender)
     else if (badge_ID == Badges::badgeStringID[BadgeID::COLLABORATOR])
     {
         geode::createQuickPopup(
-            "TEAM COLLABORATOR",
+            "Team Collaborator",
             "This user is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.",
             "OK", "Learn More",
             [](auto, bool btn2)

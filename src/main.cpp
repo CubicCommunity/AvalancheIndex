@@ -28,7 +28,7 @@ using namespace TeamData;
 auto getLoader = geode::Loader::get();
 auto getThisMod = geode::getMod();
 
-// projects account
+// avalanche projects account
 int projectAccount = 31079132;
 
 // array for ppl who've been checked
@@ -302,7 +302,18 @@ class $modify(LevelInfo, LevelInfoLayer)
 			{
 				if (displayTeamLayers)
 				{
+					auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
+					bgSprite->setColor({66, 94, 255});
+					bgSprite->setAnchorPoint({0.5, 0.5});
+					bgSprite->ignoreAnchorPointForPosition(false);
+					bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
+					bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
+					bgSprite->setZOrder(background->getZOrder());
+					bgSprite->setID("team_background"_spr);
+
 					background->setColor({66, 94, 255});
+					background->setZOrder(bgSprite->getZOrder() - 1);
+					this->addChild(bgSprite);
 				};
 			};
 

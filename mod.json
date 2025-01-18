@@ -39,7 +39,7 @@
 	"dependencies": [
 		{
 			"id": "geode.node-ids",
-			"version": ">=1.18.0",
+			"version": ">=1.19.0",
 			"importance": "required"
 		},
 		{
@@ -73,8 +73,8 @@
 			"default": true
 		},
 		"solo-layers": {
-			"name": "Solo Level Info Layers",
-			"description": "Highlight level information layers for team members' solo levels.",
+			"name": "Solo Level Pages",
+			"description": "Customize level pages for team members' solo levels.",
 			"type": "bool",
 			"default": true
 		},
@@ -85,8 +85,8 @@
 			"default": true
 		},
 		"team-layers": {
-			"name": "Team Project Info Layers",
-			"description": "Highlight level information layers for team projects.",
+			"name": "Team Project Pages",
+			"description": "Customize level pages for team projects.",
 			"type": "bool",
 			"default": true
 		},

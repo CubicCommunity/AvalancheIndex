@@ -1,7 +1,7 @@
 # <img src="logo.png" width="30" alt="The mod's logo." /> Avalanche Index
 Avalanche-associated accounts and levels.
 
-> [<img alt="Latest Version" src="https://img.shields.io/github/v/release/CubicCommunity/AvalancheIndex?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](https://www.github.com/CubicCommunity/AvalancheIndex/releases/)    [<img alt="Code License" src="https://img.shields.io/github/license/CubicCommunity/AvalancheIndex?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
+> [<img alt="Latest Version" src="https://img.shields.io/github/v/release/CubicCommunity/AvalancheIndex?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](../../releases/)    [<img alt="Code License" src="https://img.shields.io/github/license/CubicCommunity/AvalancheIndex?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
 >  
 > [<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/cubicstudios.avalancheindex.geode?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
 
@@ -14,11 +14,11 @@ When viewing someone's profile or comment, you'll likely see a badge next to the
 
 | **Icon**                                                                       | **Role**             |
 |:------------------------------------------------------------------------------:|----------------------|
-| <img src="resources/director.png" width="25" alt="DIRECTOR badge" />           | DIRECTOR             |
+| <img src="resources/director.png" width="25" alt="Director badge" />           | Director             |
 | <img src="resources/team-manager.png" width="25" alt="Manager badge" />        | Manager              |
 | <img src="resources/team-member.png" width="25" alt="Team member badge" />     | Team Member          |
 | <img src="resources/collaborator.png" width="25" alt="Team member badge" />    | Collaborator         |
-| <img src="resources/cubic-studios.png" width="25" alt="CUBIC Studios badge" /> | CUBIC Studios Staff  |
+| <img src="resources/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | Cubic Studios Staff  |
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
 
@@ -43,4 +43,4 @@ Unlisted or unrated levels will not be highlighted.
 
 ### Issues
 ###### What's wrong?!
-**[⚠️ Report a problem with the mod](https://www.github.com/CubicCommunity/AvalancheIndex/issues/)**
+**[⚠️ Report a problem with the mod](../../issues/)**

@@ -24,8 +24,8 @@ using namespace geode::prelude;
 using namespace TeamData;
 
 // its modding time :3
-auto getLoader = geode::Loader::get();
 auto getThisMod = geode::getMod();
+auto getThisLoader = geode::Loader::get();
 
 // avalanche projects account
 int projectAccount = 31079132;
@@ -320,6 +320,17 @@ class $modify(LevelInfo, LevelInfoLayer)
 					background->setZOrder(bgSprite->getZOrder() - 1);
 					this->addChild(bgSprite);
 				};
+
+#if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MAC)
+#include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
+
+				using namespace gdrpc;
+
+				if (getThisLoader->isModLoaded("techstudent10.discord_rich_presence") && getThisMod->getSettingValue<bool>("discord"))
+				{
+					GDRPC::updateDiscordRP("Viewing Avalanche level");
+				};
+#endif
 			};
 
 			return true;

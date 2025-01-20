@@ -38,7 +38,8 @@
 	},
 	"dependencies": {
 		"geode.node-ids": ">=1.19.0",
-		"jouca.badgesapi": ">=1.2.0"
+		"jouca.badgesapi": ">=1.2.0",
+		"techstudent10.discord_rich_presence": ">=3.0.0"
 	},
 	"settings": {
 		"display": {
@@ -86,6 +87,16 @@
 			"name": "Interface",
 			"description": "UI-related functions.",
 			"type": "title"
+		},
+		"discord": {
+			"name": "Discord Rich Presence",
+			"description": "Display a notification when the badge web request fails.",
+			"type": "bool",
+			"default": false,
+			"platforms": [
+				"win",
+				"mac"
+			]
 		},
 		"err-notifs": {
 			"name": "Web Error Notifications",

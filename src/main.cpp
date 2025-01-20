@@ -321,7 +321,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					this->addChild(bgSprite);
 				};
 
-#if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MAC)
+#if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
 #include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
 
 				using namespace gdrpc;

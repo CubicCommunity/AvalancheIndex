@@ -135,7 +135,7 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 					} else {
                     	if (getThisMod->getSettingValue<bool>("console")) log::debug("Fetched badge {} remotely", ogdWebResUnwr.c_str());
 					
-                    	if (cell_menu && pointer) {
+                    	if (cell_menu != nullptr && pointer != nullptr) {
 							setUserBadge(ogdWebResUnwr, cell_menu, size, pointer);
 						};
 					};

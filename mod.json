@@ -90,7 +90,7 @@
 		},
 		"discord": {
 			"name": "Discord Rich Presence",
-			"description": "Display a notification when the badge web request fails.",
+			"description": "Set your rich presence on Discord to include details about Avalanche team projects.",
 			"type": "bool",
 			"default": false,
 			"platforms": [

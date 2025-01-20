@@ -14,7 +14,6 @@
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelCell.hpp>
-#include <Geode/modify/CCLayerColor.hpp>
 
 #include <Geode/binding/ProfilePage.hpp>
 #include <Geode/binding/CommentCell.hpp>
@@ -136,7 +135,9 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 					} else {
                     	if (getThisMod->getSettingValue<bool>("console")) log::debug("Fetched badge {} remotely", ogdWebResUnwr.c_str());
 					
-                    	setUserBadge(ogdWebResUnwr, cell_menu, size, pointer);
+                    	if (cell_menu) {
+							setUserBadge(ogdWebResUnwr, cell_menu, size, pointer);
+						};
 					};
 					
 					getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), ogdWebResUnwr);
@@ -222,6 +223,10 @@ class $modify(Comment, CommentCell)
 // attempts to fetch badge locally to verify ownership of the level
 Project scanForLevelCreator(GJGameLevel *level)
 {
+	CCMenu *fakeMenu = nullptr;
+	auto fakePointer = nullptr;
+	scanForUserBadge(fakeMenu, 0.5f, fakePointer, level->m_accountID);
+
 	// get the member's badge data
 	auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)level->m_accountID.value()));
 	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::COLLABORATOR]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::CUBIC]];

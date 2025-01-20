@@ -321,6 +321,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					this->addChild(bgSprite);
 				};
 
+// discord rpc for viewing team levels (not working cuz of the rpc mod)
 #if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
 #include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
 

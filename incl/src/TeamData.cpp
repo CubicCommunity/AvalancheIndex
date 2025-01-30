@@ -15,14 +15,16 @@ std::map<BadgeID, std::string> Badges::badgeStringID{
     {BadgeID::DIRECTOR, "director"},
     {BadgeID::MANAGER, "team-manager"},
     {BadgeID::MEMBER, "team-member"},
-    {BadgeID::COLLABORATOR, "collaborator"}};
+    {BadgeID::COLLABORATOR, "collaborator"},
+};
 
 std::map<std::string, std::string> Badges::badgeSpriteName{
     {Badges::badgeStringID[BadgeID::CUBIC], "cubic-studios.png"_spr},
     {Badges::badgeStringID[BadgeID::DIRECTOR], "director.png"_spr},
     {Badges::badgeStringID[BadgeID::MANAGER], "team-manager.png"_spr},
     {Badges::badgeStringID[BadgeID::MEMBER], "team-member.png"_spr},
-    {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr}};
+    {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr},
+};
 
 // badge button event
 void Badges::onInfoBadge(CCObject *sender)
@@ -35,7 +37,7 @@ void Badges::onInfoBadge(CCObject *sender)
     {
         geode::createQuickPopup(
             "Cubic Studios",
-            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of CUBIC, and may supervise or join projects such as <cl>Avalanche</c>.",
+            "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.",
             "OK", "Learn More",
             [](auto, bool btn2)
             {

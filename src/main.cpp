@@ -321,17 +321,17 @@ class $modify(LevelInfo, LevelInfoLayer)
 					this->addChild(bgSprite);
 				};
 
-// discord rpc for viewing team levels (not working cuz of the rpc mod)
-#if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
-#include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
+// // discord rpc for viewing team levels (not working cuz of the rpc mod)
+// #if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
+// #include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
 
-				using namespace gdrpc;
+// 				using namespace gdrpc;
 
-				if (getThisLoader->isModLoaded("techstudent10.discord_rich_presence") && getThisMod->getSettingValue<bool>("discord"))
-				{
-					GDRPC::updateDiscordRP("Viewing Avalanche level");
-				};
-#endif
+// 				if (getThisLoader->isModLoaded("techstudent10.discord_rich_presence") && getThisMod->getSettingValue<bool>("discord"))
+// 				{
+// 					GDRPC::updateDiscordRP("Viewing Avalanche level");
+// 				};
+// #endif
 			};
 
 			return true;

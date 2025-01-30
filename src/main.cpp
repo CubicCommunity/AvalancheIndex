@@ -313,25 +313,38 @@ class $modify(LevelInfo, LevelInfoLayer)
 					bgSprite->ignoreAnchorPointForPosition(false);
 					bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
 					bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
-					bgSprite->setZOrder(background->getZOrder());
+					bgSprite->setZOrder(background->getZOrder() - 1);
 					bgSprite->setID("team_background"_spr);
 
+					auto bgThumbnail = CCSprite::create("background.png"_spr);
+					bgThumbnail->setOpacity(75);
+					bgThumbnail->setAnchorPoint({0, 0});
+					bgThumbnail->ignoreAnchorPointForPosition(false);
+					bgThumbnail->setPosition({0, 0});
+					bgThumbnail->setZOrder(background->getZOrder());
+					bgThumbnail->setID("team_thumbnail"_spr);
+
+					float scaleFactor = bgSprite->getContentWidth() / bgThumbnail->getContentWidth();
+					bgThumbnail->setScale(scaleFactor);
+
 					background->setColor({66, 94, 255});
-					background->setZOrder(bgSprite->getZOrder() - 1);
+					background->setZOrder(bgSprite->getZOrder() - 2);
+
 					this->addChild(bgSprite);
+					this->addChild(bgThumbnail);
 				};
 
-// // discord rpc for viewing team levels (not working cuz of the rpc mod)
-// #if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
-// #include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
+				// // discord rpc for viewing team levels (not working cuz of the rpc mod)
+				// #if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
+				// #include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
 
-// 				using namespace gdrpc;
+				// 				using namespace gdrpc;
 
-// 				if (getThisLoader->isModLoaded("techstudent10.discord_rich_presence") && getThisMod->getSettingValue<bool>("discord"))
-// 				{
-// 					GDRPC::updateDiscordRP("Viewing Avalanche level");
-// 				};
-// #endif
+				// 				if (getThisLoader->isModLoaded("techstudent10.discord_rich_presence") && getThisMod->getSettingValue<bool>("discord"))
+				// 				{
+				// 					GDRPC::updateDiscordRP("Viewing Avalanche level");
+				// 				};
+				// #endif
 			};
 
 			return true;

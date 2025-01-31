@@ -241,6 +241,9 @@ Project scanForLevelCreator(GJGameLevel *level)
 	}
 	else
 	{
+		if (getThisMod->getSettingValue<bool>("console"))
+			log::debug("Level {} is publicly listed!", level->m_levelID.value());
+
 		// checks if owned by publisher account
 		if (level->m_accountID.value() == projectAccount)
 		{
@@ -313,7 +316,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					bgSprite->ignoreAnchorPointForPosition(false);
 					bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
 					bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
-					bgSprite->setZOrder(background->getZOrder() - 1);
+					bgSprite->setZOrder(background->getZOrder());
 					bgSprite->setID("team_background"_spr);
 
 					auto bgThumbnail = CCSprite::create("background.png"_spr);
@@ -321,14 +324,14 @@ class $modify(LevelInfo, LevelInfoLayer)
 					bgThumbnail->setAnchorPoint({0, 0});
 					bgThumbnail->ignoreAnchorPointForPosition(false);
 					bgThumbnail->setPosition({0, 0});
-					bgThumbnail->setZOrder(background->getZOrder());
+					bgThumbnail->setZOrder(background->getZOrder() + 1);
 					bgThumbnail->setID("team_thumbnail"_spr);
 
 					float scaleFactor = bgSprite->getContentWidth() / bgThumbnail->getContentWidth();
 					bgThumbnail->setScale(scaleFactor);
 
 					background->setColor({66, 94, 255});
-					background->setZOrder(bgSprite->getZOrder() - 2);
+					background->setZOrder(-5);
 
 					this->addChild(bgSprite);
 					this->addChild(bgThumbnail);
@@ -407,7 +410,8 @@ class $modify(Level, LevelCell)
 		}
 		else
 		{
-			log::error("Color not found!");
+			if (getThisMod->getSettingValue<bool>("console"))
+				log::error("Color not found!");
 		};
 	};
 };

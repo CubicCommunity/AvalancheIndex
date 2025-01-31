@@ -25,6 +25,8 @@ When viewing level cells or pages, you may notice the changes in the background 
 
 Unlisted or unrated levels will not be highlighted.
 
+<cr>*Level highlights may not be displayed until the profile or a comment of the creator is viewed beforehand.*</c>
+
 ### Developers
 ###### This mod is developed and maintained by members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.
 - **[Cheeseworks](user:6408873)**

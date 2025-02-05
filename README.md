@@ -10,7 +10,7 @@ Easily verify the legitimacy of users' and levels' associations to Avalanche at 
 ### Badges
 ###### The members of Avalanche.
 
-When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of such person.
+When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person.
 
 | **Icon**                                                                       | **Role**             |
 |:------------------------------------------------------------------------------:|----------------------|

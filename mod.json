@@ -43,42 +43,48 @@
 	"settings": {
 		"display": {
 			"name": "Display",
-			"description": "Customize highlight display.",
+			"description": "Customize index display.",
 			"type": "title"
 		},
 		"badge-profile": {
 			"name": "Badge On Profiles",
-			"description": "Display member badges on the profile page.",
+			"description": "Display member badges on the <cg>profile page</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"badge-comments": {
 			"name": "Badge On Comments",
-			"description": "Display member badges on comment cells.",
+			"description": "Display member badges on <cg>comment cells</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"solo-cells": {
 			"name": "Solo Level Cells",
-			"description": "Highlight level cells for team members' solo levels.",
+			"description": "Highlight level cells for <co>team members' solo levels</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"solo-layers": {
 			"name": "Solo Level Pages",
-			"description": "Customize level pages for team members' solo levels.",
+			"description": "Customize level pages for <co>team members' solo levels</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"team-cells": {
 			"name": "Team Project Cells",
-			"description": "Highlight level cells for team projects.",
+			"description": "Highlight level cells for <cy>team projects</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"team-layers": {
 			"name": "Team Project Pages",
-			"description": "Customize level pages for team projects.",
+			"description": "Customize level pages for <cy>team projects</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"classic-only": {
+			"name": "Only Classic Levels",
+			"description": "Display highlight color exclusively on <cg>classic</c> <cy>solo levels</c>.",
 			"type": "bool",
 			"default": true
 		},
@@ -89,7 +95,7 @@
 		},
 		"discord": {
 			"name": "Discord Rich Presence",
-			"description": "Set your rich presence on Discord to include details about Avalanche team projects.",
+			"description": "Set your rich presence on <cl>Discord</c> to include details about <cy>Avalanche team projects</c>.",
 			"type": "bool",
 			"default": false,
 			"platforms": [

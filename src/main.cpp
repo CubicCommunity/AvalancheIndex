@@ -291,50 +291,51 @@ class $modify(LevelInfo, LevelInfoLayer)
 	{
 		if (LevelInfoLayer::init(level, challenge))
 		{
-			auto bg = this->getChildByID("background");
-			auto background = as<CCSprite *>(bg);
-
 			bool displaySoloLayers = getThisMod->getSettingValue<bool>("solo-layers");
 			bool displayTeamLayers = getThisMod->getSettingValue<bool>("team-layers");
 
-			auto levelType = scanForLevelCreator(this->m_level);
+			// get main bg color layer
+			auto bg = this->getChildByID("background");
+			auto background = as<CCSprite *>(bg);
+
+			// whether or not display for classics only
+			bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
+
+			auto levelType = scanForLevelCreator(level);
 
 			if (levelType == Project::SOLO)
 			{
 				if (displaySoloLayers)
 				{
-					background->setColor({70, 77, 117});
+					if (onlyClassic)
+					{
+						if (getThisMod->getSettingValue<bool>("console"))
+							log::error("Solo level {} is platformer", level->m_levelID.value());
+					}
+					else
+					{
+						LevelInfo::setSoloDisplay(background);
+					};
 				};
 			}
 			else if (levelType == Project::TEAM)
 			{
 				if (displayTeamLayers)
 				{
-					auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
-					bgSprite->setColor({66, 94, 255});
-					bgSprite->setAnchorPoint({0.5, 0.5});
-					bgSprite->ignoreAnchorPointForPosition(false);
-					bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
-					bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
-					bgSprite->setZOrder(background->getZOrder());
-					bgSprite->setID("team_background"_spr);
-
-					auto bgThumbnail = CCSprite::create("background.png"_spr);
-					bgThumbnail->setOpacity(75);
-					bgThumbnail->setAnchorPoint({0, 0});
-					bgThumbnail->ignoreAnchorPointForPosition(false);
-					bgThumbnail->setPosition({0, 0});
-					bgThumbnail->setZOrder(background->getZOrder() + 1);
-					bgThumbnail->setID("team_thumbnail"_spr);
-
-					float scaleFactor = bgSprite->getContentWidth() / bgThumbnail->getContentWidth();
-					bgThumbnail->setScale(scaleFactor);
-
-					background->setColor({66, 94, 255});
-					background->setZOrder(-5);
-
-					this->addChild(bgSprite);
-					this->addChild(bgThumbnail);
+					if (level->isPlatformer())
+					{
+						if (getThisMod->getSettingValue<bool>("console"))
+							log::error("Team level {} is platformer", level->m_levelID.value());
+					}
+					else if (level->m_unlisted)
+					{
+						if (getThisMod->getSettingValue<bool>("console"))
+							log::error("Team level {} is unlisted", level->m_levelID.value());
+					}
+					else
+					{
+						LevelInfo::setTeamDisplay(background);
+					};
 				};
 
 				// // discord rpc for viewing team levels (not working cuz of the rpc mod)
@@ -357,54 +358,95 @@ class $modify(LevelInfo, LevelInfoLayer)
 			return false;
 		};
 	};
+
+	void setSoloDisplay(CCSprite *background)
+	{
+		background->setColor({70, 77, 117});
+	};
+
+	void setTeamDisplay(CCSprite *background)
+	{
+		auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
+		bgSprite->setColor({66, 94, 255});
+		bgSprite->setAnchorPoint({0.5, 0.5});
+		bgSprite->ignoreAnchorPointForPosition(false);
+		bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
+		bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
+		bgSprite->setZOrder(background->getZOrder());
+		bgSprite->setID("team_background"_spr);
+
+		auto bgThumbnail = CCSprite::create("background.png"_spr);
+		bgThumbnail->setOpacity(75);
+		bgThumbnail->setAnchorPoint({0, 0});
+		bgThumbnail->ignoreAnchorPointForPosition(false);
+		bgThumbnail->setPosition({0, 0});
+		bgThumbnail->setZOrder(background->getZOrder() + 1);
+		bgThumbnail->setID("team_thumbnail"_spr);
+
+		float scaleFactor = bgSprite->getContentWidth() / bgThumbnail->getContentWidth();
+		bgThumbnail->setScale(scaleFactor);
+
+		background->setColor({66, 94, 255});
+		background->setZOrder(-5);
+
+		this->addChild(bgSprite);
+		this->addChild(bgThumbnail);
+	};
 };
 
 class $modify(Level, LevelCell)
 {
 	// modified vanilla loadFromLevel function
-	void loadFromLevel(GJGameLevel *p0)
+	void loadFromLevel(GJGameLevel *level)
 	{
-		LevelCell::loadFromLevel(p0);
+		LevelCell::loadFromLevel(level);
 
 		bool displaySoloCells = getThisMod->getSettingValue<bool>("solo-cells");
 		bool displayTeamCells = getThisMod->getSettingValue<bool>("team-cells");
 
+		// get main bg color layer
 		auto color = this->getChildByType<CCLayerColor>(0);
+
+		// whether or not display for classics only
+		bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
 		if (color)
 		{
-			auto levelType = scanForLevelCreator(this->m_level);
+			auto levelType = scanForLevelCreator(level);
 
 			if (levelType == Project::SOLO)
 			{
 				if (displaySoloCells)
 				{
-					auto newColor = CCLayerColor::create({70, 77, 117, 255});
-					newColor->setScaledContentSize(color->getScaledContentSize());
-					newColor->setAnchorPoint(color->getAnchorPoint());
-					newColor->setPosition(color->getPosition());
-					newColor->setZOrder(color->getZOrder() - 2);
-					newColor->setScale(color->getScale());
-					newColor->setID("solo_color"_spr);
-
-					color->removeMeAndCleanup();
-					this->addChild(newColor);
+					if (onlyClassic)
+					{
+						if (getThisMod->getSettingValue<bool>("console"))
+							log::error("Solo level {} is platformer", level->m_levelID.value());
+					}
+					else
+					{
+						Level::setSoloDisplay(color);
+					};
 				};
 			}
 			else if (levelType == Project::TEAM)
 			{
 				if (displayTeamCells)
 				{
-					auto newColor = CCLayerColor::create({66, 94, 255, 255});
-					newColor->setScaledContentSize(color->getScaledContentSize());
-					newColor->setAnchorPoint(color->getAnchorPoint());
-					newColor->setPosition(color->getPosition());
-					newColor->setZOrder(color->getZOrder() - 2);
-					newColor->setScale(color->getScale());
-					newColor->setID("team_color"_spr);
-
-					color->removeMeAndCleanup();
-					this->addChild(newColor);
+					if (level->isPlatformer())
+					{
+						if (getThisMod->getSettingValue<bool>("console"))
+							log::error("Team level {} is platformer", level->m_levelID.value());
+					}
+					else if (level->m_unlisted)
+					{
+						if (getThisMod->getSettingValue<bool>("console"))
+							log::error("Team level {} is unlisted", level->m_levelID.value());
+					}
+					else
+					{
+						Level::setTeamDisplay(color);
+					};
 				};
 			};
 		}
@@ -413,5 +455,33 @@ class $modify(Level, LevelCell)
 			if (getThisMod->getSettingValue<bool>("console"))
 				log::error("Color not found!");
 		};
+	};
+
+	void setSoloDisplay(CCLayerColor *color)
+	{
+		auto newColor = CCLayerColor::create({70, 77, 117, 255});
+		newColor->setScaledContentSize(color->getScaledContentSize());
+		newColor->setAnchorPoint(color->getAnchorPoint());
+		newColor->setPosition(color->getPosition());
+		newColor->setZOrder(color->getZOrder() - 2);
+		newColor->setScale(color->getScale());
+		newColor->setID("solo_color"_spr);
+
+		color->removeMeAndCleanup();
+		this->addChild(newColor);
+	};
+
+	void setTeamDisplay(CCLayerColor *color)
+	{
+		auto newColor = CCLayerColor::create({66, 94, 255, 255});
+		newColor->setScaledContentSize(color->getScaledContentSize());
+		newColor->setAnchorPoint(color->getAnchorPoint());
+		newColor->setPosition(color->getPosition());
+		newColor->setZOrder(color->getZOrder() - 2);
+		newColor->setScale(color->getScale());
+		newColor->setID("team_color"_spr);
+
+		color->removeMeAndCleanup();
+		this->addChild(newColor);
 	};
 };

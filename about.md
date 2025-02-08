@@ -27,6 +27,10 @@ Unlisted or unrated levels will not be highlighted.
 
 <cr>*Level highlights may not be displayed until the profile or a comment of the creator is viewed beforehand.*</c>
 
+### Featured
+###### The up-and-coming Avalanche project.
+In the main menu, you may see a button in the center that'll show you a pop-up showing the latest Avalanche team project. You will have the option to check out the latest video of the project, and to apply to join the team to then begin working on the project.
+
 ### Developers
 ###### This mod is developed and maintained by members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.
 - **[Cheeseworks](user:6408873)**

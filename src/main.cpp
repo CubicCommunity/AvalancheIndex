@@ -234,9 +234,10 @@ Project scanForLevelCreator(GJGameLevel *level)
 	// get the member's badge data
 	auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)level->m_accountID.value()));
 	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::COLLABORATOR]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::CUBIC]];
+	bool notPublic = level->m_unlisted || level->m_friendsOnly;
 
 	// must be public
-	if (level->m_unlisted)
+	if (notPublic)
 	{
 		if (getThisMod->getSettingValue<bool>("console"))
 			log::error("Level {} is unlisted", level->m_levelID.value());

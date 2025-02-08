@@ -58,7 +58,7 @@ void AvalancheFeatured::infoPopup(CCObject *)
       {
         if (btn2)
         {
-          web::openLinkInBrowser("https://forms.gle/dyFyPHv1VQRUBT3D8");
+          web::openLinkInBrowser("https://cubiccommunity.github.io/WebLPS/apply/");
         };
       });
 };

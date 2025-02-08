@@ -560,8 +560,8 @@ class $modify(Menu, MenuLayer)
 					avalBtnParticles->setAnchorPoint({0.5f, 0.5f});
 					avalBtnParticles->setScale(1.0f);
 					avalBtnParticles->setZOrder(-2);
-					avalBtnParticles->setStartColor(ccColor4F(6, 2, 32, 255));
-					avalBtnParticles->setEndColor(ccColor4F(33, 33, 33, 100));
+					avalBtnParticles->setStartColor({6, 2, 32, 255});
+					avalBtnParticles->setEndColor({33, 33, 33, 100});
 					avalBtnParticles->setEmissionRate(20.f);
 					avalBtnParticles->setRotatePerSecond(22.5f);
 					avalBtnParticles->setStartSize(5.f);

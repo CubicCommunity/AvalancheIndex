@@ -82,7 +82,7 @@ bool AvalancheFeatured::setup()
   overlayMenu->setZOrder(10);
   m_mainLayer->addChild(overlayMenu);
 
-  auto titleSprite = CCSprite::create("banner.png"_spr);
+  auto titleSprite = CCSprite::create("featured.png"_spr);
   titleSprite->setID("title-sprite");
   titleSprite->ignoreAnchorPointForPosition(false);
   titleSprite->setPosition(CCPoint(widthCS / 2, heightCS - 2.5f));

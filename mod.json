@@ -93,9 +93,15 @@
 			"description": "UI-related functions.",
 			"type": "title"
 		},
+		"show-aval-featured": {
+			"name": "Show Project Button",
+			"description": "Display a button in the main menu that shows the featured <cl>Avalanche</c> <cy>team project</c>.",
+			"type": "bool",
+			"default": true
+		},
 		"discord": {
 			"name": "Discord Rich Presence",
-			"description": "Set your rich presence on <cl>Discord</c> to include details about <cy>Avalanche team projects</c>.",
+			"description": "Set your rich presence on <cl>Discord</c> to include details about <cl>Avalanche</c> <cy>team projects</c>.",
 			"type": "bool",
 			"default": false,
 			"platforms": [

@@ -1,4 +1,6 @@
 #include "../incl/TeamData.hpp"
+#include "../incl/ParticleHelper.hpp"
+#include "../incl/AvalancheFeatured.hpp"
 
 #include <string>
 #include <vector>
@@ -10,11 +12,13 @@
 
 #include <Geode/utils/web.hpp>
 
+#include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/ProfilePage.hpp>
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelCell.hpp>
 
+#include <Geode/binding/MenuLayer.hpp>
 #include <Geode/binding/ProfilePage.hpp>
 #include <Geode/binding/CommentCell.hpp>
 #include <Geode/binding/LevelInfoLayer.hpp>
@@ -34,7 +38,7 @@ int projectAccount = 31079132;
 std::vector<std::string> checkedUsers;
 
 // for fetching badges remotely
-EventListener<web::WebTask> ogdBadgeRequest;
+EventListener<web::WebTask> avalBadgeRequest;
 
 // creates badge button
 void setUserBadge(std::string id, CCMenu *cell_menu, float size, auto pointer)
@@ -116,31 +120,31 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 			log::warn("User not checked. Revising badge for user {} of ID '{}'...", (int)itemID, badgeCache);
 
 		// web request event
-		ogdBadgeRequest.bind([pointer, cell_menu, size, itemID, cacheStd, search](web::WebTask::Event *e)
-							 {
-			if (web::WebResponse *ogdReqRes = e->getValue())
+		avalBadgeRequest.bind([pointer, cell_menu, size, itemID, cacheStd, search](web::WebTask::Event *e)
+							  {
+			if (web::WebResponse *avalReqRes = e->getValue())
 			{
-				std::string ogdWebResUnwr = ogdReqRes->string().unwrapOr("404: Not Found");
+				std::string avalWebResUnwr = avalReqRes->string().unwrapOr("404: Not Found");
 
-				if (getThisMod->getSettingValue<bool>("console")) log::debug("Processing remotely-obtained string '{}'...", ogdWebResUnwr.c_str());
+				if (getThisMod->getSettingValue<bool>("console")) log::debug("Processing remotely-obtained string '{}'...", avalWebResUnwr.c_str());
 
-                if (ogdWebResUnwr.c_str() == cacheStd.c_str()) {
+                if (avalWebResUnwr.c_str() == cacheStd.c_str()) {
                     if (getThisMod->getSettingValue<bool>("console")) log::debug("Badge for user of ID {} up-to-date", (int)itemID);
                 } else {
 					// check if badge map key is invalid
-					bool failed = Badges::badgeSpriteName[ogdWebResUnwr].empty();
+					bool failed = Badges::badgeSpriteName[avalWebResUnwr].empty();
                     
 					if (failed) {
-						if (getThisMod->getSettingValue<bool>("console")) log::error("Badge of ID '{}' failed validation test", ogdWebResUnwr.c_str());
+						if (getThisMod->getSettingValue<bool>("console")) log::error("Badge of ID '{}' failed validation test", avalWebResUnwr.c_str());
 					} else {
-                    	if (getThisMod->getSettingValue<bool>("console")) log::debug("Fetched badge {} remotely", ogdWebResUnwr.c_str());
+                    	if (getThisMod->getSettingValue<bool>("console")) log::debug("Fetched badge {} remotely", avalWebResUnwr.c_str());
 					
                     	if (cell_menu != nullptr && pointer != nullptr) {
-							setUserBadge(ogdWebResUnwr, cell_menu, size, pointer);
+							setUserBadge(avalWebResUnwr, cell_menu, size, pointer);
 						};
 					};
 					
-					getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), ogdWebResUnwr);
+					getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), avalWebResUnwr);
                 };
 
 				// save the user id if its set to only check once per web
@@ -158,8 +162,8 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 			}; });
 
 		// send the web request
-		auto ogdReq = web::WebRequest();
-		ogdBadgeRequest.setFilter(ogdReq.get(fmt::format("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges/{}.txt", (int)itemID)));
+		auto avalReq = web::WebRequest();
+		avalBadgeRequest.setFilter(avalReq.get(fmt::format("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges/{}.txt", (int)itemID)));
 	};
 
 	// checks the map with the cache as a key to see if its invalid
@@ -483,5 +487,110 @@ class $modify(Level, LevelCell)
 
 		color->removeMeAndCleanup();
 		this->addChild(newColor);
+	};
+};
+
+class $modify(Menu, MenuLayer)
+{
+	struct Fields
+	{
+		CCSprite *avalBtnGlow;
+		CCSprite *avalBtnMark;
+	};
+
+	bool init()
+	{
+		if (MenuLayer::init())
+		{
+			auto winSizeX = this->getScaledContentWidth();
+			auto winSizeY = this->getScaledContentHeight();
+
+			bool showAvalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
+
+			if (showAvalButton)
+			{
+				// avalanche menu
+				auto avalMenu = CCMenu::create();
+				avalMenu->ignoreAnchorPointForPosition(false);
+				avalMenu->setPosition(winSizeX / 2, (winSizeY / 2) - 70.f);
+				avalMenu->setScaledContentSize(CCSize(winSizeX - 75.f, 50.f));
+
+				this->addChild(avalMenu);
+
+				auto avalBtnSprite = CCSprite::create("logo_circle_aval.png"_spr);
+				avalBtnSprite->ignoreAnchorPointForPosition(false);
+				avalBtnSprite->setScale(0.0875f);
+
+				auto avalBtn = CCMenuItemSpriteExtra::create(
+					avalBtnSprite,
+					this,
+					menu_selector(Menu::onAvalFeaturedButton));
+				avalBtn->setPosition(avalMenu->getScaledContentWidth() / 2, avalMenu->getScaledContentHeight() / 2);
+				avalBtn->setID("avalanche-featured-button"_spr);
+				avalBtn->ignoreAnchorPointForPosition(false);
+
+				avalMenu->addChild(avalBtn);
+
+				// featured ring
+				m_fields->avalBtnGlow = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
+				m_fields->avalBtnGlow->setID("featuredRing"_spr);
+				m_fields->avalBtnGlow->setScale(1.125f);
+				m_fields->avalBtnGlow->ignoreAnchorPointForPosition(false);
+				m_fields->avalBtnGlow->setPosition({avalBtnSprite->getScaledContentWidth() / 2, (avalBtnSprite->getScaledContentHeight() / 2) * 0.65f});
+				m_fields->avalBtnGlow->setAnchorPoint({0.5f, 0.5f});
+				m_fields->avalBtnGlow->setZOrder(-1);
+				m_fields->avalBtnGlow->setVisible(false);
+
+				avalBtn->addChild(m_fields->avalBtnGlow);
+
+				m_fields->avalBtnMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
+				m_fields->avalBtnMark->setID("notifMark"_spr);
+				m_fields->avalBtnMark->setScale(0.5f);
+				m_fields->avalBtnMark->ignoreAnchorPointForPosition(false);
+				m_fields->avalBtnMark->setPosition({avalBtn->getScaledContentWidth(), avalBtn->getScaledContentHeight()});
+				m_fields->avalBtnMark->setAnchorPoint({0.5f, 0.5f});
+				m_fields->avalBtnMark->setVisible(false);
+
+				avalBtn->addChild(m_fields->avalBtnMark);
+
+				// add particles on top of the featured button
+				if (CCParticleSystem *avalBtnParticles = ParticleHelper::createAvalFeaturedParticles(100.0f))
+				{
+					avalBtnParticles->setPosition(avalBtn->getPosition());
+					avalBtnParticles->setAnchorPoint({0.5f, 0.5f});
+					avalBtnParticles->setScale(1.0f);
+					avalBtnParticles->setZOrder(-2);
+					avalBtnParticles->setStartColor(ccColor4F(6, 2, 32, 255));
+					avalBtnParticles->setEndColor(ccColor4F(33, 33, 33, 100));
+					avalBtnParticles->setEmissionRate(20.f);
+					avalBtnParticles->setRotatePerSecond(22.5f);
+					avalBtnParticles->setStartSize(5.f);
+					avalBtnParticles->setEndSize(1.25f);
+					avalBtnParticles->setID("avalanche-featured-button-particles"_spr);
+
+					avalMenu->addChild(avalBtnParticles);
+				};
+			}
+			else
+			{
+				if (getThisMod->getSettingValue<bool>("console"))
+					log::error("Avalanche featured project button disabled");
+			};
+
+			return true;
+		}
+		else
+		{
+			return false;
+		};
+	};
+
+	void onAvalFeaturedButton(CCObject *)
+	{
+		AvalancheFeatured::create()->show();
+
+		getThisMod->setSavedValue("checked-aval-project", true);
+		m_fields->avalBtnGlow->setVisible(false);
+		m_fields->avalBtnMark->setVisible(false);
 	};
 };

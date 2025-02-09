@@ -173,6 +173,8 @@ bool AvalancheFeatured::setup()
 
   m_loadingCircle->setParentLayer(m_mainLayer);
   m_loadingCircle->setPosition({widthCS / 2, heightCS / 2});
+  m_loadingCircle->ignoreAnchorPointForPosition(false);
+  m_loadingCircle->setAnchorPoint({0.5, 0.5});
   m_loadingCircle->setScale(1.f);
   m_loadingCircle->show();
 

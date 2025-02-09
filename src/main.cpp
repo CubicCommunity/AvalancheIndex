@@ -17,7 +17,6 @@
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelCell.hpp>
-#include <Geode/modify/GameLevelManager.hpp>
 
 #include <Geode/binding/MenuLayer.hpp>
 #include <Geode/binding/ProfilePage.hpp>
@@ -65,8 +64,6 @@ void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, flo
 			// gets sprite filename
 			auto newBadge = Badges::badgeSpriteName[id].c_str();
 
-			log::debug("Setting badge to {}...", newBadge);
-
 			CCSprite *badgeSprite = CCSprite::create(newBadge);
 			badgeSprite->setScale(size);
 
@@ -79,8 +76,6 @@ void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, flo
 
 			cell_menu->addChild(badge);
 			cell_menu->updateLayout();
-
-			log::debug("Badge {} successfully set", newBadge);
 		};
 
 		if (comment != nullptr)
@@ -99,8 +94,6 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	// gets locally saved badge id
 	std::string cacheStd = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)itemID));
 	auto badgeCache = cacheStd.c_str();
-
-	log::debug("Checking if badge for user {} has been checked...", (int)itemID);
 
 	// look for this in the list of users already checked
 	std::string search = std::to_string(itemID);
@@ -122,16 +115,12 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	}
 	else
 	{
-		log::warn("User not checked. Revising badge for user {} of ID '{}'...", (int)itemID, badgeCache);
-
 		// web request event
 		avalBadgeRequest.bind([pointer, cell_menu, comment, size, itemID, cacheStd, search](web::WebTask::Event *e)
 							  {
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				std::string avalWebResUnwr = avalReqRes->string().unwrapOr("404: Not Found");
-
-				log::debug("Processing remotely-obtained string '{}'...", avalWebResUnwr.c_str());
 
                 if (avalWebResUnwr.c_str() == cacheStd.c_str()) {
                     log::debug("Badge for user of ID {} up-to-date", (int)itemID);
@@ -142,8 +131,6 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 					if (failed) {
 						log::error("Badge of ID '{}' failed validation test", avalWebResUnwr.c_str());
 					} else {
-                    	log::debug("Fetched badge {} remotely", avalWebResUnwr.c_str());
-					
                     	if (cell_menu != nullptr && pointer != nullptr) {
 							setUserBadge(avalWebResUnwr, cell_menu, comment, size, pointer);
 						};
@@ -153,8 +140,7 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
                 };
 
 				// save the user id if its set to only check once per web
-				if (getThisMod->getSettingValue<bool>("web-once"))
-					checkedUsers.push_back(search);
+				if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(search);
 			}
 			else if (web::WebProgress *p = e->getProgress())
 			{
@@ -180,7 +166,6 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	}
 	else
 	{
-		log::debug("Fetched badge id '{}' from cache", badgeCache);
 		setUserBadge(cacheStd, cell_menu, comment, size, pointer);
 	};
 };
@@ -226,11 +211,11 @@ class $modify(Comment, CommentCell)
 
 			if (comment->m_hasLevelID)
 			{
-				log::info("Comment published on level");
-
 				auto thisLevel = GameLevelManager::get()->getSavedLevel(comment->m_levelID);
 
-				if (as<int>(thisLevel->m_accountID.value()) == comment->m_accountID)
+				log::info("Comment published on level, comparing ID {} with {}", comment->m_accountID, thisLevel->m_accountID.value());
+
+				if (comment->m_accountID == thisLevel->m_accountID.value())
 				{
 					log::info("Commenter {} is level publisher", comment->m_userName);
 

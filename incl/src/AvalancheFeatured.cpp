@@ -85,7 +85,7 @@ bool AvalancheFeatured::setup()
   auto titleSprite = CCSprite::create("featured.png"_spr);
   titleSprite->setID("title-sprite");
   titleSprite->ignoreAnchorPointForPosition(false);
-  titleSprite->setPosition(CCPoint(widthCS / 2, heightCS - 2.5f));
+  titleSprite->setPosition({widthCS / 2, heightCS - 2.5f});
 
   overlayMenu->addChild(titleSprite);
 
@@ -172,7 +172,7 @@ bool AvalancheFeatured::setup()
   m_buttonMenu->addChild(m_infoBtn);
 
   m_loadingCircle->setParentLayer(m_mainLayer);
-  m_loadingCircle->setPosition({-90, -50});
+  m_loadingCircle->setPosition({widthCS / 2, heightCS / 2});
   m_loadingCircle->setScale(1.f);
   m_loadingCircle->show();
 

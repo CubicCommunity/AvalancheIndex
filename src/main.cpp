@@ -17,12 +17,14 @@
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelCell.hpp>
+#include <Geode/modify/GameLevelManager.hpp>
 
 #include <Geode/binding/MenuLayer.hpp>
 #include <Geode/binding/ProfilePage.hpp>
 #include <Geode/binding/CommentCell.hpp>
 #include <Geode/binding/LevelInfoLayer.hpp>
 #include <Geode/binding/LevelCell.hpp>
+#include <Geode/binding/GameLevelManager.hpp>
 
 using namespace geode::prelude;
 using namespace TeamData;
@@ -41,7 +43,7 @@ std::vector<std::string> checkedUsers;
 EventListener<web::WebTask> avalBadgeRequest;
 
 // creates badge button
-void setUserBadge(std::string id, CCMenu *cell_menu, float size, auto pointer)
+void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
 {
 	// checks the map for this value to see if its invalid
 	bool idFailTest = Badges::badgeSpriteName[id].empty();
@@ -52,7 +54,7 @@ void setUserBadge(std::string id, CCMenu *cell_menu, float size, auto pointer)
 	}
 	else
 	{
-		if (cell_menu)
+		if (cell_menu != nullptr)
 		{
 			// prevent dupes
 			if (auto alreadyBadge = cell_menu->getChildByID(id))
@@ -63,8 +65,7 @@ void setUserBadge(std::string id, CCMenu *cell_menu, float size, auto pointer)
 			// gets sprite filename
 			auto newBadge = Badges::badgeSpriteName[id].c_str();
 
-			if (getThisMod->getSettingValue<bool>("console"))
-				log::debug("Setting badge to {}...", newBadge);
+			log::debug("Setting badge to {}...", newBadge);
 
 			CCSprite *badgeSprite = CCSprite::create(newBadge);
 			badgeSprite->setScale(size);
@@ -79,21 +80,27 @@ void setUserBadge(std::string id, CCMenu *cell_menu, float size, auto pointer)
 			cell_menu->addChild(badge);
 			cell_menu->updateLayout();
 
-			if (getThisMod->getSettingValue<bool>("console"))
-				log::debug("Badge {} successfully set", newBadge);
+			log::debug("Badge {} successfully set", newBadge);
+		};
+
+		if (comment != nullptr)
+		{
+			Color col = Badges::badgeColor[id];
+
+			comment->setColor({col.red, col.green, col.blue});
+			comment->setOpacity(255);
 		};
 	};
 };
 
 // attempts to fetch badge locally and remotely
-void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
+void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer, int itemID)
 {
 	// gets locally saved badge id
 	std::string cacheStd = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)itemID));
 	auto badgeCache = cacheStd.c_str();
 
-	if (getThisMod->getSettingValue<bool>("console"))
-		log::debug("Checking if badge for user {} has been checked...", (int)itemID);
+	log::debug("Checking if badge for user {} has been checked...", (int)itemID);
 
 	// look for this in the list of users already checked
 	std::string search = std::to_string(itemID);
@@ -111,36 +118,34 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 
 	if (checked)
 	{
-		if (getThisMod->getSettingValue<bool>("console"))
-			log::error("Badge for user {} already been checked. Fetching badge from cache...", (int)itemID);
+		log::error("Badge for user {} already been checked. Fetching badge from cache...", (int)itemID);
 	}
 	else
 	{
-		if (getThisMod->getSettingValue<bool>("console"))
-			log::warn("User not checked. Revising badge for user {} of ID '{}'...", (int)itemID, badgeCache);
+		log::warn("User not checked. Revising badge for user {} of ID '{}'...", (int)itemID, badgeCache);
 
 		// web request event
-		avalBadgeRequest.bind([pointer, cell_menu, size, itemID, cacheStd, search](web::WebTask::Event *e)
+		avalBadgeRequest.bind([pointer, cell_menu, comment, size, itemID, cacheStd, search](web::WebTask::Event *e)
 							  {
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				std::string avalWebResUnwr = avalReqRes->string().unwrapOr("404: Not Found");
 
-				if (getThisMod->getSettingValue<bool>("console")) log::debug("Processing remotely-obtained string '{}'...", avalWebResUnwr.c_str());
+				log::debug("Processing remotely-obtained string '{}'...", avalWebResUnwr.c_str());
 
                 if (avalWebResUnwr.c_str() == cacheStd.c_str()) {
-                    if (getThisMod->getSettingValue<bool>("console")) log::debug("Badge for user of ID {} up-to-date", (int)itemID);
+                    log::debug("Badge for user of ID {} up-to-date", (int)itemID);
                 } else {
 					// check if badge map key is invalid
 					bool failed = Badges::badgeSpriteName[avalWebResUnwr].empty();
                     
 					if (failed) {
-						if (getThisMod->getSettingValue<bool>("console")) log::error("Badge of ID '{}' failed validation test", avalWebResUnwr.c_str());
+						log::error("Badge of ID '{}' failed validation test", avalWebResUnwr.c_str());
 					} else {
-                    	if (getThisMod->getSettingValue<bool>("console")) log::debug("Fetched badge {} remotely", avalWebResUnwr.c_str());
+                    	log::debug("Fetched badge {} remotely", avalWebResUnwr.c_str());
 					
                     	if (cell_menu != nullptr && pointer != nullptr) {
-							setUserBadge(avalWebResUnwr, cell_menu, size, pointer);
+							setUserBadge(avalWebResUnwr, cell_menu, comment, size, pointer);
 						};
 					};
 					
@@ -153,11 +158,11 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 			}
 			else if (web::WebProgress *p = e->getProgress())
 			{
-				if (getThisMod->getSettingValue<bool>("console")) log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
+				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
 			}
 			else if (e->isCancelled())
 			{
-				if (getThisMod->getSettingValue<bool>("console")) log::error("Badge web request failed");
+				log::error("Badge web request failed");
 				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
 			}; });
 
@@ -171,14 +176,12 @@ void scanForUserBadge(CCMenu *cell_menu, float size, auto pointer, int itemID)
 
 	if (isNotCached)
 	{
-		if (getThisMod->getSettingValue<bool>("console"))
-			log::error("Badge id '{}' from cache is invalid", badgeCache);
+		log::error("Badge id '{}' from cache is invalid", badgeCache);
 	}
 	else
 	{
-		if (getThisMod->getSettingValue<bool>("console"))
-			log::debug("Fetched badge id '{}' from cache", badgeCache);
-		setUserBadge(cacheStd, cell_menu, size, pointer);
+		log::debug("Fetched badge id '{}' from cache", badgeCache);
+		setUserBadge(cacheStd, cell_menu, comment, size, pointer);
 	};
 };
 
@@ -195,10 +198,11 @@ class $modify(Profile, ProfilePage)
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
 
-			scanForUserBadge(cell_menu, 0.875f, this, user->m_accountID);
+			CCLabelBMFont *fakeText = nullptr;
 
-			if (getThisMod->getSettingValue<bool>("console"))
-				log::debug("Viewing profile of ID {}", user->m_accountID);
+			scanForUserBadge(cell_menu, fakeText, 0.875f, this, user->m_accountID);
+
+			log::debug("Viewing profile of ID {}", user->m_accountID);
 		};
 	};
 };
@@ -215,11 +219,36 @@ class $modify(Comment, CommentCell)
 			// gets a copy of the main layer
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
+			auto commentText = dynamic_cast<CCLabelBMFont *>(m_mainLayer->getChildByID("comment-text-label"));
 
-			scanForUserBadge(cell_menu, 0.5f, this, comment->m_accountID);
+			// checks if commenter published level
+			log::debug("Checking comment on level of ID {}...", comment->m_levelID);
 
-			if (getThisMod->getSettingValue<bool>("console"))
-				log::debug("Viewing comment profile of ID {}", comment->m_accountID);
+			if (comment->m_hasLevelID)
+			{
+				log::info("Comment published on level");
+
+				auto thisLevel = GameLevelManager::get()->getSavedLevel(comment->m_levelID);
+
+				if (as<int>(thisLevel->m_accountID.value()) == comment->m_accountID)
+				{
+					log::info("Commenter {} is level publisher", comment->m_userName);
+
+					commentText = nullptr;
+				}
+				else
+				{
+					log::debug("Commenter {} is not level publisher", comment->m_userName);
+				};
+			}
+			else
+			{
+				log::debug("Comment published on non-level");
+			};
+
+			scanForUserBadge(cell_menu, commentText, 0.5f, this, comment->m_accountID);
+
+			log::debug("Viewing comment profile of ID {}", comment->m_accountID);
 		};
 	};
 };
@@ -228,8 +257,9 @@ class $modify(Comment, CommentCell)
 Project scanForLevelCreator(GJGameLevel *level)
 {
 	CCMenu *fakeMenu = nullptr;
+	CCLabelBMFont *fakeText = nullptr;
 	auto fakePointer = nullptr;
-	scanForUserBadge(fakeMenu, 0.5f, fakePointer, level->m_accountID);
+	scanForUserBadge(fakeMenu, fakeText, 0.5f, fakePointer, level->m_accountID);
 
 	// get the member's badge data
 	auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)level->m_accountID.value()));
@@ -239,21 +269,18 @@ Project scanForLevelCreator(GJGameLevel *level)
 	// must be public
 	if (notPublic)
 	{
-		if (getThisMod->getSettingValue<bool>("console"))
-			log::error("Level {} is unlisted", level->m_levelID.value());
+		log::error("Level {} is unlisted", level->m_levelID.value());
 
 		return Project::NONE;
 	}
 	else
 	{
-		if (getThisMod->getSettingValue<bool>("console"))
-			log::debug("Level {} is publicly listed!", level->m_levelID.value());
+		log::debug("Level {} is publicly listed!", level->m_levelID.value());
 
 		// checks if owned by publisher account
 		if (level->m_accountID.value() == projectAccount)
 		{
-			if (getThisMod->getSettingValue<bool>("console"))
-				log::debug("Level {} is Avalanche team project", level->m_levelID.value());
+			log::debug("Level {} is Avalanche team project", level->m_levelID.value());
 
 			return Project::TEAM;
 		}
@@ -262,8 +289,7 @@ Project scanForLevelCreator(GJGameLevel *level)
 			// checks if level is published by a team member
 			if (notSolo)
 			{
-				if (getThisMod->getSettingValue<bool>("console"))
-					log::error("Level {} not associated with Avalanche", level->m_levelID.value());
+				log::error("Level {} not associated with Avalanche", level->m_levelID.value());
 
 				return Project::NONE;
 			}
@@ -272,15 +298,13 @@ Project scanForLevelCreator(GJGameLevel *level)
 				// checks if level is rated
 				if (level->m_stars.value() >= 1)
 				{
-					if (getThisMod->getSettingValue<bool>("console"))
-						log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
+					log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
 
 					return Project::SOLO;
 				}
 				else
 				{
-					if (getThisMod->getSettingValue<bool>("console"))
-						log::error("Level {} is unrated", level->m_levelID.value());
+					log::error("Level {} is unrated", level->m_levelID.value());
 
 					return Project::NONE;
 				};
@@ -314,8 +338,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 				{
 					if (onlyClassic)
 					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Solo level {} is platformer", level->m_levelID.value());
+						log::error("Solo level {} is platformer", level->m_levelID.value());
 					}
 					else
 					{
@@ -329,13 +352,11 @@ class $modify(LevelInfo, LevelInfoLayer)
 				{
 					if (level->isPlatformer())
 					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Team level {} is platformer", level->m_levelID.value());
+						log::error("Team level {} is platformer", level->m_levelID.value());
 					}
 					else if (level->m_unlisted)
 					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Team level {} is unlisted", level->m_levelID.value());
+						log::error("Team level {} is unlisted", level->m_levelID.value());
 					}
 					else
 					{
@@ -425,8 +446,7 @@ class $modify(Level, LevelCell)
 				{
 					if (onlyClassic)
 					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Solo level {} is platformer", level->m_levelID.value());
+						log::error("Solo level {} is platformer", level->m_levelID.value());
 					}
 					else
 					{
@@ -440,13 +460,11 @@ class $modify(Level, LevelCell)
 				{
 					if (level->isPlatformer())
 					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Team level {} is platformer", level->m_levelID.value());
+						log::error("Team level {} is platformer", level->m_levelID.value());
 					}
 					else if (level->m_unlisted)
 					{
-						if (getThisMod->getSettingValue<bool>("console"))
-							log::error("Team level {} is unlisted", level->m_levelID.value());
+						log::error("Team level {} is unlisted", level->m_levelID.value());
 					}
 					else
 					{
@@ -457,8 +475,7 @@ class $modify(Level, LevelCell)
 		}
 		else
 		{
-			if (getThisMod->getSettingValue<bool>("console"))
-				log::error("Color not found!");
+			log::error("Color not found!");
 		};
 	};
 
@@ -574,8 +591,7 @@ class $modify(Menu, MenuLayer)
 			}
 			else
 			{
-				if (getThisMod->getSettingValue<bool>("console"))
-					log::error("Avalanche featured project button disabled");
+				log::error("Avalanche featured project button disabled");
 			};
 
 			return true;

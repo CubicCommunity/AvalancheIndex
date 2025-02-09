@@ -26,6 +26,14 @@ std::map<std::string, std::string> Badges::badgeSpriteName{
     {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr},
 };
 
+std::map<std::string, Color> Badges::badgeColor{
+    {Badges::badgeStringID[BadgeID::CUBIC], {10, 247, 247}},
+    {Badges::badgeStringID[BadgeID::DIRECTOR], {63, 95, 255}}, // modified to be brighter than official branding
+    {Badges::badgeStringID[BadgeID::MANAGER], {127, 148, 255}}, // modified to be brighter than official branding
+    {Badges::badgeStringID[BadgeID::MEMBER], {191, 201, 255}}, // modified to be brighter than official branding
+    {Badges::badgeStringID[BadgeID::COLLABORATOR], {200, 200, 200}},
+};
+
 // badge button event
 void Badges::onInfoBadge(CCObject *sender)
 {

@@ -130,12 +130,6 @@
 			"name": "Developers",
 			"description": "Utilities for development purposes.",
 			"type": "title"
-		},
-		"console": {
-			"name": "Log In Console",
-			"description": "Log all mod actions in the console.",
-			"type": "bool",
-			"default": false
 		}
 	}
 }

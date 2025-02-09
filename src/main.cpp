@@ -209,26 +209,31 @@ class $modify(Comment, CommentCell)
 			// checks if commenter published level
 			log::debug("Checking comment on level of ID {}...", comment->m_levelID);
 
-			if (comment->m_hasLevelID)
+			if (getThisMod->getSettingValue<bool>("comments"))
 			{
-				auto thisLevel = GameLevelManager::get()->getSavedLevel(comment->m_levelID);
-
-				log::info("Comment published on level, comparing ID {} with {}", comment->m_accountID, thisLevel->m_accountID.value());
-
-				if (comment->m_accountID == thisLevel->m_accountID.value())
+				if (comment->m_hasLevelID)
 				{
-					log::info("Commenter {} is level publisher", comment->m_userName);
-
-					commentText = nullptr;
+					log::debug("Comment listed on account page with level linked");
 				}
-				else
+				else if (auto thisLevel = GameLevelManager::get()->getSavedLevel(comment->m_levelID))
 				{
-					log::debug("Commenter {} is not level publisher", comment->m_userName);
+					if (comment->m_userID == thisLevel->m_userID.value())
+					{
+						log::info("Commenter {} is level publisher", comment->m_userName);
+
+						commentText = nullptr;
+					}
+					else
+					{
+						log::debug("Commenter {} is not level publisher", comment->m_userName);
+					};
+				} else {
+					log::debug("Comment not published under any level");
 				};
 			}
 			else
 			{
-				log::debug("Comment published on non-level");
+				commentText = nullptr;
 			};
 
 			scanForUserBadge(cell_menu, commentText, 0.5f, this, comment->m_accountID);

@@ -70,6 +70,12 @@
 			"type": "bool",
 			"default": true
 		},
+		"comments": {
+			"name": "Comment Text Color",
+			"description": "Customize the text color for team members' comments.",
+			"type": "bool",
+			"default": true
+		},
 		"team-cells": {
 			"name": "Team Project Cells",
 			"description": "Highlight level cells for <cy>team projects</c>.",

@@ -101,7 +101,7 @@
 		},
 		"discord": {
 			"name": "Discord Rich Presence",
-			"description": "Set your rich presence on <cl>Discord</c> to include details about <cl>Avalanche</c> <cy>team projects</c>.",
+			"description": "Set your rich presence on <cb>Discord</c> to include details about <cl>Avalanche</c> <cy>team projects</c>.",
 			"type": "bool",
 			"default": false,
 			"platforms": [
@@ -125,11 +125,6 @@
 			"description": "Only send one web request to check a user's badge, instead of checking as much as the rate limit supports.",
 			"type": "bool",
 			"default": true
-		},
-		"dev": {
-			"name": "Developers",
-			"description": "Utilities for development purposes.",
-			"type": "title"
 		}
 	}
 }

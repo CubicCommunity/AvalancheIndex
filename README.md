@@ -10,7 +10,7 @@ Easily verify the legitimacy of users' and levels' associations to Avalanche at 
 ### Badges
 ###### The members of Avalanche.
 
-When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person.
+When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team.
 
 | **Icon**                                                                       | **Role**             |
 |:------------------------------------------------------------------------------:|----------------------|
@@ -32,6 +32,12 @@ When viewing level cells or pages, you may notice the changes in the background 
 | **Slate blue `#464D75`** | Solo Level   |
 
 Unlisted or unrated levels will not be highlighted.
+
+*Level highlights might not be displayed until the profile or a comment of the creator is viewed beforehand.*
+
+### Featured
+###### The up-and-coming Avalanche project.
+In the main menu, you may see a button in the center that'll show you a pop-up showing the latest Avalanche team project. You will have the option to check out the latest video of the project, and to apply to join the team to then begin working on the project.
 
 ### Developers
 ###### This mod is developed and maintained by members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Avalanche logo" /> Avalanche](https://avalanche.cubicstudios.xyz/) team.

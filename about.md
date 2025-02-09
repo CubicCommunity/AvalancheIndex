@@ -6,7 +6,7 @@ Easily verify the legitimacy of users' and levels' associations to Avalanche at 
 ### Badges
 ###### The members of Avalanche.
 
-When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person.
+When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team.
 
 - ![icon](cubicstudios.avalancheindex/director.png) Director
 - ![icon](cubicstudios.avalancheindex/team-manager.png) Team Manager
@@ -25,7 +25,7 @@ When viewing level cells or pages, you may notice the changes in the background 
 
 Unlisted or unrated levels will not be highlighted.
 
-<cr>*Level highlights may not be displayed until the profile or a comment of the creator is viewed beforehand.*</c>
+<cr>*Level highlights might not be displayed until the profile or a comment of the creator is viewed beforehand.*</c>
 
 ### Featured
 ###### The up-and-coming Avalanche project.

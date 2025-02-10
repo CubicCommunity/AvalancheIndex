@@ -8,7 +8,7 @@
 	},
 	"id": "cubicstudios.avalancheindex",
 	"name": "Avalanche Index",
-	"version": "1.0.0",
+	"version": "1.0.0-prerelease.1",
 	"developers": [
 		"Cheeseworks"
 	],
@@ -42,8 +42,8 @@
 	},
 	"settings": {
 		"display": {
-			"name": "Display",
-			"description": "Customize index display.",
+			"name": "Index",
+			"description": "Customize what the index does.",
 			"type": "title"
 		},
 		"badge-profile": {
@@ -113,7 +113,7 @@
 		},
 		"data": {
 			"name": "Data",
-			"description": "Functions for storing data.",
+			"description": "Methods for handling data.",
 			"type": "title"
 		},
 		"web-once": {

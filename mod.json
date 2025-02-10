@@ -121,6 +121,12 @@
 			"type": "bool",
 			"default": true
 		},
+		"check-aval": {
+			"name": "Frequent Checks For New Project",
+			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>.",
+			"type": "bool",
+			"default": false
+		},
 		"data": {
 			"name": "Data",
 			"description": "Functions for storing data.",

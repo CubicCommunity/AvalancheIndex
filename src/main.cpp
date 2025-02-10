@@ -41,6 +41,9 @@ std::vector<std::string> checkedUsers;
 // for fetching badges remotely
 EventListener<web::WebTask> avalBadgeRequest;
 
+// if the server was checked for the new avalanche project :O
+bool pinged = false;
+
 // creates badge button
 void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
 {
@@ -227,7 +230,9 @@ class $modify(Comment, CommentCell)
 					{
 						log::debug("Commenter {} is not level publisher", comment->m_userName);
 					};
-				} else {
+				}
+				else
+				{
 					log::debug("Comment not published under any level");
 				};
 			}
@@ -502,6 +507,8 @@ class $modify(Menu, MenuLayer)
 {
 	struct Fields
 	{
+		EventListener<web::WebTask> avalWebListener;
+
 		CCSprite *avalBtnGlow;
 		CCSprite *avalBtnMark;
 	};
@@ -578,6 +585,34 @@ class $modify(Menu, MenuLayer)
 
 					avalMenu->addChild(avalBtnParticles);
 				};
+
+				bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+
+				if (alwaysCheck)
+				{
+					Menu::onCheckForNewAval(nullptr);
+				}
+				else if (!pinged)
+				{
+					Menu::onCheckForNewAval(nullptr);
+
+					pinged = true;
+				}
+				else
+				{
+					bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
+
+					if (!isChecked)
+					{
+						m_fields->avalBtnGlow->setVisible(true);
+						m_fields->avalBtnMark->setVisible(true);
+					}
+					else
+					{
+						m_fields->avalBtnGlow->setVisible(false);
+						m_fields->avalBtnMark->setVisible(false);
+					};
+				};
 			}
 			else
 			{
@@ -590,6 +625,103 @@ class $modify(Menu, MenuLayer)
 		{
 			return false;
 		};
+	};
+
+	/*
+	vanilla functions
+	*/
+
+	void onDaily(CCObject * sender)
+	{
+		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+
+		if (alwaysCheck)
+		{
+			Menu::onCheckForNewAval(sender);
+		};
+
+		MenuLayer::onDaily(sender);
+	};
+
+	void onStats(CCObject * sender)
+	{
+		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+
+		if (alwaysCheck)
+		{
+			Menu::onCheckForNewAval(sender);
+		};
+
+		MenuLayer::onStats(sender);
+	};
+
+	void onMyProfile(CCObject * sender)
+	{
+		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+
+		if (alwaysCheck)
+		{
+			Menu::onCheckForNewAval(sender);
+		};
+
+		MenuLayer::onMyProfile(sender);
+	};
+
+	void onOptions(CCObject * sender)
+	{
+		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+
+		if (alwaysCheck)
+		{
+			Menu::onCheckForNewAval(sender);
+		};
+
+		MenuLayer::onOptions(sender);
+	};
+
+	/*
+	mod functions
+	*/
+
+	void onCheckForNewAval(CCObject *sender)
+	{
+		m_fields->avalWebListener.bind([this](web::WebTask::Event *e)
+									   {
+				if (web::WebResponse *avalReqRes = e->getValue())
+			{
+				std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
+				std::string avalWebResultSaved = getThisMod->getSavedValue<std::string>("aval-project-code");
+
+				bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
+
+				log::debug("Project code '{}' fetched remotely", avalWebResultUnwrapped);
+
+				if (avalWebResultUnwrapped != avalWebResultSaved || !isChecked)
+				{
+					getThisMod->setSavedValue("checked-aval-project", false);
+
+					m_fields->avalBtnGlow->setVisible(true);
+					m_fields->avalBtnMark->setVisible(true);
+				}
+				else
+				{
+					m_fields->avalBtnGlow->setVisible(false);
+					m_fields->avalBtnMark->setVisible(false);
+				};
+
+				getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
+			}
+			else if (web::WebProgress *p = e->getProgress())
+			{
+				log::debug("project code progress: {}", p->downloadProgress().value_or(0.f));
+			}
+			else if (e->isCancelled())
+			{
+				log::debug("The Project Code request was cancelled... So sad :(");
+			}; });
+
+		auto avalReq = web::WebRequest();
+		m_fields->avalWebListener.setFilter(avalReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/code.txt"));
 	};
 
 	void onAvalFeaturedButton(CCObject *)

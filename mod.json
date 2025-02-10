@@ -100,7 +100,7 @@
 			"type": "title"
 		},
 		"show-aval-featured": {
-			"name": "Show Project Button",
+			"name": "Show Featured Project Button",
 			"description": "Display a button in the main menu that shows the featured <cl>Avalanche</c> <cy>team project</c>.",
 			"type": "bool",
 			"default": true
@@ -125,6 +125,8 @@
 			"name": "Frequent Checks For New Project",
 			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>.",
 			"type": "bool",
+			"enable-if": "setting:show-aval-featured",
+			"enable-if-description": "The Featured Project button must be enabled to use this setting.",
 			"default": false
 		},
 		"data": {

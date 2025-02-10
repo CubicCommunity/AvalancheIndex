@@ -121,14 +121,6 @@
 			"type": "bool",
 			"default": true
 		},
-		"check-aval": {
-			"name": "Frequent Checks For New Project",
-			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>.",
-			"type": "bool",
-			"enable-if": "setting:show-aval-featured",
-			"enable-if-description": "The Featured Project button must be enabled to use this setting.",
-			"default": false
-		},
 		"data": {
 			"name": "Data",
 			"description": "Functions for storing data.",
@@ -139,6 +131,14 @@
 			"description": "Only send one web request to check a user's badge, instead of checking as much as the rate limit supports.",
 			"type": "bool",
 			"default": true
+		},
+		"check-aval": {
+			"name": "Frequent Checks For New Project",
+			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>.",
+			"type": "bool",
+			"enable-if": "setting:show-aval-featured",
+			"enable-if-description": "The Featured Project button must be enabled to use this setting.",
+			"default": false
 		}
 	}
 }

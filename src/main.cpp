@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
 #include <map>
 
 #include <Geode/Geode.hpp>
@@ -40,9 +41,60 @@ std::vector<std::string> checkedUsers;
 
 // for fetching badges remotely
 EventListener<web::WebTask> avalBadgeRequest;
+EventListener<web::WebTask> fullBadgesListRequest;
 
 // if the server was checked for the new avalanche project :O
 bool pinged = false;
+
+// gets all badges when the mod is loaded for the first time
+void initialScan()
+{
+	fullBadgesListRequest.bind([](web::WebTask::Event *e)
+							   {
+			if (web::WebResponse *avalReqRes = e->getValue())
+			{
+				if (avalReqRes->ok()) {
+					log::debug("Badge request succeeded");
+
+					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+
+					if (jsonRes.isArray()) {
+						log::debug("Received badge request result");
+
+						jsonRes = jsonRes.asArray().unwrap();
+
+						for (const auto& item : jsonRes) {
+							auto fileName = item["name"].asString().unwrapOr("undefined");
+							log::debug("Item {}", fileName);
+						};
+						
+						log::debug("All badges received");
+
+						getThisMod->setSavedValue("passed-first-time-load", true);
+					} else {
+						log::error("Unexpected badge request result returned");
+					};
+				} else {
+					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr("undefined"));
+					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch Avalanche badges", NotificationIcon::Error, 2.5f)->show();
+				};
+			}
+			else if (web::WebProgress *p = e->getProgress())
+			{
+				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
+			}
+			else if (e->isCancelled())
+			{
+				log::error("Badge web request failed");
+				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
+			}; });
+
+	// send the web request
+	auto fullReq = web::WebRequest();
+	fullReq.userAgent("Avalanche Index mod for Geode");
+	fullReq.timeout(std::chrono::seconds(30));
+	fullBadgesListRequest.setFilter(fullReq.get("https://api.github.com/repos/CubicCommunity/WebLPS/contents/data/publicBadges/"));
+};
 
 // creates badge button
 void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
@@ -123,7 +175,8 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 							  {
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
-				std::string avalWebResUnwr = avalReqRes->string().unwrapOr("404: Not Found");
+				if (avalReqRes->ok()) {
+					std::string avalWebResUnwr = avalReqRes->string().unwrapOr("undefined");
 
                 if (avalWebResUnwr.c_str() == cacheStd.c_str()) {
                     log::debug("Badge for user of ID {} up-to-date", (int)itemID);
@@ -144,6 +197,9 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 
 				// save the user id if its set to only check once per web
 				if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(search);
+				} else {
+					log::error("User does not have badge data");
+				};
 			}
 			else if (web::WebProgress *p = e->getProgress())
 			{
@@ -157,6 +213,8 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 
 		// send the web request
 		auto avalReq = web::WebRequest();
+		avalReq.userAgent("Avalanche Index mod for Geode");
+		avalReq.timeout(std::chrono::seconds(15));
 		avalBadgeRequest.setFilter(avalReq.get(fmt::format("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges/{}.txt", (int)itemID)));
 	};
 
@@ -563,7 +621,7 @@ class $modify(Menu, MenuLayer)
 				m_fields->avalBtnMark->setID("notifMark"_spr);
 				m_fields->avalBtnMark->setScale(0.5f);
 				m_fields->avalBtnMark->ignoreAnchorPointForPosition(false);
-				m_fields->avalBtnMark->setPosition({avalBtn->getScaledContentWidth(), avalBtn->getScaledContentHeight()});
+				m_fields->avalBtnMark->setPosition({avalBtn->getScaledContentWidth() * 0.875f, avalBtn->getScaledContentHeight() * 0.875f});
 				m_fields->avalBtnMark->setAnchorPoint({0.5f, 0.5f});
 				m_fields->avalBtnMark->setVisible(false);
 
@@ -618,6 +676,18 @@ class $modify(Menu, MenuLayer)
 			else
 			{
 				log::error("Avalanche featured project button disabled");
+			};
+
+			auto notFirstTime = getThisMod->getSavedValue<bool>("passed-first-time-load");
+
+			if (notFirstTime)
+			{
+				log::debug("User has loaded this mod before");
+			}
+			else
+			{
+				log::debug("User has not loaded this mod before, fetching current list of badges...");
+				initialScan();
 			};
 
 			return true;

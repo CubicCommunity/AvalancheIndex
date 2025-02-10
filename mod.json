@@ -105,16 +105,6 @@
 			"type": "bool",
 			"default": true
 		},
-		"discord": {
-			"name": "Discord Rich Presence",
-			"description": "Set your rich presence on <cb>Discord</c> to include details about <cl>Avalanche</c> <cy>team projects</c>.",
-			"type": "bool",
-			"default": false,
-			"platforms": [
-				"win",
-				"mac"
-			]
-		},
 		"err-notifs": {
 			"name": "Web Error Notifications",
 			"description": "Display a notification when the badge web request fails.",

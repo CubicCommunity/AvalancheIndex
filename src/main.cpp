@@ -46,56 +46,6 @@ EventListener<web::WebTask> fullBadgesListRequest;
 // if the server was checked for the new avalanche project :O
 bool pinged = false;
 
-// gets all badges when the mod is loaded for the first time
-void initialScan()
-{
-	fullBadgesListRequest.bind([](web::WebTask::Event *e)
-							   {
-			if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok()) {
-					log::debug("Badge request succeeded");
-
-					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
-
-					if (jsonRes.isArray()) {
-						log::debug("Received badge request result");
-
-						jsonRes = jsonRes.asArray().unwrap();
-
-						for (const auto& item : jsonRes) {
-							auto fileName = item["name"].asString().unwrapOr("undefined");
-							log::debug("Item {}", fileName);
-						};
-						
-						log::debug("All badges received");
-
-						getThisMod->setSavedValue("passed-first-time-load", true);
-					} else {
-						log::error("Unexpected badge request result returned");
-					};
-				} else {
-					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr("undefined"));
-					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch Avalanche badges", NotificationIcon::Error, 2.5f)->show();
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::error("Badge web request failed");
-				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
-			}; });
-
-	// send the web request
-	auto fullReq = web::WebRequest();
-	fullReq.userAgent("Avalanche Index mod for Geode");
-	fullReq.timeout(std::chrono::seconds(30));
-	fullBadgesListRequest.setFilter(fullReq.get("https://api.github.com/repos/CubicCommunity/WebLPS/contents/data/publicBadges/"));
-};
-
 // creates badge button
 void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
 {
@@ -158,7 +108,8 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	{
 		if (element == search)
 		{
-			// set the bool as the mod setting's value
+			// set the bool if the user was checked
+			// stays false if "check once" setting is also false in order to always check the server
 			checked = getThisMod->getSettingValue<bool>("web-once");
 			break;
 		};
@@ -229,6 +180,62 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	{
 		setUserBadge(cacheStd, cell_menu, comment, size, pointer);
 	};
+};
+
+// gets all badges when the mod is loaded for the first time
+void initialScan()
+{
+	fullBadgesListRequest.bind([](web::WebTask::Event *e)
+							   {
+			if (web::WebResponse *avalReqRes = e->getValue())
+			{
+				if (avalReqRes->ok()) {
+					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+
+					if (jsonRes.isArray()) {
+						auto users = jsonRes.asArray().unwrap();
+
+						CCMenu *fakeMenu = nullptr;
+						CCLabelBMFont *fakeComment = nullptr;
+
+						for (const auto& item : users) {
+							auto fileName = item["name"].asString().unwrapOr("undefined");
+
+							std::size_t last_dot = fileName.find_last_of('.');
+
+						    if (last_dot != std::string::npos) {
+    						    fileName = fileName.substr(0, last_dot);
+    						};
+
+    						int id = std::stoi(fileName);
+
+							scanForUserBadge(fakeMenu, fakeComment, 0.f, nullptr, id);
+						};
+
+						getThisMod->setSavedValue("passed-first-time-load", true);
+					} else {
+						log::error("Unexpected badge request result returned");
+					};
+				} else {
+					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr("undefined"));
+					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
+				};
+			}
+			else if (web::WebProgress *p = e->getProgress())
+			{
+				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
+			}
+			else if (e->isCancelled())
+			{
+				log::error("Badge web request failed");
+				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
+			}; });
+
+	// send the web request
+	auto fullReq = web::WebRequest();
+	fullReq.userAgent("Avalanche Index mod for Geode");
+	fullReq.timeout(std::chrono::seconds(30));
+	fullBadgesListRequest.setFilter(fullReq.get("https://api.github.com/repos/CubicCommunity/WebLPS/contents/data/publicBadges/"));
 };
 
 class $modify(Profile, ProfilePage)
@@ -380,6 +387,10 @@ class $modify(LevelInfo, LevelInfoLayer)
 			auto bg = this->getChildByID("background");
 			auto background = as<CCSprite *>(bg);
 
+			// get
+			auto nameText = this->getChildByID("title-label");
+			auto levelName = as<CCLabelBMFont *>(nameText);
+
 			// whether or not display for classics only
 			bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
@@ -413,21 +424,9 @@ class $modify(LevelInfo, LevelInfoLayer)
 					}
 					else
 					{
-						LevelInfo::setTeamDisplay(background);
+						LevelInfo::setTeamDisplay(background, levelName);
 					};
 				};
-
-				// // discord rpc for viewing team levels (not working cuz of the rpc mod)
-				// #if defined(GEODE_IS_WINDOWS) || defined(GEODE_IS_MACOS)
-				// #include <techstudent10.discord_rich_presence/include/CustomPresense.hpp>
-
-				// 				using namespace gdrpc;
-
-				// 				if (getThisLoader->isModLoaded("techstudent10.discord_rich_presence") && getThisMod->getSettingValue<bool>("discord"))
-				// 				{
-				// 					GDRPC::updateDiscordRP("Viewing Avalanche level");
-				// 				};
-				// #endif
 			};
 
 			return true;
@@ -443,7 +442,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 		background->setColor({70, 77, 117});
 	};
 
-	void setTeamDisplay(CCSprite *background)
+	void setTeamDisplay(CCSprite *background, CCLabelBMFont *levelName)
 	{
 		auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
 		bgSprite->setColor({66, 94, 255});
@@ -468,6 +467,14 @@ class $modify(LevelInfo, LevelInfoLayer)
 		background->setColor({66, 94, 255});
 		background->setZOrder(-5);
 
+		auto levelNameOgWidth = levelName->getScaledContentWidth();
+
+		levelName->setFntFile("gjFont59.fnt");
+
+		auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
+
+		levelName->setScale(levelName->getScale() * scaleDownBy);
+
 		this->addChild(bgSprite);
 		this->addChild(bgThumbnail);
 	};
@@ -486,10 +493,14 @@ class $modify(Level, LevelCell)
 		// get main bg color layer
 		auto color = this->getChildByType<CCLayerColor>(0);
 
+		// get level name text
+		auto nameText = m_mainLayer->getChildByID("level-name");
+		auto levelName = as<CCLabelBMFont *>(nameText);
+
 		// whether or not display for classics only
 		bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
-		if (color)
+		if (color && levelName)
 		{
 			auto levelType = scanForLevelCreator(level);
 
@@ -521,7 +532,7 @@ class $modify(Level, LevelCell)
 					}
 					else
 					{
-						Level::setTeamDisplay(color);
+						Level::setTeamDisplay(color, levelName);
 					};
 				};
 			};
@@ -532,31 +543,39 @@ class $modify(Level, LevelCell)
 		};
 	};
 
-	void setSoloDisplay(CCLayerColor *color)
+	void setSoloDisplay(CCLayerColor *colorNode)
 	{
 		auto newColor = CCLayerColor::create({70, 77, 117, 255});
-		newColor->setScaledContentSize(color->getScaledContentSize());
-		newColor->setAnchorPoint(color->getAnchorPoint());
-		newColor->setPosition(color->getPosition());
-		newColor->setZOrder(color->getZOrder() - 2);
-		newColor->setScale(color->getScale());
+		newColor->setScaledContentSize(colorNode->getScaledContentSize());
+		newColor->setAnchorPoint(colorNode->getAnchorPoint());
+		newColor->setPosition(colorNode->getPosition());
+		newColor->setZOrder(colorNode->getZOrder() - 2);
+		newColor->setScale(colorNode->getScale());
 		newColor->setID("solo_color"_spr);
 
-		color->removeMeAndCleanup();
+		colorNode->removeMeAndCleanup();
 		this->addChild(newColor);
 	};
 
-	void setTeamDisplay(CCLayerColor *color)
+	void setTeamDisplay(CCLayerColor *colorNode, CCLabelBMFont *levelName)
 	{
 		auto newColor = CCLayerColor::create({66, 94, 255, 255});
-		newColor->setScaledContentSize(color->getScaledContentSize());
-		newColor->setAnchorPoint(color->getAnchorPoint());
-		newColor->setPosition(color->getPosition());
-		newColor->setZOrder(color->getZOrder() - 2);
-		newColor->setScale(color->getScale());
+		newColor->setScaledContentSize(colorNode->getScaledContentSize());
+		newColor->setAnchorPoint(colorNode->getAnchorPoint());
+		newColor->setPosition(colorNode->getPosition());
+		newColor->setZOrder(colorNode->getZOrder() - 2);
+		newColor->setScale(colorNode->getScale());
 		newColor->setID("team_color"_spr);
 
-		color->removeMeAndCleanup();
+		auto levelNameOgWidth = levelName->getScaledContentWidth();
+
+		levelName->setFntFile("gjFont59.fnt");
+
+		auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
+
+		levelName->setScale(levelName->getScale() * scaleDownBy);
+
+		colorNode->removeMeAndCleanup();
 		this->addChild(newColor);
 	};
 };

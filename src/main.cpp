@@ -503,6 +503,7 @@ class $modify(Level, LevelCell)
 	};
 };
 
+// everything to do with the avalanche featured project button pretty much
 class $modify(Menu, MenuLayer)
 {
 	struct Fields
@@ -631,7 +632,7 @@ class $modify(Menu, MenuLayer)
 	vanilla functions
 	*/
 
-	void onDaily(CCObject * sender)
+	void onDaily(CCObject *sender)
 	{
 		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 
@@ -643,7 +644,7 @@ class $modify(Menu, MenuLayer)
 		MenuLayer::onDaily(sender);
 	};
 
-	void onStats(CCObject * sender)
+	void onStats(CCObject *sender)
 	{
 		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 
@@ -655,7 +656,7 @@ class $modify(Menu, MenuLayer)
 		MenuLayer::onStats(sender);
 	};
 
-	void onMyProfile(CCObject * sender)
+	void onMyProfile(CCObject *sender)
 	{
 		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 
@@ -667,7 +668,7 @@ class $modify(Menu, MenuLayer)
 		MenuLayer::onMyProfile(sender);
 	};
 
-	void onOptions(CCObject * sender)
+	void onOptions(CCObject *sender)
 	{
 		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 
@@ -683,10 +684,15 @@ class $modify(Menu, MenuLayer)
 	mod functions
 	*/
 
+	// pings the server to check if a new project is available
 	void onCheckForNewAval(CCObject *sender)
 	{
-		m_fields->avalWebListener.bind([this](web::WebTask::Event *e)
-									   {
+		bool avalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
+
+		if (avalButton)
+		{
+			m_fields->avalWebListener.bind([this](web::WebTask::Event *e)
+										   {
 				if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
@@ -720,10 +726,16 @@ class $modify(Menu, MenuLayer)
 				log::debug("The Project Code request was cancelled... So sad :(");
 			}; });
 
-		auto avalReq = web::WebRequest();
-		m_fields->avalWebListener.setFilter(avalReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/code.txt"));
+			auto avalReq = web::WebRequest();
+			m_fields->avalWebListener.setFilter(avalReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/code.txt"));
+		}
+		else
+		{
+			log::error("Avalanche featured project button disabled");
+		};
 	};
 
+	// shows the popup when pressing the avalanche button
 	void onAvalFeaturedButton(CCObject *)
 	{
 		AvalancheFeatured::create()->show();

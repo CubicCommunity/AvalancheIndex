@@ -19,7 +19,7 @@ https://github.com/cdc-sys/level-thumbs-mod
 
 using namespace geode::prelude;
 
-void AvalancheFeatured::openApplicationPopup(CCObject *sender)
+void AvalancheFeatured::openApplicationPopup(CCObject *)
 {
   createQuickPopup(
       "Learn More",
@@ -187,8 +187,6 @@ bool AvalancheFeatured::setup()
   }
   else
   {
-    std::string thumbURL = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png";
-
     auto reqThumb = web::WebRequest();
 
     m_downloadListener.bind([this](web::WebTask::Event *e)
@@ -215,7 +213,7 @@ bool AvalancheFeatured::setup()
             };
         }; });
 
-    auto downloadTask = reqThumb.get(thumbURL);
+    auto downloadTask = reqThumb.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png");
     m_downloadListener.setFilter(downloadTask);
   };
 

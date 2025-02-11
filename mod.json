@@ -42,7 +42,7 @@
 	},
 	"settings": {
 		"display": {
-			"name": "Index",
+			"name": "Functionality",
 			"description": "Customize what the index does.",
 			"type": "title"
 		},
@@ -58,6 +58,12 @@
 			"type": "bool",
 			"default": true
 		},
+		"comments": {
+			"name": "Comment Text Color",
+			"description": "Customize the text color for team members' comments.",
+			"type": "bool",
+			"default": true
+		},
 		"solo-cells": {
 			"name": "Solo Level Cells",
 			"description": "Highlight level cells for <co>team members' solo levels</c>.",
@@ -67,12 +73,6 @@
 		"solo-layers": {
 			"name": "Solo Level Pages",
 			"description": "Customize level pages for <co>team members' solo levels</c>.",
-			"type": "bool",
-			"default": true
-		},
-		"comments": {
-			"name": "Comment Text Color",
-			"description": "Customize the text color for team members' comments.",
 			"type": "bool",
 			"default": true
 		},

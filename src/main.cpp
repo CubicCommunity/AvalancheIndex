@@ -43,7 +43,7 @@ std::vector<std::string> checkedUsers;
 EventListener<web::WebTask> avalBadgeRequest;
 EventListener<web::WebTask> fullBadgesListRequest;
 
-// if the server was checked for the new avalanche project :O
+// if the server was already checked for the new avalanche project :O
 bool pinged = false;
 
 // creates badge button
@@ -192,30 +192,16 @@ void initialScan()
 				if (avalReqRes->ok()) {
 					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
-					if (jsonRes.isArray()) {
-						auto users = jsonRes.asArray().unwrap();
+						for (auto& [key, value] : jsonRes) {
+							std::string id = key;
+							std::string badge = value.asString().unwrapOr("undefined");
 
-						CCMenu *fakeMenu = nullptr;
-						CCLabelBMFont *fakeComment = nullptr;
+							getThisMod->setSavedValue(fmt::format("cache-badge-u{}", id), badge);
 
-						for (const auto& item : users) {
-							auto fileName = item["name"].asString().unwrapOr("undefined");
-
-							std::size_t last_dot = fileName.find_last_of('.');
-
-						    if (last_dot != std::string::npos) {
-    						    fileName = fileName.substr(0, last_dot);
-    						};
-
-    						int id = std::stoi(fileName);
-
-							scanForUserBadge(fakeMenu, fakeComment, 0.f, nullptr, id);
+							if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(id);
 						};
 
 						getThisMod->setSavedValue("passed-first-time-load", true);
-					} else {
-						log::error("Unexpected badge request result returned");
-					};
 				} else {
 					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr("undefined"));
 					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
@@ -235,7 +221,7 @@ void initialScan()
 	auto fullReq = web::WebRequest();
 	fullReq.userAgent("Avalanche Index mod for Geode");
 	fullReq.timeout(std::chrono::seconds(30));
-	fullBadgesListRequest.setFilter(fullReq.get("https://api.github.com/repos/CubicCommunity/WebLPS/contents/data/publicBadges/"));
+	fullBadgesListRequest.setFilter(fullReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges.json"));
 };
 
 class $modify(Profile, ProfilePage)

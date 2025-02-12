@@ -29,7 +29,7 @@ void AvalancheFeatured::openApplicationPopup(CCObject *)
       {
         if (btn2)
         {
-          CCApplication::sharedApplication()->openURL("https://cubiccommunity.github.io/WebLPS/aval-project/");
+          CCApplication::sharedApplication()->openURL("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
         };
       });
 };
@@ -58,7 +58,7 @@ void AvalancheFeatured::infoPopup(CCObject *)
       {
         if (btn2)
         {
-          web::openLinkInBrowser("https://cubiccommunity.github.io/WebLPS/apply/");
+          web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/apply/");
         };
       });
 };

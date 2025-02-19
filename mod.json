@@ -76,6 +76,12 @@
 			"type": "bool",
 			"default": true
 		},
+		"classic-only": {
+			"name": "Only Classic Levels",
+			"description": "Display highlight color exclusively on <cg>classic</c> <cy>solo levels</c>.",
+			"type": "bool",
+			"default": true
+		},
 		"team-cells": {
 			"name": "Team Project Cells",
 			"description": "Highlight level cells for <cy>team projects</c>.",
@@ -85,12 +91,6 @@
 		"team-layers": {
 			"name": "Team Project Pages",
 			"description": "Customize level pages for <cy>team projects</c>.",
-			"type": "bool",
-			"default": true
-		},
-		"classic-only": {
-			"name": "Only Classic Levels",
-			"description": "Display highlight color exclusively on <cg>classic</c> <cy>solo levels</c>.",
 			"type": "bool",
 			"default": true
 		},

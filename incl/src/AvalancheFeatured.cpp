@@ -245,7 +245,7 @@ void AvalancheFeatured::onDownloadFinished(CCSprite *image)
 void AvalancheFeatured::onDownloadFail()
 {
   // @geode-ignore(unknown-resource)
-  CCSprite *image = CCSprite::create("thumbnail_unavailable.png"_spr);
+  CCSprite *image = CCSprite::create("unavailable.png"_spr);
   float scale = m_maxHeight / image->getContentSize().height;
 
   image->setScale(scale);

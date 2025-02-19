@@ -15,6 +15,7 @@ public:
 
     static CCParticleSystemQuad *createAvalFeaturedParticles(int maxParticles)
     {
+        // @geode-ignore(unknown-resource)
         auto dict = CCDictionary::createWithContentsOfFileThreadSafe("dragEffect.plist");
 
         if (dict)

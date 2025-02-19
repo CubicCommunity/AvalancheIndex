@@ -19,8 +19,8 @@
 	],
 	"links": {
 		"source": "https://www.github.com/CubicCommunity/AvalancheIndex/",
-		"community": "https://www.dsc.gg/cubic",
-		"homepage": "https://avalanche.cubicstudios.xyz/"
+		"homepage": "https://avalanche.cubicstudios.xyz/",
+		"community": "https://www.dsc.gg/cubic"
 	},
 	"issues": {
 		"info": "You may report issues with the mod in the AvalancheIndex repository.",
@@ -37,7 +37,7 @@
 		]
 	},
 	"dependencies": {
-		"geode.node-ids": ">=1.19.0",
+		"geode.node-ids": ">=1.20.0",
 		"jouca.badgesapi": ">=1.2.0"
 	},
 	"settings": {
@@ -130,5 +130,6 @@
 			"enable-if-description": "The Featured Project button must be enabled to use this setting.",
 			"default": false
 		}
-	}
+	},
+	"early-load": false
 }

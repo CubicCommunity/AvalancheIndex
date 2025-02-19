@@ -36,6 +36,12 @@ auto getThisLoader = geode::Loader::get();
 // avalanche projects account
 int projectAccount = 31079132;
 
+// error string
+std::string und = "undefined";
+
+// avalanche data url
+std::string remoteBadgeDataURL = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges.json";
+
 // array for ppl who've been checked
 std::vector<std::string> checkedUsers;
 
@@ -44,7 +50,49 @@ EventListener<web::WebTask> avalBadgeRequest;
 EventListener<web::WebTask> fullBadgesListRequest;
 
 // if the server was already checked for the new avalanche project :O
-bool pinged = false;
+bool pingedProjectData = false;
+
+// gets all badges when the mod is loaded for the first time
+void initialScan()
+{
+	fullBadgesListRequest.bind([](web::WebTask::Event *e)
+							   {
+			if (web::WebResponse *avalReqRes = e->getValue())
+			{
+				if (avalReqRes->ok()) {
+					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+
+						for (auto& [key, value] : jsonRes) {
+							std::string id = key;
+							std::string badge = value.asString().unwrapOr(und);
+
+							getThisMod->setSavedValue(fmt::format("cache-badge-u{}", id), badge);
+
+							if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(id);
+						};
+
+						getThisMod->setSavedValue("passed-first-time-load", true);
+				} else {
+					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
+					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
+				};
+			}
+			else if (web::WebProgress *p = e->getProgress())
+			{
+				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
+			}
+			else if (e->isCancelled())
+			{
+				log::error("Badge web request failed");
+				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
+			}; });
+
+	// send the web request
+	auto fullReq = web::WebRequest();
+	fullReq.userAgent("Avalanche Index mod for Geode");
+	fullReq.timeout(std::chrono::seconds(30));
+	fullBadgesListRequest.setFilter(fullReq.get(remoteBadgeDataURL));
+};
 
 // creates badge button
 void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
@@ -127,7 +175,10 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				if (avalReqRes->ok()) {
-					std::string avalWebResUnwr = avalReqRes->string().unwrapOr("undefined");
+					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+					auto strId = std::to_string(itemID);
+
+					auto avalWebResUnwr = jsonRes[strId].asString().unwrapOr(und);
 
                 if (avalWebResUnwr.c_str() == cacheStd.c_str()) {
                     log::debug("Badge for user of ID {} up-to-date", (int)itemID);
@@ -166,7 +217,7 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 		auto avalReq = web::WebRequest();
 		avalReq.userAgent("Avalanche Index mod for Geode");
 		avalReq.timeout(std::chrono::seconds(15));
-		avalBadgeRequest.setFilter(avalReq.get(fmt::format("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges/{}.txt", (int)itemID)));
+		avalBadgeRequest.setFilter(avalReq.get(remoteBadgeDataURL));
 	};
 
 	// checks the map with the cache as a key to see if its invalid
@@ -180,48 +231,6 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	{
 		setUserBadge(cacheStd, cell_menu, comment, size, pointer);
 	};
-};
-
-// gets all badges when the mod is loaded for the first time
-void initialScan()
-{
-	fullBadgesListRequest.bind([](web::WebTask::Event *e)
-							   {
-			if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok()) {
-					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
-
-						for (auto& [key, value] : jsonRes) {
-							std::string id = key;
-							std::string badge = value.asString().unwrapOr("undefined");
-
-							getThisMod->setSavedValue(fmt::format("cache-badge-u{}", id), badge);
-
-							if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(id);
-						};
-
-						getThisMod->setSavedValue("passed-first-time-load", true);
-				} else {
-					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr("undefined"));
-					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::error("Badge web request failed");
-				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
-			}; });
-
-	// send the web request
-	auto fullReq = web::WebRequest();
-	fullReq.userAgent("Avalanche Index mod for Geode");
-	fullReq.timeout(std::chrono::seconds(30));
-	fullBadgesListRequest.setFilter(fullReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges.json"));
 };
 
 class $modify(Profile, ProfilePage)
@@ -656,11 +665,11 @@ class $modify(Menu, MenuLayer)
 				{
 					Menu::onCheckForNewAval(nullptr);
 				}
-				else if (!pinged)
+				else if (!pingedProjectData)
 				{
 					Menu::onCheckForNewAval(nullptr);
 
-					pinged = true;
+					pingedProjectData = true;
 				}
 				else
 				{

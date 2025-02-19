@@ -213,6 +213,7 @@ bool AvalancheFeatured::setup()
             };
         }; });
 
+    // @geode-ignore(unknown-resource)
     auto downloadTask = reqThumb.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png");
     m_downloadListener.setFilter(downloadTask);
   };
@@ -243,7 +244,7 @@ void AvalancheFeatured::onDownloadFinished(CCSprite *image)
 
 void AvalancheFeatured::onDownloadFail()
 {
-  // thanks for the image cvolton ;)
+  // @geode-ignore(unknown-resource)
   CCSprite *image = CCSprite::create("thumbnail_unavailable.png"_spr);
   float scale = m_maxHeight / image->getContentSize().height;
 

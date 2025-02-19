@@ -120,7 +120,8 @@
 			"name": "Check Badges Once",
 			"description": "Only send one web request to check a user's badge, instead of checking as much as the rate limit supports.",
 			"type": "bool",
-			"default": true
+			"default": true,
+			"requires-restart": true
 		},
 		"check-aval": {
 			"name": "Frequent Checks For New Project",

@@ -11,7 +11,7 @@ public:
     // public class for avalanche featured button particles
     // have fun playing around with these particles cheeseworks :D
 
-    // thank u !!! :]
+    // thank u arcticwoof senpai !!! :]
 
     static CCParticleSystemQuad *createAvalFeaturedParticles(int maxParticles)
     {

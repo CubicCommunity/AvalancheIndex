@@ -39,11 +39,11 @@ int projectAccount = 31079132;
 // error string
 std::string und = "undefined";
 
+// saved json of badge data
+matjson::Value fetchedBadges = nullptr;
+
 // avalanche data url
 std::string remoteBadgeDataURL = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges.json";
-
-// array for ppl who've been checked
-std::vector<std::string> checkedUsers;
 
 // for fetching badges remotely
 EventListener<web::WebTask> avalBadgeRequest;
@@ -67,8 +67,6 @@ void initialScan()
 							std::string badge = value.asString().unwrapOr(und);
 
 							getThisMod->setSavedValue(fmt::format("cache-badge-u{}", id), badge);
-
-							if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(id);
 						};
 
 						getThisMod->setSavedValue("passed-first-time-load", true);
@@ -152,15 +150,28 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 	std::string search = std::to_string(itemID);
 	bool checked = false;
 
-	for (const auto &element : checkedUsers)
+	if (fetchedBadges != nullptr)
 	{
-		if (element == search)
+		std::string res = fetchedBadges[search].asString().unwrapOr("undefined");
+
+		// check if badge map key is invalid
+		bool failed = Badges::badgeSpriteName[res].empty();
+
+		if (failed)
 		{
-			// set the bool if the user was checked
-			// stays false if "check once" setting is also false in order to always check the server
+			log::error("Badge of ID '{}' failed validation test", res.c_str());
+		}
+		else
+		{
+			getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), res);
+
+			cacheStd = res;
 			checked = getThisMod->getSettingValue<bool>("web-once");
-			break;
 		};
+	}
+	else
+	{
+		log::warn("Badge data not yet remotely fetched");
 	};
 
 	if (checked)
@@ -177,6 +188,8 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 				if (avalReqRes->ok()) {
 					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 					auto strId = std::to_string(itemID);
+
+					if (getThisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
 
 					auto avalWebResUnwr = jsonRes[strId].asString().unwrapOr(und);
 
@@ -196,9 +209,6 @@ void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, aut
 					
 					getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), avalWebResUnwr);
                 };
-
-				// save the user id if its set to only check once per web
-				if (getThisMod->getSettingValue<bool>("web-once")) checkedUsers.push_back(search);
 				} else {
 					log::error("User does not have badge data");
 				};
@@ -768,7 +778,7 @@ class $modify(Menu, MenuLayer)
 	mod functions
 	*/
 
-	// pings the server to check if a new project is available
+	// pings the server to check if a new aval project is available
 	void onCheckForNewAval(CCObject *sender)
 	{
 		bool avalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
@@ -779,7 +789,9 @@ class $modify(Menu, MenuLayer)
 										   {
 				if (web::WebResponse *avalReqRes = e->getValue())
 			{
-				std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
+				if (avalReqRes->ok())
+				{
+					std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
 				std::string avalWebResultSaved = getThisMod->getSavedValue<std::string>("aval-project-code");
 
 				bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
@@ -800,14 +812,21 @@ class $modify(Menu, MenuLayer)
 				};
 
 				getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
+				}
+				else
+				{
+					log::error("Unable to check server for new Avalanche featured project");
+					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+				};
 			}
 			else if (web::WebProgress *p = e->getProgress())
 			{
-				log::debug("project code progress: {}", p->downloadProgress().value_or(0.f));
+				log::debug("Avalanche project code progress: {}", p->downloadProgress().value_or(0.f));
 			}
 			else if (e->isCancelled())
 			{
-				log::debug("The Project Code request was cancelled... So sad :(");
+				log::debug("Unable to check server for new Avalanche featured project");
+				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
 			}; });
 
 			auto avalReq = web::WebRequest();

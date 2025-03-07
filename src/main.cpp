@@ -26,7 +26,10 @@
 #include <Geode/binding/LevelCell.hpp>
 #include <Geode/binding/GameLevelManager.hpp>
 
+#include <geode.custom-keybinds/include/Keybinds.hpp>
+
 using namespace geode::prelude;
+using namespace keybinds;
 using namespace TeamData;
 
 // its modding time :3
@@ -47,7 +50,7 @@ std::string remoteBadgeDataURL = "https://raw.githubusercontent.com/CubicCommuni
 
 // for fetching badges remotely
 EventListener<web::WebTask> avalBadgeRequest;
-EventListener<web::WebTask> fullBadgesListRequest;
+EventListener<web::WebTask> firstBadgesListRequest;
 
 // if the server was already checked for the new avalanche project :O
 bool pingedProjectData = false;
@@ -221,6 +224,23 @@ class $modify(Profile, ProfilePage)
 			scanForUserBadge(cell_menu, fakeText, 0.875f, this, user->m_accountID);
 
 			log::debug("Viewing profile of ID {}", user->m_accountID);
+
+			this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)
+															  {
+				if (event->isDown()) {
+					std::string cacheStd = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)user->m_accountID));
+
+					bool idFailTest = Badges::badgeSpriteName[cacheStd].empty();
+
+					if (idFailTest)
+					{
+						log::debug("Badge id '{}' is invalid.", cacheStd.c_str());
+					} else {
+						getBadgeInfo(cacheStd);
+					};
+				};
+
+				return ListenerResult::Propagate; }, "k_badge-info"_spr);
 		};
 	};
 };
@@ -656,6 +676,15 @@ class $modify(Menu, MenuLayer)
 						m_fields->avalBtnMark->setVisible(false);
 					};
 				};
+
+				this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)
+																  {
+				if (event->isDown())
+				{
+					Menu::onAvalFeaturedButton(nullptr);
+				};
+
+				return ListenerResult::Propagate; }, "k_open-featured"_spr);
 			}
 			else
 			{
@@ -741,8 +770,8 @@ class $modify(Menu, MenuLayer)
 	// gets all badges when the mod is loaded for the first time
 	void initialScan()
 	{
-		fullBadgesListRequest.bind([](web::WebTask::Event *e)
-								   {
+		firstBadgesListRequest.bind([](web::WebTask::Event *e)
+									{
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				if (avalReqRes->ok()) {
@@ -777,11 +806,11 @@ class $modify(Menu, MenuLayer)
 		auto fullReq = web::WebRequest();
 		fullReq.userAgent("Avalanche Index mod for Geode");
 		fullReq.timeout(std::chrono::seconds(30));
-		fullBadgesListRequest.setFilter(fullReq.get(remoteBadgeDataURL));
+		firstBadgesListRequest.setFilter(fullReq.get(remoteBadgeDataURL));
 	};
 
 	// pings the server to check if a new aval project is available
-	void onCheckForNewAval(CCObject *sender)
+	void onCheckForNewAval(CCObject *)
 	{
 		bool avalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
 

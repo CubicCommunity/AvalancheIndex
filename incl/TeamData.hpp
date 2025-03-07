@@ -10,6 +10,8 @@ using namespace geode::prelude;
 
 namespace TeamData
 {
+    void getBadgeInfo(std::string badge_ID);
+
     enum class BadgeID
     {
         CUBIC,
@@ -47,4 +49,4 @@ namespace TeamData
     };
 };
 
-#endif // TEAMDATA_HPP
+#endif

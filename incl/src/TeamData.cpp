@@ -10,37 +10,8 @@
 using namespace geode::prelude;
 using namespace TeamData;
 
-std::map<BadgeID, std::string> Badges::badgeStringID{
-    {BadgeID::CUBIC, "cubic-studios"},
-    {BadgeID::DIRECTOR, "director"},
-    {BadgeID::MANAGER, "team-manager"},
-    {BadgeID::MEMBER, "team-member"},
-    {BadgeID::COLLABORATOR, "collaborator"},
-};
-
-std::map<std::string, std::string> Badges::badgeSpriteName{
-    {Badges::badgeStringID[BadgeID::CUBIC], "cubic-studios.png"_spr},
-    {Badges::badgeStringID[BadgeID::DIRECTOR], "director.png"_spr},
-    {Badges::badgeStringID[BadgeID::MANAGER], "team-manager.png"_spr},
-    {Badges::badgeStringID[BadgeID::MEMBER], "team-member.png"_spr},
-    {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr},
-};
-
-std::map<std::string, Color> Badges::badgeColor{
-    {Badges::badgeStringID[BadgeID::CUBIC], {10, 247, 247}},
-    {Badges::badgeStringID[BadgeID::DIRECTOR], {150, 175, 255}}, // modified to be brighter than official branding
-    {Badges::badgeStringID[BadgeID::MANAGER], {127, 148, 255}}, // modified to be brighter than official branding
-    {Badges::badgeStringID[BadgeID::MEMBER], {191, 201, 255}}, // modified to be brighter than official branding
-    {Badges::badgeStringID[BadgeID::COLLABORATOR], {200, 200, 200}},
-};
-
-// badge button event
-void Badges::onInfoBadge(CCObject *sender)
+void TeamData::getBadgeInfo(std::string badge_ID)
 {
-    // gets the node that triggered the function
-    auto nodeObject = as<CCNode *>(sender);
-    auto badge_ID = nodeObject->getID();
-
     if (badge_ID == Badges::badgeStringID[BadgeID::CUBIC])
     {
         geode::createQuickPopup(
@@ -125,4 +96,38 @@ void Badges::onInfoBadge(CCObject *sender)
                 };
             });
     };
+};
+
+std::map<BadgeID, std::string> Badges::badgeStringID{
+    {BadgeID::CUBIC, "cubic-studios"},
+    {BadgeID::DIRECTOR, "director"},
+    {BadgeID::MANAGER, "team-manager"},
+    {BadgeID::MEMBER, "team-member"},
+    {BadgeID::COLLABORATOR, "collaborator"},
+};
+
+std::map<std::string, std::string> Badges::badgeSpriteName{
+    {Badges::badgeStringID[BadgeID::CUBIC], "cubic-studios.png"_spr},
+    {Badges::badgeStringID[BadgeID::DIRECTOR], "director.png"_spr},
+    {Badges::badgeStringID[BadgeID::MANAGER], "team-manager.png"_spr},
+    {Badges::badgeStringID[BadgeID::MEMBER], "team-member.png"_spr},
+    {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr},
+};
+
+std::map<std::string, Color> Badges::badgeColor{
+    {Badges::badgeStringID[BadgeID::CUBIC], {10, 247, 247}},
+    {Badges::badgeStringID[BadgeID::DIRECTOR], {150, 175, 255}}, // modified to be brighter than official branding
+    {Badges::badgeStringID[BadgeID::MANAGER], {127, 148, 255}},  // modified to be brighter than official branding
+    {Badges::badgeStringID[BadgeID::MEMBER], {191, 201, 255}},   // modified to be brighter than official branding
+    {Badges::badgeStringID[BadgeID::COLLABORATOR], {200, 200, 200}},
+};
+
+// badge button event
+void Badges::onInfoBadge(CCObject *sender)
+{
+    // gets the node that triggered the function
+    auto nodeObject = as<CCNode *>(sender);
+    auto badge_ID = nodeObject->getID();
+
+    TeamData::getBadgeInfo(badge_ID);
 };

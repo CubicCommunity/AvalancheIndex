@@ -12,7 +12,7 @@
 	"developers": [
 		"Cheeseworks"
 	],
-	"description": "Avalanche-associated accounts and levels.",
+	"description": "Official Avalanche levels and profiles.",
 	"tags": [
 		"online",
 		"enhancement"
@@ -29,11 +29,6 @@
 	"resources": {
 		"sprites": [
 			"resources/*.png"
-		]
-	},
-	"api": {
-		"include": [
-			"incl/*.hpp"
 		]
 	},
 	"dependencies": {

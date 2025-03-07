@@ -1,6 +1,6 @@
-#include "../incl/TeamData.hpp"
-#include "../incl/ParticleHelper.hpp"
-#include "../incl/AvalancheFeatured.hpp"
+#include "./headers/TeamData.hpp"
+#include "./headers/ParticleHelper.hpp"
+#include "./headers/AvalancheFeatured.hpp"
 
 #include <string>
 #include <vector>
@@ -25,6 +25,7 @@
 #include <Geode/binding/LevelInfoLayer.hpp>
 #include <Geode/binding/LevelCell.hpp>
 #include <Geode/binding/GameLevelManager.hpp>
+#include <Geode/binding/PlatformToolbox.hpp>
 
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 
@@ -240,7 +241,7 @@ class $modify(Profile, ProfilePage)
 					};
 				};
 
-				return ListenerResult::Propagate; }, "k_badge-info"_spr);
+				return ListenerResult::Propagate; }, "badge-info"_spr);
 		};
 	};
 };
@@ -677,6 +678,15 @@ class $modify(Menu, MenuLayer)
 					};
 				};
 
+				if (PlatformToolbox::isControllerConnected())
+				{
+					auto label = ControllerBind::create(CONTROLLER_Up)->createLabel();
+					label->setScale(0.5);
+					label->setPosition({avalBtn->getScaledContentWidth() / 2, 0});
+
+					avalBtn->addChild(label);
+				};
+
 				this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)
 																  {
 				if (event->isDown())
@@ -684,7 +694,7 @@ class $modify(Menu, MenuLayer)
 					Menu::onAvalFeaturedButton(nullptr);
 				};
 
-				return ListenerResult::Propagate; }, "k_open-featured"_spr);
+				return ListenerResult::Propagate; }, "open-featured"_spr);
 			}
 			else
 			{

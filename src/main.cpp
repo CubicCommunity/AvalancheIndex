@@ -680,11 +680,12 @@ class $modify(Menu, MenuLayer)
 
 				if (PlatformToolbox::isControllerConnected())
 				{
-					auto label = ControllerBind::create(CONTROLLER_Up)->createLabel();
-					label->setScale(0.5);
-					label->setPosition({avalBtn->getScaledContentWidth() / 2, 0});
+					auto controller_label = ControllerBind::create(CONTROLLER_Up)->createLabel();
+					controller_label->setScale(0.5);
+					controller_label->setPosition({avalMenu->getScaledContentWidth() / 2, 2.5});
+					controller_label->setZOrder(5);
 
-					avalBtn->addChild(label);
+					avalMenu->addChild(controller_label);
 				};
 
 				this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)

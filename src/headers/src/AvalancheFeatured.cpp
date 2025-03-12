@@ -16,12 +16,8 @@ https://github.com/cdc-sys/level-thumbs-mod
 
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
-#include <Geode/binding/PlatformToolbox.hpp>
-
-#include <geode.custom-keybinds/include/Keybinds.hpp>
 
 using namespace geode::prelude;
-using namespace keybinds;
 
 void AvalancheFeatured::openApplicationPopup(CCObject *)
 {
@@ -174,25 +170,6 @@ bool AvalancheFeatured::setup()
   m_infoBtn->setZOrder(3);
 
   m_buttonMenu->addChild(m_infoBtn);
-
-  if (PlatformToolbox::isControllerConnected())
-  {
-    auto controller_label = ControllerBind::create(CONTROLLER_X)->createLabel();
-    controller_label->setScale(0.75);
-    controller_label->setPosition({m_buttonMenu->getScaledContentWidth() / 2, -10});
-    controller_label->setZOrder(5);
-
-    m_buttonMenu->addChild(controller_label);
-
-    this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)
-                                                      {
-				if (event->isDown())
-				{
-					AvalancheFeatured::openApplicationPopup(nullptr);
-				};
-
-				return ListenerResult::Propagate; }, "badge-info"_spr);
-  };
 
   m_loadingCircle->setParentLayer(m_mainLayer);
   m_loadingCircle->setPosition({widthCS / 2, heightCS / 2});

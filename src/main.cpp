@@ -25,12 +25,8 @@
 #include <Geode/binding/LevelInfoLayer.hpp>
 #include <Geode/binding/LevelCell.hpp>
 #include <Geode/binding/GameLevelManager.hpp>
-#include <Geode/binding/PlatformToolbox.hpp>
-
-#include <geode.custom-keybinds/include/Keybinds.hpp>
 
 using namespace geode::prelude;
-using namespace keybinds;
 using namespace TeamData;
 
 // its modding time :3
@@ -43,8 +39,14 @@ int projectAccount = 31079132;
 // error string
 std::string und = "undefined";
 
+// if the server was already checked for the new avalanche project :O
+bool pingedProjectData = false;
+
 // saved json of badge data
 matjson::Value fetchedBadges = nullptr;
+
+// saved json of level data
+matjson::Value fetchedLevels = nullptr;
 
 // avalanche data url
 std::string remoteBadgeDataURL = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges.json";
@@ -52,9 +54,6 @@ std::string remoteBadgeDataURL = "https://raw.githubusercontent.com/CubicCommuni
 // for fetching badges remotely
 EventListener<web::WebTask> avalBadgeRequest;
 EventListener<web::WebTask> firstBadgesListRequest;
-
-// if the server was already checked for the new avalanche project :O
-bool pingedProjectData = false;
 
 // creates badge button
 void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
@@ -225,23 +224,6 @@ class $modify(Profile, ProfilePage)
 			scanForUserBadge(cell_menu, fakeText, 0.875f, this, user->m_accountID);
 
 			log::debug("Viewing profile of ID {}", user->m_accountID);
-
-			this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)
-															  {
-				if (event->isDown()) {
-					std::string cacheStd = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)user->m_accountID));
-
-					bool idFailTest = Badges::badgeSpriteName[cacheStd].empty();
-
-					if (idFailTest)
-					{
-						log::debug("Badge id '{}' is invalid.", cacheStd.c_str());
-					} else {
-						getBadgeInfo(cacheStd);
-					};
-				};
-
-				return ListenerResult::Propagate; }, "badge-info"_spr);
 		};
 	};
 };
@@ -677,25 +659,6 @@ class $modify(Menu, MenuLayer)
 						m_fields->avalBtnMark->setVisible(false);
 					};
 				};
-
-				if (PlatformToolbox::isControllerConnected())
-				{
-					auto controller_label = ControllerBind::create(CONTROLLER_Up)->createLabel();
-					controller_label->setScale(0.5);
-					controller_label->setPosition({avalMenu->getScaledContentWidth() / 2, 2.5});
-					controller_label->setZOrder(5);
-
-					avalMenu->addChild(controller_label);
-				};
-
-				this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent *event)
-																  {
-				if (event->isDown())
-				{
-					Menu::onAvalFeaturedButton(nullptr);
-				};
-
-				return ListenerResult::Propagate; }, "open-featured"_spr);
 			}
 			else
 			{

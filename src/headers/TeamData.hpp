@@ -1,32 +1,16 @@
-#ifndef TEAMDATA_HPP
-#define TEAMDATA_HPP
-
 #include <string>
 #include <map>
+
+#include "../../incl/Avalanche.hpp"
 
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
+using namespace avalanche;
 
 namespace TeamData
 {
     void getBadgeInfo(std::string badge_ID);
-
-    enum class BadgeID
-    {
-        CUBIC,
-        DIRECTOR,
-        MANAGER,
-        MEMBER,
-        COLLABORATOR,
-    };
-
-    enum class Project
-    {
-        NONE,
-        TEAM,
-        SOLO,
-    };
 
     class Color
     {
@@ -41,12 +25,10 @@ namespace TeamData
     class Badges
     {
     public:
-        static std::map<BadgeID, std::string> badgeStringID;
+        static std::map<Profile::Badge, std::string> badgeStringID;
         static std::map<std::string, std::string> badgeSpriteName;
         static std::map<std::string, Color> badgeColor;
 
         void onInfoBadge(CCObject *sender);
     };
 };
-
-#endif

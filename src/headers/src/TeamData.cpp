@@ -1,5 +1,7 @@
 #include "../TeamData.hpp"
 
+#include "../../../incl/Avalanche.hpp"
+
 #include <string>
 #include <map>
 
@@ -8,11 +10,13 @@
 #include <Geode/utils/web.hpp>
 
 using namespace geode::prelude;
+using namespace avalanche;
+
 using namespace TeamData;
 
 void TeamData::getBadgeInfo(std::string badge_ID)
 {
-    if (badge_ID == Badges::badgeStringID[BadgeID::CUBIC])
+    if (badge_ID == Badges::badgeStringID[Profile::Badge::CUBIC])
     {
         geode::createQuickPopup(
             "Cubic Studios",
@@ -26,7 +30,7 @@ void TeamData::getBadgeInfo(std::string badge_ID)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[BadgeID::DIRECTOR])
+    else if (badge_ID == Badges::badgeStringID[Profile::Badge::DIRECTOR])
     {
         geode::createQuickPopup(
             "Avalanche Director",
@@ -40,7 +44,7 @@ void TeamData::getBadgeInfo(std::string badge_ID)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[BadgeID::MANAGER])
+    else if (badge_ID == Badges::badgeStringID[Profile::Badge::MANAGER])
     {
         geode::createQuickPopup(
             "Avalanche Manager",
@@ -54,7 +58,7 @@ void TeamData::getBadgeInfo(std::string badge_ID)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[BadgeID::MEMBER])
+    else if (badge_ID == Badges::badgeStringID[Profile::Badge::MEMBER])
     {
         geode::createQuickPopup(
             "Avalanche Team Member",
@@ -68,7 +72,7 @@ void TeamData::getBadgeInfo(std::string badge_ID)
                 };
             });
     }
-    else if (badge_ID == Badges::badgeStringID[BadgeID::COLLABORATOR])
+    else if (badge_ID == Badges::badgeStringID[Profile::Badge::COLLABORATOR])
     {
         geode::createQuickPopup(
             "Team Collaborator",
@@ -98,28 +102,28 @@ void TeamData::getBadgeInfo(std::string badge_ID)
     };
 };
 
-std::map<BadgeID, std::string> Badges::badgeStringID{
-    {BadgeID::CUBIC, "cubic-studios"},
-    {BadgeID::DIRECTOR, "director"},
-    {BadgeID::MANAGER, "team-manager"},
-    {BadgeID::MEMBER, "team-member"},
-    {BadgeID::COLLABORATOR, "collaborator"},
+std::map<Profile::Badge, std::string> Badges::badgeStringID{
+    {Profile::Badge::CUBIC, "cubic-studios"},
+    {Profile::Badge::DIRECTOR, "director"},
+    {Profile::Badge::MANAGER, "team-manager"},
+    {Profile::Badge::MEMBER, "team-member"},
+    {Profile::Badge::COLLABORATOR, "collaborator"},
 };
 
 std::map<std::string, std::string> Badges::badgeSpriteName{
-    {Badges::badgeStringID[BadgeID::CUBIC], "cubic-studios.png"_spr},
-    {Badges::badgeStringID[BadgeID::DIRECTOR], "director.png"_spr},
-    {Badges::badgeStringID[BadgeID::MANAGER], "team-manager.png"_spr},
-    {Badges::badgeStringID[BadgeID::MEMBER], "team-member.png"_spr},
-    {Badges::badgeStringID[BadgeID::COLLABORATOR], "collaborator.png"_spr},
+    {Badges::badgeStringID[Profile::Badge::CUBIC], "cubic-studios.png"_spr},
+    {Badges::badgeStringID[Profile::Badge::DIRECTOR], "director.png"_spr},
+    {Badges::badgeStringID[Profile::Badge::MANAGER], "team-manager.png"_spr},
+    {Badges::badgeStringID[Profile::Badge::MEMBER], "team-member.png"_spr},
+    {Badges::badgeStringID[Profile::Badge::COLLABORATOR], "collaborator.png"_spr},
 };
 
 std::map<std::string, Color> Badges::badgeColor{
-    {Badges::badgeStringID[BadgeID::CUBIC], {10, 247, 247}},
-    {Badges::badgeStringID[BadgeID::DIRECTOR], {150, 175, 255}}, // modified to be brighter than official branding
-    {Badges::badgeStringID[BadgeID::MANAGER], {127, 148, 255}},  // modified to be brighter than official branding
-    {Badges::badgeStringID[BadgeID::MEMBER], {191, 201, 255}},   // modified to be brighter than official branding
-    {Badges::badgeStringID[BadgeID::COLLABORATOR], {200, 200, 200}},
+    {Badges::badgeStringID[Profile::Badge::CUBIC], {10, 247, 247}},
+    {Badges::badgeStringID[Profile::Badge::DIRECTOR], {150, 175, 255}}, // modified to be brighter than official branding
+    {Badges::badgeStringID[Profile::Badge::MANAGER], {127, 148, 255}},  // modified to be brighter than official branding
+    {Badges::badgeStringID[Profile::Badge::MEMBER], {191, 201, 255}},   // modified to be brighter than official branding
+    {Badges::badgeStringID[Profile::Badge::COLLABORATOR], {200, 200, 200}},
 };
 
 // badge button event

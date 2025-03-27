@@ -1,3 +1,5 @@
+#include "../incl/Avalanche.hpp"
+
 #include "./headers/TeamData.hpp"
 #include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
@@ -27,14 +29,13 @@
 #include <Geode/binding/GameLevelManager.hpp>
 
 using namespace geode::prelude;
+using namespace avalanche;
+
 using namespace TeamData;
 
 // its modding time :3
 auto getThisMod = geode::getMod();
 auto getThisLoader = geode::Loader::get();
-
-// avalanche projects account
-int projectAccount = 31079132;
 
 // error string
 std::string und = "undefined";
@@ -42,171 +43,7 @@ std::string und = "undefined";
 // if the server was already checked for the new avalanche project :O
 bool pingedProjectData = false;
 
-// saved json of badge data
-matjson::Value fetchedBadges = nullptr;
-
-// saved json of level data
-matjson::Value fetchedLevels = nullptr;
-
-// avalanche data url
-std::string remoteBadgeDataURL = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/publicBadges.json";
-
-// for fetching badges remotely
-EventListener<web::WebTask> avalBadgeRequest;
-EventListener<web::WebTask> firstBadgesListRequest;
-
-// creates badge button
-void setUserBadge(std::string id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
-{
-	// checks the map for this value to see if its invalid
-	bool idFailTest = Badges::badgeSpriteName[id].empty();
-
-	if (idFailTest)
-	{
-		log::debug("Badge id '{}' is invalid.", id.c_str());
-	}
-	else
-	{
-		if (cell_menu != nullptr)
-		{
-			// prevent dupes
-			if (auto alreadyBadge = cell_menu->getChildByID(id))
-			{
-				alreadyBadge->removeMeAndCleanup();
-			};
-
-			// gets sprite filename
-			auto newBadge = Badges::badgeSpriteName[id].c_str();
-
-			CCSprite *badgeSprite = CCSprite::create(newBadge);
-			badgeSprite->setScale(size);
-
-			CCMenuItemSpriteExtra *badge = CCMenuItemSpriteExtra::create(
-				badgeSprite,
-				pointer,
-				menu_selector(Badges::onInfoBadge));
-			badge->setID(id);
-			badge->setZOrder(1);
-
-			cell_menu->addChild(badge);
-			cell_menu->updateLayout();
-		};
-
-		if (comment != nullptr)
-		{
-			Color col = Badges::badgeColor[id];
-
-			comment->setColor({col.red, col.green, col.blue});
-			comment->setOpacity(255);
-		};
-	};
-};
-
-// attempts to fetch badge locally and remotely
-void scanForUserBadge(CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer, int itemID)
-{
-	// gets locally saved badge id
-	std::string cacheStd = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)itemID));
-	auto badgeCache = cacheStd.c_str();
-
-	// look for this in the list of users already checked
-	std::string search = std::to_string(itemID);
-	bool checked = false;
-
-	if (fetchedBadges != nullptr)
-	{
-		std::string res = fetchedBadges[search].asString().unwrapOr("undefined");
-
-		// check if badge map key is invalid
-		bool failed = Badges::badgeSpriteName[res].empty();
-
-		if (failed)
-		{
-			log::error("Badge of ID '{}' failed validation test", res.c_str());
-		}
-		else
-		{
-			getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), res);
-
-			cacheStd = res;
-			checked = getThisMod->getSettingValue<bool>("web-once");
-		};
-	}
-	else
-	{
-		log::warn("Badge data not yet remotely fetched");
-	};
-
-	if (checked)
-	{
-		log::error("Badge for user {} already been checked. Fetching badge from cache...", (int)itemID);
-	}
-	else
-	{
-		// web request event
-		avalBadgeRequest.bind([pointer, cell_menu, comment, size, itemID, cacheStd, search](web::WebTask::Event *e)
-							  {
-			if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok()) {
-					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
-					auto strId = std::to_string(itemID);
-
-					if (getThisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
-
-					auto avalWebResUnwr = jsonRes[strId].asString().unwrapOr(und);
-
-                if (avalWebResUnwr.c_str() == cacheStd.c_str()) {
-                    log::debug("Badge for user of ID {} up-to-date", (int)itemID);
-                } else {
-					// check if badge map key is invalid
-					bool failed = Badges::badgeSpriteName[avalWebResUnwr].empty();
-                    
-					if (failed) {
-						log::error("Badge of ID '{}' failed validation test", avalWebResUnwr.c_str());
-					} else {
-                    	if (cell_menu != nullptr && pointer != nullptr) {
-							setUserBadge(avalWebResUnwr, cell_menu, comment, size, pointer);
-						};
-					};
-					
-					getThisMod->setSavedValue(fmt::format("cache-badge-u{}", (int)itemID), avalWebResUnwr);
-                };
-				} else {
-					log::error("User does not have badge data");
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::error("Badge web request failed");
-				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
-			}; });
-
-		// send the web request
-		auto avalReq = web::WebRequest();
-		avalReq.userAgent("Avalanche Index mod for Geode");
-		avalReq.timeout(std::chrono::seconds(15));
-		avalBadgeRequest.setFilter(avalReq.get(remoteBadgeDataURL));
-	};
-
-	// checks the map with the cache as a key to see if its invalid
-	bool isNotCached = Badges::badgeSpriteName[cacheStd].empty();
-
-	if (isNotCached)
-	{
-		log::error("Badge id '{}' from cache is invalid", badgeCache);
-	}
-	else
-	{
-		setUserBadge(cacheStd, cell_menu, comment, size, pointer);
-	};
-};
-
-class $modify(Profile, ProfilePage)
+class $modify(ProfilePage)
 {
 	// modified vanilla loadPageFromUserInfo function
 	void loadPageFromUserInfo(GJUserScore *user)
@@ -221,14 +58,15 @@ class $modify(Profile, ProfilePage)
 
 			CCLabelBMFont *fakeText = nullptr;
 
-			scanForUserBadge(cell_menu, fakeText, 0.875f, this, user->m_accountID);
+			Profile badgeData = Handler::GetProfile(user->m_accountID);
+			Handler::createBadge(badgeData.badge, cell_menu, fakeText, 0.875f, this);
 
 			log::debug("Viewing profile of ID {}", user->m_accountID);
 		};
 	};
 };
 
-class $modify(Comment, CommentCell)
+class $modify(CommentCell)
 {
 	// modified vanilla loadFromComment function
 	void loadFromComment(GJComment *comment)
@@ -282,7 +120,7 @@ class $modify(Comment, CommentCell)
 };
 
 // attempts to fetch badge locally to verify ownership of the level
-Project scanForLevelCreator(GJGameLevel *level)
+Project::Type scanForLevelCreator(GJGameLevel *level)
 {
 	CCMenu *fakeMenu = nullptr;
 	CCLabelBMFont *fakeText = nullptr;
@@ -290,8 +128,8 @@ Project scanForLevelCreator(GJGameLevel *level)
 	scanForUserBadge(fakeMenu, fakeText, 0.5f, fakePointer, level->m_accountID);
 
 	// get the member's badge data
-	auto cacheSolo = getThisMod->getSavedValue<std::string>(fmt::format("cache-badge-u{}", (int)level->m_accountID.value()));
-	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::COLLABORATOR]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[BadgeID::CUBIC]];
+	auto cacheSolo = Handler::GetProfile(level->m_accountID.value());
+	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Profile::Badge::COLLABORATOR]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Profile::Badge::CUBIC]];
 	bool notPublic = level->m_unlisted || level->m_friendsOnly;
 
 	// must be public
@@ -299,18 +137,18 @@ Project scanForLevelCreator(GJGameLevel *level)
 	{
 		log::error("Level {} is unlisted", level->m_levelID.value());
 
-		return Project::NONE;
+		return Project::Type::NONE;
 	}
 	else
 	{
 		log::debug("Level {} is publicly listed!", level->m_levelID.value());
 
 		// checks if owned by publisher account
-		if (level->m_accountID.value() == projectAccount)
+		if (level->m_accountID.value() == ACC_PUBLISHER)
 		{
 			log::debug("Level {} is Avalanche team project", level->m_levelID.value());
 
-			return Project::TEAM;
+			return Project::Type::TEAM;
 		}
 		else
 		{
@@ -319,7 +157,7 @@ Project scanForLevelCreator(GJGameLevel *level)
 			{
 				log::error("Level {} not associated with Avalanche", level->m_levelID.value());
 
-				return Project::NONE;
+				return Project::Type::NONE;
 			}
 			else
 			{
@@ -328,13 +166,13 @@ Project scanForLevelCreator(GJGameLevel *level)
 				{
 					log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
 
-					return Project::SOLO;
+					return Project::Type::SOLO;
 				}
 				else
 				{
 					log::error("Level {} is unrated", level->m_levelID.value());
 
-					return Project::NONE;
+					return Project::Type::NONE;
 				};
 			};
 		};
@@ -364,7 +202,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 			auto levelType = scanForLevelCreator(level);
 
-			if (levelType == Project::SOLO)
+			if (levelType == Project::Type::SOLO)
 			{
 				if (displaySoloLayers)
 				{
@@ -378,7 +216,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					};
 				};
 			}
-			else if (levelType == Project::TEAM)
+			else if (levelType == Project::Type::TEAM)
 			{
 				if (displayTeamLayers)
 				{
@@ -472,7 +310,7 @@ class $modify(Level, LevelCell)
 		{
 			auto levelType = scanForLevelCreator(level);
 
-			if (levelType == Project::SOLO)
+			if (levelType == Project::Type::SOLO)
 			{
 				if (displaySoloCells)
 				{
@@ -486,7 +324,7 @@ class $modify(Level, LevelCell)
 					};
 				};
 			}
-			else if (levelType == Project::TEAM)
+			else if (levelType == Project::Type::TEAM)
 			{
 				if (displayTeamCells)
 				{
@@ -740,48 +578,6 @@ class $modify(Menu, MenuLayer)
 	/*
 	mod functions
 	*/
-
-	// gets all badges when the mod is loaded for the first time
-	void initialScan()
-	{
-		firstBadgesListRequest.bind([](web::WebTask::Event *e)
-									{
-			if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok()) {
-					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
-
-						for (auto& [key, value] : jsonRes) {
-							std::string id = key;
-							std::string badge = value.asString().unwrapOr(und);
-
-							getThisMod->setSavedValue(fmt::format("cache-badge-u{}", id), badge);
-						};
-
-						if (getThisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
-
-						getThisMod->setSavedValue("passed-first-time-load", true);
-				} else {
-					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::error("Badge web request failed");
-				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
-			}; });
-
-		// send the web request
-		auto fullReq = web::WebRequest();
-		fullReq.userAgent("Avalanche Index mod for Geode");
-		fullReq.timeout(std::chrono::seconds(30));
-		firstBadgesListRequest.setFilter(fullReq.get(remoteBadgeDataURL));
-	};
 
 	// pings the server to check if a new aval project is available
 	void onCheckForNewAval(CCObject *)

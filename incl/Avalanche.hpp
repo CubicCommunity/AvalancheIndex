@@ -11,25 +11,29 @@ using namespace geode::prelude;
 
 namespace avalanche
 {
-    int ACC_PUBLISHER = 31079132;
+    extern int ACC_PUBLISHER;
 
-    static constexpr const char *URL_BADGES = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProfiles.json";
-    static constexpr const char *URL_LEVELS = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProjects.json";
+    constexpr const char *URL_BADGES = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProfiles.json";
+    constexpr const char *URL_LEVELS = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProjects.json";
 
-    // undefined string
-    static constexpr const char *und = "undefined";
+    constexpr const char *und = "undefined";
+    constexpr const char *err = "404: Not Found";
 
-    // error string
-    static constexpr const char *err = "undefined";
+    extern matjson::Value fetchedBadges;
+    extern matjson::Value fetchedLevels;
 
-    // saved json of badge data
-    matjson::Value fetchedBadges = nullptr;
+    extern EventListener<web::WebTask> badgeListReq;
+    extern EventListener<web::WebTask> levelListReq;
 
-    // saved json of level data
-    matjson::Value fetchedLevels = nullptr;
+    class Color
+    {
+    public:
+        GLubyte red;
+        GLubyte green;
+        GLubyte blue;
 
-    EventListener<web::WebTask> badgeListReq;
-    EventListener<web::WebTask> levelListReq;
+        Color(int r = 0, int g = 0, int b = 0) : red(static_cast<GLubyte>(r)), green(static_cast<GLubyte>(g)), blue(static_cast<GLubyte>(b)) {};
+    };
 
     class Profile
     {
@@ -44,7 +48,7 @@ namespace avalanche
             COLLABORATOR, // Non-members of the team who also worked on a project
         };
 
-        std::map<std::string, Badge> profileBadgeEnum;
+        static std::map<std::string, Badge> profileBadgeEnum;
 
         std::string name;
         Badge badge;
@@ -58,13 +62,14 @@ namespace avalanche
         enum class Type
         {
             NONE,   // Not a project
+            SOLO,   // A project that a member worked on by themself
             TEAM,   // A project that members of the team worked on
             COLLAB, // A project that involves the work of Collaborators
             ENTRY,  // A project that Avalanche made as an entry to another event
             EVENT,  // A project that resulted from a public or private event hosted by Avalanche
         };
 
-        std::map<std::string, Type> projectTypeEnum;
+        static std::map<std::string, Type> projectTypeEnum;
 
         std::string name;
         std::string showcase_url;
@@ -77,10 +82,20 @@ namespace avalanche
     class Handler
     {
     public:
+        static Handler &get()
+        {
+            static Handler instance; // Static instance of the class
+            return instance;         // Return the singleton instance
+        };
+
         void scanAll();
 
         static std::map<Profile::Badge, std::string> badgeStringID;
         static std::map<std::string, std::string> badgeSpriteName;
+        static std::map<std::string, Color> badgeColor;
+
+        void getBadgeInfo(Profile::Badge badge);
+        void onInfoBadge(CCObject *sender);
 
         Profile GetProfile(int id);
         Project GetProject(int id);

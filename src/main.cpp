@@ -1,6 +1,5 @@
 #include "../incl/Avalanche.hpp"
 
-#include "./headers/TeamData.hpp"
 #include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
 
@@ -31,8 +30,6 @@
 using namespace geode::prelude;
 using namespace avalanche;
 
-using namespace TeamData;
-
 // its modding time :3
 auto getThisMod = geode::getMod();
 auto getThisLoader = geode::Loader::get();
@@ -58,8 +55,10 @@ class $modify(ProfilePage)
 
 			CCLabelBMFont *fakeText = nullptr;
 
-			Profile badgeData = Handler::GetProfile(user->m_accountID);
-			Handler::createBadge(badgeData.badge, cell_menu, fakeText, 0.875f, this);
+			auto getHandler = Handler::get();
+
+			Profile badgeData = getHandler.GetProfile(user->m_accountID);
+			getHandler.createBadge(badgeData.badge, cell_menu, fakeText, 0.875f, this);
 
 			log::debug("Viewing profile of ID {}", user->m_accountID);
 		};
@@ -112,7 +111,10 @@ class $modify(CommentCell)
 				commentText = nullptr;
 			};
 
-			scanForUserBadge(cell_menu, commentText, 0.5f, this, comment->m_accountID);
+			auto getHandler = Handler::get();
+
+			Profile badgeData = getHandler.GetProfile(comment->m_accountID);
+			getHandler.createBadge(badgeData.badge, cell_menu, commentText, 0.5f, this);
 
 			log::debug("Viewing comment profile of ID {}", comment->m_accountID);
 		};
@@ -122,14 +124,11 @@ class $modify(CommentCell)
 // attempts to fetch badge locally to verify ownership of the level
 Project::Type scanForLevelCreator(GJGameLevel *level)
 {
-	CCMenu *fakeMenu = nullptr;
-	CCLabelBMFont *fakeText = nullptr;
-	auto fakePointer = nullptr;
-	scanForUserBadge(fakeMenu, fakeText, 0.5f, fakePointer, level->m_accountID);
+	auto getHandler = Handler::get();
 
 	// get the member's badge data
-	auto cacheSolo = Handler::GetProfile(level->m_accountID.value());
-	bool notSolo = Badges::badgeSpriteName[cacheSolo].empty() && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Profile::Badge::COLLABORATOR]] && Badges::badgeSpriteName[cacheSolo] != Badges::badgeSpriteName[Badges::badgeStringID[Profile::Badge::CUBIC]];
+	auto cacheSolo = Handler::badgeStringID[getHandler.GetProfile(level->m_accountID.value()).badge];
+	bool notSolo = Handler::badgeSpriteName[cacheSolo].empty() && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::COLLABORATOR]] && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::CUBIC]];
 	bool notPublic = level->m_unlisted || level->m_friendsOnly;
 
 	// must be public
@@ -452,7 +451,7 @@ class $modify(Menu, MenuLayer)
 
 				avalBtn->addChild(m_fields->avalBtnMark);
 
-				// add particles on top of the featured button
+				// add particles on the featured button
 				if (CCParticleSystem *avalBtnParticles = ParticleHelper::createAvalFeaturedParticles(100.0f))
 				{
 					avalBtnParticles->setPosition(avalBtn->getPosition());
@@ -503,17 +502,8 @@ class $modify(Menu, MenuLayer)
 				log::error("Avalanche featured project button disabled");
 			};
 
-			auto notFirstTime = getThisMod->getSavedValue<bool>("passed-first-time-load");
-
-			if (notFirstTime)
-			{
-				log::debug("User has loaded this mod before");
-			}
-			else
-			{
-				log::debug("User has not loaded this mod before, fetching current list of badges...");
-				Menu::initialScan();
-			};
+			auto getHandler = Handler::get();
+			getHandler.scanAll();
 
 			return true;
 		}

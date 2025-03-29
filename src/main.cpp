@@ -48,6 +48,8 @@ class $modify(ProfilePage)
 
 		if (getThisMod->getSettingValue<bool>("badge-profile"))
 		{
+			getHandler.scanAll();
+
 			// gets a copy of the main layer
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
@@ -71,6 +73,8 @@ class $modify(CommentCell)
 
 		if (getThisMod->getSettingValue<bool>("badge-comments"))
 		{
+			getHandler.scanAll();
+
 			// gets a copy of the main layer
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
@@ -296,7 +300,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void setEventDisplay(CCSprite *background)
 	{
-		background->setColor({247, 255, 134});
+		background->setColor({211, 207, 0});
 	};
 };
 
@@ -409,7 +413,7 @@ class $modify(Level, LevelCell)
 
 	void setEventDisplay(CCLayerColor *colorNode)
 	{
-		auto newColor = CCLayerColor::create({247, 255, 134, 255});
+		auto newColor = CCLayerColor::create({211, 207, 0, 255});
 		newColor->setScaledContentSize(colorNode->getScaledContentSize());
 		newColor->setAnchorPoint(colorNode->getAnchorPoint());
 		newColor->setPosition(colorNode->getPosition());

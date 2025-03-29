@@ -88,13 +88,13 @@
 			"default": true
 		},
 		"event-cells": {
-			"name": "Event Winner Level Cells",
+			"name": "Event Level Cells",
 			"description": "Highlight level cells for <co>levels that won in team events</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"event-layers": {
-			"name": "Event Winner Level Pages",
+			"name": "Event Level Pages",
 			"description": "Customize level pages for <co>levels that won in team events</c>.",
 			"type": "bool",
 			"default": true
@@ -180,8 +180,8 @@
 			"type": "title"
 		},
 		"web-once": {
-			"name": "Check Badges Once",
-			"description": "Only send one web request to check a user's badge, instead of checking as much as the rate limit supports.",
+			"name": "Fetch Data Once",
+			"description": "Only send one web request per game session to get all <cl>Avalanche</c> data.",
 			"type": "bool",
 			"default": true,
 			"requires-restart": true

@@ -75,13 +75,14 @@ namespace avalanche
     class Handler
     {
     public:
-        static Handler &get() // Get the Handler functions
+        // Get the Handler functions
+        static Handler &get()
         {
             static Handler instance;
             return instance;
         };
 
-        // Fetch all remote data on badges and levels
+        // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
         void scanAll();
 
         static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string

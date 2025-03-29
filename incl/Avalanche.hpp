@@ -44,7 +44,7 @@ namespace avalanche
         static std::map<std::string, Badge> profileBadgeEnum; // Convert a string to a Badge enum
 
         std::string name; // Official pseudonym of the member
-        Badge badge; // ID of the member's badge
+        Badge badge;      // ID of the member's badge
 
         Profile(std::string n = "Name", Badge b = Badge::NONE) : name(n), badge(b) {};
     };
@@ -58,18 +58,18 @@ namespace avalanche
             SOLO,   // A project that a member worked on by themself
             TEAM,   // A project that members of the team worked on
             COLLAB, // A project that involves the work of Collaborators
-            ENTRY,  // A project that Avalanche made as an entry to another event
             EVENT,  // A project that resulted from a public or private event hosted by Avalanche
         };
 
         static std::map<std::string, Type> projectTypeEnum; // Convert a string to a Type enum
 
-        std::string name; // Official name of the level
+        std::string name;         // Official name of the level
+        std::string host;         // Team member that hosted the level
         std::string showcase_url; // Video URL of the full showcase of the level
-        Type type; // Type of project the level is featured as
-        bool fame; // If the level will be highlighted on lists
+        Type type;                // Type of project the level is featured as
+        bool fame;                // If the level will be highlighted on lists
 
-        Project(std::string n = "Name", std::string su = "https://avalanche.cubicstudios.xyz/", Type t = Type::NONE, bool f = false) : name(n), showcase_url(su), type(t), fame(f) {};
+        Project(std::string n = "Name", std::string h = "Host", std::string su = "https://avalanche.cubicstudios.xyz/", Type t = Type::NONE, bool f = false) : name(n), host(h), showcase_url(su), type(t), fame(f) {};
     };
 
     class Handler
@@ -81,17 +81,23 @@ namespace avalanche
             return instance;
         };
 
-        void scanAll(); // Fetch all remote data on badges and levels
+        // Fetch all remote data on badges and levels
+        void scanAll();
 
         static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string
-        static std::map<std::string, std::string> badgeSpriteName; // Get the sprite from the badge ID
-        static std::map<std::string, ccColor3B> badgeColor; // Get the color from the badge ID
+        static std::map<std::string, std::string> badgeSpriteName;  // Get the sprite from the badge ID
+        static std::map<std::string, ccColor3B> badgeColor;         // Get the color from the badge ID
+
+        // Get profile data on a player
+        Profile GetProfile(int id);
+        // Get project data on a level
+        Project GetProject(int id);
+
+        // Get the comment text color for a certain badge type
+        ccColor3B getCommentColor(Profile::Badge badge);
 
         void getBadgeInfo(Profile::Badge badge);
         void onInfoBadge(CCObject *sender);
-
-        Profile GetProfile(int id); // Get profile data on a player
-        Project GetProject(int id); // Get project data on a level
 
         // Create the badge to appear next to the player's username
         template <typename T>

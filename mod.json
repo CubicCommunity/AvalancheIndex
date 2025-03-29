@@ -41,9 +41,9 @@
 		]
 	},
 	"settings": {
-		"display": {
-			"name": "Functionality",
-			"description": "Customize what the index does.",
+		"badges": {
+			"name": "Profiles",
+			"description": "Display on player profiles.",
 			"type": "title"
 		},
 		"badge-profile": {
@@ -58,9 +58,20 @@
 			"type": "bool",
 			"default": true
 		},
-		"comments": {
-			"name": "Comment Text Color",
-			"description": "Customize the text color for team members' comments.",
+		"levels": {
+			"name": "Projects",
+			"description": "Display on levels.",
+			"type": "title"
+		},
+		"team-cells": {
+			"name": "Team Project Cells",
+			"description": "Highlight level cells for <cy>team projects</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"team-layers": {
+			"name": "Team Project Pages",
+			"description": "Customize level pages for <cy>team projects</c>.",
 			"type": "bool",
 			"default": true
 		},
@@ -76,28 +87,40 @@
 			"type": "bool",
 			"default": true
 		},
+		"event-cells": {
+			"name": "Event Winner Level Cells",
+			"description": "Highlight level cells for <co>levels that won in team events</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"event-layers": {
+			"name": "Event Winner Level Pages",
+			"description": "Customize level pages for <co>levels that won in team events</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"show-fame": {
+			"name": "Display Special",
+			"description": "Highlight levels that are featured in <cl>Avalanche</c>'s spotlight.",
+			"type": "bool",
+			"default": true
+		},
 		"classic-only": {
 			"name": "Only Classic Levels",
 			"description": "Display highlight color exclusively on <cg>classic</c> <cy>solo levels</c>.",
 			"type": "bool",
 			"default": true
 		},
-		"team-cells": {
-			"name": "Team Project Cells",
-			"description": "Highlight level cells for <cy>team projects</c>.",
-			"type": "bool",
-			"default": true
-		},
-		"team-layers": {
-			"name": "Team Project Pages",
-			"description": "Customize level pages for <cy>team projects</c>.",
-			"type": "bool",
-			"default": true
-		},
 		"colors": {
 			"name": "Comment Colors",
-			"description": "Set the colors that comment text from <cl>Avalanche</c> will be recolored to. <cr>This ignores the publisher of the level being commented on.</c>",
+			"description": "Set the colors that from comments posted by <cl>Avalanche</c> officials will be recolored to. <cr>This ignores the publisher of the level.</c>",
 			"type": "title"
+		},
+		"comments": {
+			"name": "Comment Text Color",
+			"description": "Recolor the comments' text.",
+			"type": "bool",
+			"default": true
 		},
 		"com-director": {
 			"name": "Director Color",
@@ -164,11 +187,11 @@
 			"requires-restart": true
 		},
 		"check-aval": {
-			"name": "Frequent Checks For New Project",
+			"name": "Quicker Project Update",
 			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>.",
 			"type": "bool",
 			"enable-if": "setting:show-aval-featured",
-			"enable-if-description": "The Featured Project button must be enabled to use this setting.",
+			"enable-if-description": "The Featured Project button must be enabled.",
 			"default": false
 		}
 	},

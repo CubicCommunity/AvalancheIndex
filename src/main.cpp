@@ -33,6 +33,9 @@ using namespace avalanche;
 // its modding time :3
 auto getThisMod = geode::getMod();
 
+// avalanche data handler
+auto getHandler = Handler::get();
+
 // if the server was already checked for the new avalanche project :O
 bool pingedProjectData = false;
 
@@ -50,8 +53,6 @@ class $modify(ProfilePage)
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
 
 			CCLabelBMFont *fakeText = nullptr;
-
-			auto getHandler = Handler::get();
 
 			Profile plr = getHandler.GetProfile(user->m_accountID);
 			getHandler.createBadge(plr, cell_menu, fakeText, 0.875f, this);
@@ -107,8 +108,6 @@ class $modify(CommentCell)
 				commentText = nullptr;
 			};
 
-			auto getHandler = Handler::get();
-
 			Profile plr = getHandler.GetProfile(comment->m_accountID);
 			getHandler.createBadge(plr, cell_menu, commentText, 0.5f, this);
 
@@ -120,57 +119,64 @@ class $modify(CommentCell)
 // attempts to fetch badge locally to verify ownership of the level
 Project::Type scanForLevelCreator(GJGameLevel *level)
 {
-	auto getHandler = Handler::get();
+	auto project = getHandler.GetProject(level->m_levelID.value());
 
-	// get the member's badge data
-	auto cacheSolo = Handler::badgeStringID[getHandler.GetProfile(level->m_accountID.value()).badge];
-	bool notSolo = Handler::badgeSpriteName[cacheSolo].empty() && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::COLLABORATOR]] && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::CUBIC]];
-	bool notPublic = level->m_unlisted || level->m_friendsOnly;
-
-	// must be public
-	if (notPublic)
+	if (project.type == Project::Type::NONE)
 	{
-		log::error("Level {} is unlisted", level->m_levelID.value());
+		// get the member's badge data
+		auto cacheSolo = Handler::badgeStringID[getHandler.GetProfile(level->m_accountID.value()).badge];
+		bool notSolo = Handler::badgeSpriteName[cacheSolo].empty() && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::COLLABORATOR]] && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::CUBIC]];
+		bool notPublic = level->m_unlisted || level->m_friendsOnly;
 
-		return Project::Type::NONE;
-	}
-	else
-	{
-		log::debug("Level {} is publicly listed!", level->m_levelID.value());
-
-		// checks if owned by publisher account
-		if (level->m_accountID.value() == ACC_PUBLISHER)
+		// must be public
+		if (notPublic)
 		{
-			log::debug("Level {} is Avalanche team project", level->m_levelID.value());
+			log::error("Level {} is unlisted", level->m_levelID.value());
 
-			return Project::Type::TEAM;
+			return Project::Type::NONE;
 		}
 		else
 		{
-			// checks if level is published by a team member
-			if (notSolo)
-			{
-				log::error("Level {} not associated with Avalanche", level->m_levelID.value());
+			log::debug("Level {} is publicly listed!", level->m_levelID.value());
 
-				return Project::Type::NONE;
+			// checks if owned by publisher account
+			if (level->m_accountID.value() == ACC_PUBLISHER)
+			{
+				log::debug("Level {} is Avalanche team project", level->m_levelID.value());
+
+				return Project::Type::TEAM;
 			}
 			else
 			{
-				// checks if level is rated
-				if (level->m_stars.value() >= 1)
+				// checks if level is published by a team member
+				if (notSolo)
 				{
-					log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
+					log::error("Level {} not associated with Avalanche", level->m_levelID.value());
 
-					return Project::Type::SOLO;
+					return Project::Type::NONE;
 				}
 				else
 				{
-					log::error("Level {} is unrated", level->m_levelID.value());
+					// checks if level is rated
+					if (level->m_stars.value() >= 1)
+					{
+						log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
 
-					return Project::Type::NONE;
+						return Project::Type::SOLO;
+					}
+					else
+					{
+						log::error("Level {} is unrated", level->m_levelID.value());
+
+						return Project::Type::NONE;
+					};
 				};
 			};
 		};
+	}
+	else
+	{
+		return project.type;
 	};
 };
 
@@ -498,7 +504,6 @@ class $modify(Menu, MenuLayer)
 				log::error("Avalanche featured project button disabled");
 			};
 
-			auto getHandler = Handler::get();
 			getHandler.scanAll();
 
 			return true;

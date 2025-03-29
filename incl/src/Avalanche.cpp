@@ -34,7 +34,6 @@ namespace avalanche
         {"solo", avalanche::Project::Type::SOLO},
         {"team", avalanche::Project::Type::TEAM},
         {"collab", avalanche::Project::Type::COLLAB},
-        {"entry", avalanche::Project::Type::ENTRY},
         {"event", avalanche::Project::Type::EVENT},
     };
 
@@ -56,9 +55,9 @@ namespace avalanche
 
     std::map<std::string, ccColor3B> avalanche::Handler::badgeColor{
         {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], thisMod->getSettingValue<ccColor3B>("com-cubic")},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], thisMod->getSettingValue<ccColor3B>("com-director")}, 
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], thisMod->getSettingValue<ccColor3B>("com-director")},
         {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], thisMod->getSettingValue<ccColor3B>("com-manager")},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], thisMod->getSettingValue<ccColor3B>("com-member")},  
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], thisMod->getSettingValue<ccColor3B>("com-member")},
         {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], thisMod->getSettingValue<ccColor3B>("com-collaborator")},
     };
 
@@ -69,15 +68,17 @@ namespace avalanche
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				if (avalReqRes->ok()) {
-					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+					if (fetchedBadges == nullptr) {
+                        auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
 						for (auto& [key, value] : jsonRes) {
 							thisMod->setSavedValue(fmt::format("cache-badge-p{}", key), value);
 						};
 
 						if (thisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
-
-						thisMod->setSavedValue("passed-first-time-load", true);
+                    } else {
+                        log::error("Already fetched remote data for badges");
+                    };
 				} else {
 					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
 					if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
@@ -104,15 +105,17 @@ namespace avalanche
 			if (web::WebResponse *avalReqRes = e->getValue())
 			{
 				if (avalReqRes->ok()) {
-					auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+					if (fetchedLevels == nullptr) {
+                        auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
 						for (auto& [key, value] : jsonRes) {
 							thisMod->setSavedValue(fmt::format("cache-level-p{}", key), value);
 						};
 
-						if (thisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
-
-						thisMod->setSavedValue("passed-first-time-load", true);
+						if (thisMod->getSettingValue<bool>("web-once")) fetchedLevels = jsonRes;
+                    } else {
+                        log::error("Already fetched remote data for levels");
+                    };
 				} else {
 					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
 					if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
@@ -138,8 +141,10 @@ namespace avalanche
     {
         matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-p{}", (int)id)); // gets locally saved badge json
 
+        auto lBadge = avalanche::Profile::profileBadgeEnum.find(cacheStd["badge"].asString().unwrapOr(und));
+
         auto c_name = cacheStd["name"].asString().unwrapOr(und);
-        auto c_badge = avalanche::Profile::profileBadgeEnum[cacheStd["badge"].asString().unwrapOr(und)];
+        auto c_badge = (lBadge != avalanche::Profile::profileBadgeEnum.end()) ? lBadge->second : avalanche::Profile::Badge::NONE;
 
         avalanche::Profile res(c_name, c_badge);
         return res;
@@ -149,13 +154,22 @@ namespace avalanche
     {
         matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-level-p{}", (int)id)); // gets locally saved level json
 
+        auto lType = avalanche::Project::projectTypeEnum.find(cacheStd["type"].asString().unwrapOr(und));
+
         auto c_name = cacheStd["name"].asString().unwrapOr(und);
+        auto c_host = cacheStd["host"].asString().unwrapOr(und);
         auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
-        auto c_type = avalanche::Project::projectTypeEnum[cacheStd["type"].asString().unwrapOr(und)];
+        auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
         auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
-        avalanche::Project res(c_name, c_showcase, c_type, c_fame);
+        avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame);
         return res;
+    };
+
+    ccColor3B avalanche::Handler::getCommentColor(Profile::Badge badge)
+    {
+        ccColor3B colorSetting = avalanche::Handler::badgeColor[avalanche::Handler::badgeStringID[badge]];
+        return colorSetting;
     };
 
     void avalanche::Handler::getBadgeInfo(avalanche::Profile::Badge badge)

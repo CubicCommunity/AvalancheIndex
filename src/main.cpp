@@ -189,12 +189,13 @@ class $modify(LevelInfo, LevelInfoLayer)
 		{
 			bool displaySoloLayers = getThisMod->getSettingValue<bool>("solo-layers");
 			bool displayTeamLayers = getThisMod->getSettingValue<bool>("team-layers");
+			bool displayEventLayers = getThisMod->getSettingValue<bool>("event-layers");
 
 			// get main bg color layer
 			auto bg = this->getChildByID("background");
 			auto background = as<CCSprite *>(bg);
 
-			// get
+			// get level name node
 			auto nameText = this->getChildByID("title-label");
 			auto levelName = as<CCLabelBMFont *>(nameText);
 
@@ -233,6 +234,13 @@ class $modify(LevelInfo, LevelInfoLayer)
 					{
 						LevelInfo::setTeamDisplay(background, levelName);
 					};
+				};
+			}
+			else if (levelType == Project::Type::EVENT)
+			{
+				if (displayTeamLayers)
+				{
+					LevelInfo::setEventDisplay(background);
 				};
 			};
 
@@ -285,6 +293,11 @@ class $modify(LevelInfo, LevelInfoLayer)
 		this->addChild(bgSprite);
 		this->addChild(bgThumbnail);
 	};
+
+	void setEventDisplay(CCSprite *background)
+	{
+		background->setColor({247, 255, 134});
+	};
 };
 
 class $modify(Level, LevelCell)
@@ -296,6 +309,7 @@ class $modify(Level, LevelCell)
 
 		bool displaySoloCells = getThisMod->getSettingValue<bool>("solo-cells");
 		bool displayTeamCells = getThisMod->getSettingValue<bool>("team-cells");
+		bool displayEventCells = getThisMod->getSettingValue<bool>("event-cells");
 
 		// get main bg color layer
 		auto color = this->getChildByType<CCLayerColor>(0);
@@ -342,6 +356,13 @@ class $modify(Level, LevelCell)
 						Level::setTeamDisplay(color, levelName);
 					};
 				};
+			}
+			else if (levelType == Project::Type::EVENT)
+			{
+				if (displayEventCells)
+				{
+					Level::setEventDisplay(color);
+				};
 			};
 		}
 		else
@@ -381,6 +402,20 @@ class $modify(Level, LevelCell)
 		auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
 
 		levelName->setScale(levelName->getScale() * scaleDownBy);
+
+		colorNode->removeMeAndCleanup();
+		this->addChild(newColor);
+	};
+
+	void setEventDisplay(CCLayerColor *colorNode)
+	{
+		auto newColor = CCLayerColor::create({247, 255, 134, 255});
+		newColor->setScaledContentSize(colorNode->getScaledContentSize());
+		newColor->setAnchorPoint(colorNode->getAnchorPoint());
+		newColor->setPosition(colorNode->getPosition());
+		newColor->setZOrder(colorNode->getZOrder() - 2);
+		newColor->setScale(colorNode->getScale());
+		newColor->setID("event_color"_spr);
 
 		colorNode->removeMeAndCleanup();
 		this->addChild(newColor);

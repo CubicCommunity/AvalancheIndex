@@ -46,7 +46,6 @@ Handler getHandler = Handler::get();
 
 class $modify(Level, LevelCell)
 {
-	// modified vanilla loadFromLevel function
 	void loadFromLevel(GJGameLevel *level)
 	{
 		LevelCell::loadFromLevel(level);

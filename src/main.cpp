@@ -57,8 +57,8 @@ class $modify(ProfilePage)
 
 			auto getHandler = Handler::get();
 
-			Profile badgeData = getHandler.GetProfile(user->m_accountID);
-			getHandler.createBadge(badgeData.badge, cell_menu, fakeText, 0.875f, this);
+			Profile plr = getHandler.GetProfile(user->m_accountID);
+			getHandler.createBadge(plr, cell_menu, fakeText, 0.875f, this);
 
 			log::debug("Viewing profile of ID {}", user->m_accountID);
 		};
@@ -113,8 +113,8 @@ class $modify(CommentCell)
 
 			auto getHandler = Handler::get();
 
-			Profile badgeData = getHandler.GetProfile(comment->m_accountID);
-			getHandler.createBadge(badgeData.badge, cell_menu, commentText, 0.5f, this);
+			Profile plr = getHandler.GetProfile(comment->m_accountID);
+			getHandler.createBadge(plr, cell_menu, commentText, 0.5f, this);
 
 			log::debug("Viewing comment profile of ID {}", comment->m_accountID);
 		};
@@ -344,7 +344,7 @@ class $modify(Level, LevelCell)
 		}
 		else
 		{
-			log::error("Color not found!");
+			log::error("ccColor3B not found!");
 		};
 	};
 

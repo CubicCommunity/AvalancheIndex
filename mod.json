@@ -94,6 +94,46 @@
 			"type": "bool",
 			"default": true
 		},
+		"colors": {
+			"name": "Comment Colors",
+			"description": "Set the colors that comment text from <cl>Avalanche</c> will be recolored to. <cr>This ignores the publisher of the level being commented on.</c>",
+			"type": "title"
+		},
+		"com-director": {
+			"name": "Director Color",
+			"description": "Customize the comment color for the <cy>director</c>.",
+			"type": "rgb",
+			"default": [150, 175, 255],
+			"requires-restart": true
+		},
+		"com-manager": {
+			"name": "Manager Color",
+			"description": "Customize the comment color for the <cy>managers</c>.",
+			"type": "rgb",
+			"default": [127, 148, 255],
+			"requires-restart": true
+		},
+		"com-member": {
+			"name": "Member Color",
+			"description": "Customize the comment color for the <cy>members</c>.",
+			"type": "rgb",
+			"default": [191, 201, 255],
+			"requires-restart": true
+		},
+		"com-collaborator": {
+			"name": "Collaborator Color",
+			"description": "Customize the comment color for the <cy>collaborators</c>.",
+			"type": "rgb",
+			"default": [200, 200, 200],
+			"requires-restart": true
+		},
+		"com-cubic": {
+			"name": "Cubic Studios Color",
+			"description": "Customize the comment color for the <cj>Cubic Studios</c> <cy>staff</c>.",
+			"type": "rgb",
+			"default": [10, 247, 247],
+			"requires-restart": true
+		},
 		"ui": {
 			"name": "Interface",
 			"description": "UI-related functions.",

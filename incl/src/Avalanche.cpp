@@ -10,6 +10,8 @@
 
 using namespace geode::prelude;
 
+auto thisMod = geode::getMod();
+
 namespace avalanche
 {
     int ACC_PUBLISHER = 31079132;
@@ -19,8 +21,6 @@ namespace avalanche
 
     EventListener<web::WebTask> badgeListReq;
     EventListener<web::WebTask> levelListReq;
-
-    auto thisMod = geode::getMod();
 
     std::map<std::string, avalanche::Profile::Badge> avalanche::Profile::profileBadgeEnum{
         {"cubic-studios", avalanche::Profile::Badge::CUBIC},
@@ -54,12 +54,12 @@ namespace avalanche
         {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], "collaborator.png"_spr},
     };
 
-    std::map<std::string, avalanche::Color> avalanche::Handler::badgeColor{
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], {10, 247, 247}},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], {150, 175, 255}}, // modified to be brighter than official branding
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], {127, 148, 255}},  // modified to be brighter than official branding
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], {191, 201, 255}},   // modified to be brighter than official branding
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], {200, 200, 200}},
+    std::map<std::string, ccColor3B> avalanche::Handler::badgeColor{
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], thisMod->getSettingValue<ccColor3B>("com-cubic")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], thisMod->getSettingValue<ccColor3B>("com-director")}, 
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], thisMod->getSettingValue<ccColor3B>("com-manager")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], thisMod->getSettingValue<ccColor3B>("com-member")},  
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], thisMod->getSettingValue<ccColor3B>("com-collaborator")},
     };
 
     void avalanche::Handler::scanAll()
@@ -93,8 +93,7 @@ namespace avalanche
 				if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
 			}; });
 
-        // send the web request
-        auto badgeReq = web::WebRequest();
+        auto badgeReq = web::WebRequest(); // send the web request
         badgeReq.userAgent("Avalanche Index mod for Geode");
         badgeReq.timeout(std::chrono::seconds(30));
         badgeListReq.setFilter(badgeReq.get(URL_BADGES));
@@ -129,63 +128,15 @@ namespace avalanche
 				if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch level", NotificationIcon::Error, 2.5f)->show();
 			}; });
 
-        // send the web request
-        auto levelReq = web::WebRequest();
+        auto levelReq = web::WebRequest(); // send the web request
         levelReq.userAgent("Avalanche Index mod for Geode");
         levelReq.timeout(std::chrono::seconds(30));
         levelListReq.setFilter(levelReq.get(URL_LEVELS));
     };
 
-    void avalanche::Handler::createBadge(avalanche::Profile::Badge id, CCMenu *cell_menu, CCLabelBMFont *comment, float size, auto pointer)
-    {
-        // checks the map for this value to see if its invalid
-        bool idFailTest = avalanche::Handler::badgeSpriteName[id].empty();
-
-        if (idFailTest)
-        {
-            log::debug("Badge is invalid.");
-        }
-        else
-        {
-            if (cell_menu != nullptr)
-            {
-                // prevent dupes
-                if (auto alreadyBadge = cell_menu->getChildByID(id))
-                {
-                    alreadyBadge->removeMeAndCleanup();
-                };
-
-                // gets sprite filename
-                auto newBadge = avalanche::Handler::badgeSpriteName[id].c_str();
-
-                CCSprite *badgeSprite = CCSprite::create(newBadge);
-                badgeSprite->setScale(size);
-
-                CCMenuItemSpriteExtra *badge = CCMenuItemSpriteExtra::create(
-                    badgeSprite,
-                    pointer,
-                    menu_selector(avalanche::Handler::onInfoBadge));
-                badge->setID(id);
-                badge->setZOrder(1);
-
-                cell_menu->addChild(badge);
-                cell_menu->updateLayout();
-            };
-
-            if (comment != nullptr)
-            {
-                avalanche::Color col = avalanche::Handler::badgeColor[id];
-
-                comment->setColor({col.red, col.green, col.blue});
-                comment->setOpacity(255);
-            };
-        };
-    };
-
     avalanche::Profile avalanche::Handler::GetProfile(int id)
     {
-        // gets locally saved badge json
-        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-u{}", (int)id));
+        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-u{}", (int)id)); // gets locally saved badge json
 
         auto c_name = cacheStd["name"].asString().unwrapOr(und);
         auto c_badge = avalanche::Profile::profileBadgeEnum[cacheStd["badge"].asString().unwrapOr(und)];
@@ -196,8 +147,7 @@ namespace avalanche
 
     avalanche::Project avalanche::Handler::GetProject(int id)
     {
-        // gets locally saved level json
-        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-level-p{}", (int)id));
+        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-level-p{}", (int)id)); // gets locally saved level json
 
         auto c_name = cacheStd["name"].asString().unwrapOr(und);
         auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);

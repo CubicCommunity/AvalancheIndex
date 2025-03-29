@@ -14,10 +14,10 @@ using namespace geode::prelude;
 
 namespace avalanche
 {
-    extern int ACC_PUBLISHER;
+    extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 
-    constexpr const char *URL_BADGES = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProfiles.json";
-    constexpr const char *URL_LEVELS = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProjects.json";
+    constexpr const char *URL_BADGES = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProfiles.json"; // URL to remote JSON file containing all data on profiles
+    constexpr const char *URL_LEVELS = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProjects.json"; // URL to remote JSON file containing all data on projects
 
     constexpr const char *und = "undefined";
     constexpr const char *err = "404: Not Found";
@@ -25,8 +25,8 @@ namespace avalanche
     extern matjson::Value fetchedBadges; // JSON object of data on all badges pulled remotely
     extern matjson::Value fetchedLevels; // JSON object of data on all levels pulled remotely
 
-    extern EventListener<web::WebTask> badgeListReq;
-    extern EventListener<web::WebTask> levelListReq;
+    extern EventListener<web::WebTask> badgeListReq; // Web request listener for Profile data
+    extern EventListener<web::WebTask> levelListReq; // Web request listener for Project data
 
     class Profile
     {
@@ -41,10 +41,10 @@ namespace avalanche
             COLLABORATOR, // Non-members of the team who also worked on a project
         };
 
-        static std::map<std::string, Badge> profileBadgeEnum;
+        static std::map<std::string, Badge> profileBadgeEnum; // Convert a string to a Badge enum
 
-        std::string name;
-        Badge badge;
+        std::string name; // Official pseudonym of the member
+        Badge badge; // ID of the member's badge
 
         Profile(std::string n = "Name", Badge b = Badge::NONE) : name(n), badge(b) {};
     };
@@ -62,12 +62,12 @@ namespace avalanche
             EVENT,  // A project that resulted from a public or private event hosted by Avalanche
         };
 
-        static std::map<std::string, Type> projectTypeEnum;
+        static std::map<std::string, Type> projectTypeEnum; // Convert a string to a Type enum
 
-        std::string name;
-        std::string showcase_url;
-        Type type;
-        bool fame;
+        std::string name; // Official name of the level
+        std::string showcase_url; // Video URL of the full showcase of the level
+        Type type; // Type of project the level is featured as
+        bool fame; // If the level will be highlighted on lists
 
         Project(std::string n = "Name", std::string su = "https://avalanche.cubicstudios.xyz/", Type t = Type::NONE, bool f = false) : name(n), showcase_url(su), type(t), fame(f) {};
     };
@@ -75,23 +75,23 @@ namespace avalanche
     class Handler
     {
     public:
-        static Handler &get()
+        static Handler &get() // Get the Handler functions
         {
             static Handler instance;
             return instance;
         };
 
-        void scanAll();
+        void scanAll(); // Fetch all remote data on badges and levels
 
-        static std::map<Profile::Badge, std::string> badgeStringID;
-        static std::map<std::string, std::string> badgeSpriteName;
-        static std::map<std::string, ccColor3B> badgeColor;
+        static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string
+        static std::map<std::string, std::string> badgeSpriteName; // Get the sprite from the badge ID
+        static std::map<std::string, ccColor3B> badgeColor; // Get the color from the badge ID
 
         void getBadgeInfo(Profile::Badge badge);
         void onInfoBadge(CCObject *sender);
 
-        Profile GetProfile(int id);
-        Project GetProject(int id);
+        Profile GetProfile(int id); // Get profile data on a player
+        Project GetProject(int id); // Get project data on a level
 
         // Create the badge to appear next to the player's username
         template <typename T>

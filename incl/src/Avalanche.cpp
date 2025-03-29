@@ -136,7 +136,7 @@ namespace avalanche
 
     avalanche::Profile avalanche::Handler::GetProfile(int id)
     {
-        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-u{}", (int)id)); // gets locally saved badge json
+        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-p{}", (int)id)); // gets locally saved badge json
 
         auto c_name = cacheStd["name"].asString().unwrapOr(und);
         auto c_badge = avalanche::Profile::profileBadgeEnum[cacheStd["badge"].asString().unwrapOr(und)];

@@ -32,10 +32,6 @@ using namespace avalanche;
 
 // its modding time :3
 auto getThisMod = geode::getMod();
-auto getThisLoader = geode::Loader::get();
-
-// error string
-std::string und = "undefined";
 
 // if the server was already checked for the new avalanche project :O
 bool pingedProjectData = false;

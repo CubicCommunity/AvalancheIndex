@@ -11,7 +11,7 @@ You can access data from the Avalanche Index by including the [`Avalanche.hpp`](
 using namespace avalanche;
 ```
 
-Use the `Handler` class to access functions that fetch saved data on badges and levels. Some fields may contain data based in `Project::Type` and `Profile::Badge` enum classes.
+Use the `Handler` class's functions through `Handler::get()` to access functions that fetch saved data on badges and levels. Some fields may contain data based in `Project::Type` and `Profile::Badge` enum classes.
 
 ```cpp
 using namespace avalanche;
@@ -22,7 +22,8 @@ class $modify(ProfilePage)
 	{
 		ProfilePage::loadPageFromUserInfo(user);
 
-		Profile avalUser = Handler::GetProfile(user->m_accountID);
+		Handler getHandler = Handler::get();
+		Profile avalUser = getHandler.GetProfile(user->m_accountID);
 
 		if (avalUser.badge != Profile::Badge::NONE)
         {

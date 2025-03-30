@@ -341,7 +341,7 @@ class $modify(Level, LevelCell)
 					}
 					else
 					{
-						Level::setSoloDisplay(color);
+						Level::setSoloDisplay(color, lvl.fame);
 					};
 				};
 			}
@@ -359,7 +359,7 @@ class $modify(Level, LevelCell)
 					}
 					else
 					{
-						Level::setTeamDisplay(color, levelName);
+						Level::setTeamDisplay(color, levelName, lvl.fame);
 					};
 				};
 			}
@@ -367,7 +367,7 @@ class $modify(Level, LevelCell)
 			{
 				if (displayEventCells)
 				{
-					Level::setEventDisplay(color);
+					Level::setEventDisplay(color, lvl.fame);
 				};
 			};
 		}

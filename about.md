@@ -23,7 +23,7 @@ When viewing level cells or pages, you may notice the changes in the background 
 
 - **<cj>Azure Blue</c> `#425EFF`** - Team project
 - **<cl>Slate Blue</c> `#464D75`** - Solo level
-- **<cy>Acid Yellow</c> `#464D75`** - Event level
+- **<cy>Acid Yellow</c> `#D3CF00`** - Event level
 
 Levels that show a certain glow emerging from the side are levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
 

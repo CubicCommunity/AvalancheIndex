@@ -32,13 +32,11 @@ When viewing level cells or pages, you may notice the changes in the background 
 | **Azure Blue `#425EFF`** | Team Project |
 | **Slate blue `#464D75`** | Solo Level   |
 
-Unlisted or unrated levels will not be highlighted.
-
-*Level highlights might not be displayed until the profile or a comment of the creator is viewed beforehand.*
+Levels that show a certain glow emerging from the side are levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
 
 ### Featured
 ###### The up-and-coming Avalanche project.
-In the main menu, you may see a button in the center that, when pressed, will show you a pop-up showing the latest Avalanche team project. You will have the option to check out the latest video or update of the project, and also to fill out an application to join the team to then begin working on the project.
+In the main menu, you may see a button in the center with the Avalanche logo. When pressed, it will create a pop-up displaying the latest Avalanche team project. You will have the option to check out the latest video or update of the project. The information button may direct you to fill out an application to join the team to then begin working on the project if you wish.
 
 ### Developers
 ###### This mod is developed and maintained by members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Avalanche logo" /> Avalanche](https://avalanche.cubicstudios.xyz/) team.

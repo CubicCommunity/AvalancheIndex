@@ -242,7 +242,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 			}
 			else if (levelType == Project::Type::EVENT)
 			{
-				if (displayTeamLayers)
+				if (displayEventLayers)
 				{
 					LevelInfo::setEventDisplay(background);
 				};
@@ -419,7 +419,7 @@ class $modify(Level, LevelCell)
 
 		if (fame)
 		{
-			Level::setFame(newColor, { 255, 244, 95 });
+			Level::setFame(newColor, {255, 244, 95});
 		};
 	};
 
@@ -438,29 +438,34 @@ class $modify(Level, LevelCell)
 
 		if (fame)
 		{
-			Level::setFame(newColor, { 85, 249, 255 });
+			Level::setFame(newColor, {85, 249, 255});
 		};
 	};
 
 	void setFame(CCLayerColor *newColor, ccColor3B glow = {255, 255, 255})
 	{
-		auto fameGlow = CCSprite::create("fame.png"_spr);
-		fameGlow->setZOrder(newColor->getZOrder() + 1);
-		fameGlow->ignoreAnchorPointForPosition(false);
-		fameGlow->setAnchorPoint({0, 0});
-		fameGlow->setPosition({0, 0});
-		fameGlow->setColor(glow);
-		fameGlow->setID("fame"_spr);
+		bool showFame = getThisMod->getSettingValue<bool>("show-fame");
 
-		float contHeight = 90.f;
-		float newcHeight = this->m_height;
+		if (showFame)
+		{
+			auto fameGlow = CCSprite::create("fame.png"_spr);
+			fameGlow->setZOrder(newColor->getZOrder() + 1);
+			fameGlow->ignoreAnchorPointForPosition(false);
+			fameGlow->setAnchorPoint({0, 0});
+			fameGlow->setPosition({0, 0});
+			fameGlow->setColor(glow);
+			fameGlow->setID("fame"_spr);
 
-		float scaledBy = newcHeight / contHeight;
-		float newScale = 0.36f * scaledBy;
+			float contHeight = 90.f;
+			float newcHeight = this->m_height;
 
-		fameGlow->setScale(newScale);
+			float scaledBy = newcHeight / contHeight;
+			float newScale = 0.36f * scaledBy; // for compact lists
 
-		this->addChild(fameGlow);
+			fameGlow->setScale(newScale);
+
+			this->addChild(fameGlow);
+		};
 	};
 };
 

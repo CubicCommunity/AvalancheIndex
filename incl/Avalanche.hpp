@@ -159,7 +159,7 @@ namespace avalanche
                     comment->setColor({col.r, col.g, col.b});
                     comment->setOpacity(255);
 
-                    log::info("Finished changing cpmment text color for {}", profile.name);
+                    log::info("Finished changing comment text color for {}", profile.name);
                 };
             };
         };

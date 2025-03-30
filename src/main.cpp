@@ -327,6 +327,8 @@ class $modify(Level, LevelCell)
 
 		if (color && levelName)
 		{
+
+			auto lvl = getHandler.GetProject(level->m_levelID.value());
 			auto levelType = scanForLevelCreator(level);
 
 			if (levelType == Project::Type::SOLO)
@@ -375,7 +377,7 @@ class $modify(Level, LevelCell)
 		};
 	};
 
-	void setSoloDisplay(CCLayerColor *colorNode)
+	void setSoloDisplay(CCLayerColor *colorNode, bool fame = false)
 	{
 		auto newColor = CCLayerColor::create({70, 77, 117, 255});
 		newColor->setScaledContentSize(colorNode->getScaledContentSize());
@@ -387,9 +389,14 @@ class $modify(Level, LevelCell)
 
 		colorNode->removeMeAndCleanup();
 		this->addChild(newColor);
+
+		if (fame)
+		{
+			Level::setFame(newColor, {255, 255, 255});
+		};
 	};
 
-	void setTeamDisplay(CCLayerColor *colorNode, CCLabelBMFont *levelName)
+	void setTeamDisplay(CCLayerColor *colorNode, CCLabelBMFont *levelName, bool fame = false)
 	{
 		auto newColor = CCLayerColor::create({66, 94, 255, 255});
 		newColor->setScaledContentSize(colorNode->getScaledContentSize());
@@ -409,9 +416,14 @@ class $modify(Level, LevelCell)
 
 		colorNode->removeMeAndCleanup();
 		this->addChild(newColor);
+
+		if (fame)
+		{
+			Level::setFame(newColor, { 255, 244, 95 });
+		};
 	};
 
-	void setEventDisplay(CCLayerColor *colorNode)
+	void setEventDisplay(CCLayerColor *colorNode, bool fame = false)
 	{
 		auto newColor = CCLayerColor::create({211, 207, 0, 255});
 		newColor->setScaledContentSize(colorNode->getScaledContentSize());
@@ -423,6 +435,32 @@ class $modify(Level, LevelCell)
 
 		colorNode->removeMeAndCleanup();
 		this->addChild(newColor);
+
+		if (fame)
+		{
+			Level::setFame(newColor, { 85, 249, 255 });
+		};
+	};
+
+	void setFame(CCLayerColor *newColor, ccColor3B glow = {255, 255, 255})
+	{
+		auto fameGlow = CCSprite::create("fame.png"_spr);
+		fameGlow->setZOrder(newColor->getZOrder() + 1);
+		fameGlow->ignoreAnchorPointForPosition(false);
+		fameGlow->setAnchorPoint({0, 0});
+		fameGlow->setPosition({0, 0});
+		fameGlow->setColor(glow);
+		fameGlow->setID("fame"_spr);
+
+		float contHeight = 90.f;
+		float newcHeight = this->m_height;
+
+		float scaledBy = newcHeight / contHeight;
+		float newScale = 0.36f * scaledBy;
+
+		fameGlow->setScale(newScale);
+
+		this->addChild(fameGlow);
 	};
 };
 

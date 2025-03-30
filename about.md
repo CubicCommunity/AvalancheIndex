@@ -1,7 +1,7 @@
 # ![Avalanche Index](cubicstudios.avalancheindex/banner.png)
 **Official Avalanche levels and profiles.**
 
-Easily verify the legitimacy of users' and levels' associations to Avalanche at a glance. No more need to double-chec
+Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 
 <cy>*This mod has settings you can utilize to customize your experience.*</c>
 

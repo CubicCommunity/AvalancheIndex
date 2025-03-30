@@ -1,4 +1,4 @@
-# ![Avalanche Badges](cubicstudios.avalancheindex/banner.png)
+# ![Avalanche Index](cubicstudios.avalancheindex/banner.png)
 **Official Avalanche levels and profiles.**
 
 Easily verify the legitimacy of users' and levels' associations to Avalanche at a glance. No more need to double-check everyone and everything.

@@ -5,7 +5,7 @@ Official Avalanche levels and profiles.
 >  
 > [<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/cubicstudios.avalancheindex.geode?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
 
-Easily verify the legitimacy of users' and levels' associations to Avalanche at a glance. No more need to double-check everyone and everything.
+Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 
 *This mod has settings you can utilize to customize your experience.*
 
@@ -27,10 +27,11 @@ You can also press the icon of the badge itself in-game to get more information 
 ###### The Avalanche team projects.
 When viewing level cells or pages, you may notice the changes in the background color. The level is either a team project on Avalanche's publisher account, or a solo or a collaboration hosted and published independently by a team member. These are the colors you may find highlighting such. The title font for team projects will also change.
 
-| **Color**                | **Type**     |
-|--------------------------|:------------:|
-| **Azure Blue `#425EFF`** | Team Project |
-| **Slate blue `#464D75`** | Solo Level   |
+| **Color**                 | **Type**     |
+|---------------------------|:------------:|
+| **Azure Blue `#425EFF`**  | Team Project |
+| **Slate blue `#464D75`**  | Solo Level   |
+| **Acid Yellow `#464D75`** | Event Level  |
 
 Levels that show a certain glow emerging from the side are levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
 

@@ -99,6 +99,41 @@
 			"type": "bool",
 			"default": true
 		},
+		"ui": {
+			"name": "Interface",
+			"description": "UI-related configuration.",
+			"type": "title"
+		},
+		"show-aval-featured": {
+			"name": "Main Menu Avalanche Button",
+			"description": "Display a button in the main menu that shows the featured <cl>Avalanche</c> <cy>team project</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"show-proj-info": {
+			"name": "Project Information Button",
+			"description": "Display a button in a project's level page detailing additional information about it.",
+			"type": "bool",
+			"default": true
+		},
+		"show-fame": {
+			"name": "Famed Projects",
+			"description": "Highlight levels that are featured in <cl>Avalanche</c>'s hall of fame.",
+			"type": "bool",
+			"default": true
+		},
+		"classic-only": {
+			"name": "Only Classic Levels",
+			"description": "Display highlight color exclusively on <cg>classic</c> <cy>solo levels</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"err-notifs": {
+			"name": "Web Error Notifications",
+			"description": "Display a notification when the badge web request fails.",
+			"type": "bool",
+			"default": true
+		},
 		"colors": {
 			"name": "Comment Colors",
 			"description": "Set the colors that text from comments posted by <cl>Avalanche</c> officials will be recolored to. <cr>This ignores level publishers.</c>",
@@ -144,41 +179,6 @@
 			"type": "rgb",
 			"default": [10, 247, 247],
 			"requires-restart": true
-		},
-		"ui": {
-			"name": "Interface",
-			"description": "UI-related configuration.",
-			"type": "title"
-		},
-		"show-aval-featured": {
-			"name": "Main Menu Avalanche Button",
-			"description": "Display a button in the main menu that shows the featured <cl>Avalanche</c> <cy>team project</c>.",
-			"type": "bool",
-			"default": true
-		},
-		"show-proj-info": {
-			"name": "Project Information Button",
-			"description": "Display a button in a project's level page detailing additional information about it.",
-			"type": "bool",
-			"default": true
-		},
-		"show-fame": {
-			"name": "Famed Projects",
-			"description": "Highlight levels that are featured in <cl>Avalanche</c>'s hall of fame.",
-			"type": "bool",
-			"default": true
-		},
-		"classic-only": {
-			"name": "Only Classic Levels",
-			"description": "Display highlight color exclusively on <cg>classic</c> <cy>solo levels</c>.",
-			"type": "bool",
-			"default": true
-		},
-		"err-notifs": {
-			"name": "Web Error Notifications",
-			"description": "Display a notification when the badge web request fails.",
-			"type": "bool",
-			"default": true
 		},
 		"data": {
 			"name": "Data",

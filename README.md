@@ -18,7 +18,7 @@ When viewing someone's profile or comment, you'll likely see a badge next to the
 | <img src="resources/director.png" width="25" alt="Director badge" />           | Director             |
 | <img src="resources/team-manager.png" width="25" alt="Manager badge" />        | Manager              |
 | <img src="resources/team-member.png" width="25" alt="Team member badge" />     | Team Member          |
-| <img src="resources/collaborator.png" width="25" alt="Team member badge" />    | Collaborator         |
+| <img src="resources/collaborator.png" width="25" alt="Collaborator badge" />   | Collaborator         |
 | <img src="resources/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | Cubic Studios Staff  |
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
@@ -30,7 +30,7 @@ When viewing level cells or pages, you may notice the changes in the background 
 | **Color**                 | **Type**     |
 |---------------------------|:------------:|
 | **Azure Blue `#425EFF`**  | Team Project |
-| **Slate blue `#464D75`**  | Solo Level   |
+| **Slate Blue `#464D75`**  | Solo Level   |
 | **Acid Yellow `#D3CF00`** | Event Level  |
 
 Levels that show a certain glow emerging from the side are levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.

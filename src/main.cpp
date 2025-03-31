@@ -120,7 +120,7 @@ class $modify(CommentCell)
 	};
 };
 
-// attempts to fetch badge locally to verify ownership of the level
+// attempts to fetch data on level or badge locally to verify ownership of the level
 Project::Type scanForLevelCreator(GJGameLevel *level)
 {
 	auto project = getHandler.GetProject(level->m_levelID.value());

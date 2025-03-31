@@ -12,7 +12,7 @@
 
 using namespace geode::prelude;
 
-namespace avalanche
+namespace avalanche // Avalanche namespace
 {
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 

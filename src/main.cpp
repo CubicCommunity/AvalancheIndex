@@ -113,7 +113,7 @@ class $modify(CommentCell)
 			};
 
 			Profile plr = getHandler.GetProfile(comment->m_accountID);
-			getHandler.createBadge(plr, cell_menu, commentText, 0.5f, this);
+			getHandler.createBadge(plr, cell_menu, commentText, 0.55f, this);
 
 			log::debug("Viewing comment profile of ID {}", comment->m_accountID);
 		};

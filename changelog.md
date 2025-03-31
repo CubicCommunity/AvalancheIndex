@@ -1,5 +1,9 @@
-# v1.0.0
-### Initial Release
+### v1.0.0-prerelease.2
+##### Fixes
+
+#### Changes
+- **Fixed** issue with badges not stacking
+- **Adjusted** badge size in comments
 
 ### v1.0.0-prerelease.1
 ##### Core features

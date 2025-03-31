@@ -85,9 +85,11 @@ namespace avalanche // Avalanche namespace
         // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
         void scanAll();
 
-        static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string
-        static std::map<std::string, std::string> badgeSpriteName;  // Get the sprite from the badge ID
-        static std::map<std::string, ccColor3B> badgeColor;         // Get the color from the badge ID
+        static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string ID
+        static std::map<std::string, std::string> badgeSpriteName;  // Get the sprite from the string badge ID
+        static std::map<std::string, ccColor3B> badgeColor;         // Get the color from the string badge ID
+        static std::map<std::string, std::string> badgeToAPI;       // Convert badge node ID to API ID
+        static std::map<std::string, std::string> apiToString;      // Convert API-provided string to string ID
 
         // Get profile data on a player
         Profile GetProfile(int id);

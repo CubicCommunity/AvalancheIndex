@@ -1,5 +1,8 @@
+# v1.0.0
+### Initial Release
+
 ### v1.0.0-prerelease.1
-###### Core features
+##### Core features
 
 #### Changes
 - **Updated** Geode compatibility to version `4.3.1`

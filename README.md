@@ -3,7 +3,7 @@ Official Avalanche levels and profiles.
 
 > [<img alt="Latest Version" src="https://img.shields.io/github/v/release/CubicCommunity/AvalancheIndex?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](../../releases/)    [<img alt="Code License" src="https://img.shields.io/github/license/CubicCommunity/AvalancheIndex?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
 >  
-> [<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/cubicstudios.avalancheindex.geode?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
+> [<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
 
 Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 

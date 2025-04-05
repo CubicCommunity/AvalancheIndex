@@ -5,13 +5,13 @@
 #include <map>
 
 #include <cocos2d.h>
+#include <matjson.hpp>
 
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/web.hpp>
 
 using namespace geode::prelude;
-using namespace matjson;
 
 namespace avalanche // Avalanche namespace
 {

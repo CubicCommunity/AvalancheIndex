@@ -2,6 +2,8 @@
 #include <chrono>
 #include <map>
 
+#include <matjson.hpp>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/web.hpp>
@@ -9,7 +11,6 @@
 #include "../Avalanche.hpp"
 
 using namespace geode::prelude;
-using namespace matjson;
 
 auto thisMod = geode::getMod();
 

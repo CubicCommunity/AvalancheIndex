@@ -117,7 +117,11 @@ namespace avalanche // Avalanche namespace
             }
             else
             {
-                if (cell_menu != nullptr)
+                if (cell_menu == nullptr)
+                {
+                    log::debug("No username menu provided");
+                }
+                else
                 {
                     log::debug("Found username menu for {}...", profile.name);
 
@@ -152,9 +156,13 @@ namespace avalanche // Avalanche namespace
                     log::info("Finished creating badge for {}", profile.name);
                 };
 
-                if (comment != nullptr)
+                if (comment == nullptr)
                 {
-                    log::debug("Found comment text for {}...", profile.name);
+                    log::debug("No comment text node provided");
+                }
+                else
+                {
+                    log::debug("Found comment text node for {}...", profile.name);
 
                     ccColor3B col = avalanche::Handler::badgeColor[idString];
 

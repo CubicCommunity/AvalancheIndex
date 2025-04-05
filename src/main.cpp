@@ -555,13 +555,15 @@ class $modify(Menu, MenuLayer)
 
 				bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 
+				CCObject *fakeObj = nullptr;
+
 				if (alwaysCheck)
 				{
-					Menu::onCheckForNewAval(nullptr);
+					Menu::onCheckForNewAval(fakeObj);
 				}
 				else if (!pingedProjectData)
 				{
-					Menu::onCheckForNewAval(nullptr);
+					Menu::onCheckForNewAval(fakeObj);
 
 					pingedProjectData = true;
 				}

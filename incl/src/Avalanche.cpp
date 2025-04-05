@@ -2,8 +2,6 @@
 #include <chrono>
 #include <map>
 
-#include <fmt/format.h>
-
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/web.hpp>
@@ -85,7 +83,8 @@ namespace avalanche
 							if (key.empty()) {
                                 log::error("Key for profile is empty or invalid");
                             } else {
-                                thisMod->setSavedValue(fmt::format("cache-badge-p{}", (std::string)key), value);
+                                std::string cacheKey = "cache-badge-p" + key;
+                                thisMod->setSavedValue(cacheKey, value);
                             };
 						};
 
@@ -126,7 +125,8 @@ namespace avalanche
                             if (key.empty()) {
                                 log::error("Key for project is empty or invalid");
                             } else {
-    							thisMod->setSavedValue(fmt::format("cache-level-p{}", (std::string)key), value);
+                                std::string cacheKey = "cache-level-p" + key;
+    							thisMod->setSavedValue(cacheKey, value);
                             };
 						};
 
@@ -159,7 +159,9 @@ namespace avalanche
     {
         if (id > 0)
         {
-            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-p{}", (int)id)); // gets locally saved badge json
+            std::string cacheKey = "cache-badge-p" + std::to_string(id);
+
+            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
             auto lBadge = avalanche::Profile::profileBadgeEnum.find(avalanche::Handler::apiToString[cacheStd["badge"].asString().unwrapOr(und)]);
 
@@ -182,7 +184,9 @@ namespace avalanche
     {
         if (id > 0)
         {
-            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-level-p{}", (int)id)); // gets locally saved level json
+            std::string cacheKey = "cache-level-p" + std::to_string(id);
+
+            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 
             auto lType = avalanche::Project::projectTypeEnum.find(cacheStd["type"].asString().unwrapOr(und));
 

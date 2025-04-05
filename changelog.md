@@ -1,3 +1,9 @@
+### v1.0.0-prerelease.3
+##### iOS Support
+
+#### Changes
+- Supports iOS mobile devices
+
 ### v1.0.0-prerelease.2
 ##### Fixes
 

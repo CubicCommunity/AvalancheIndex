@@ -327,7 +327,6 @@ class $modify(Level, LevelCell)
 
 		if (color && levelName)
 		{
-
 			auto lvl = getHandler.GetProject(level->m_levelID.value());
 			auto levelType = scanForLevelCreator(level);
 

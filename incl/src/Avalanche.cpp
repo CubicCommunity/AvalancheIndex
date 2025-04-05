@@ -2,6 +2,8 @@
 #include <chrono>
 #include <map>
 
+#include <fmt/format.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/web.hpp>
@@ -80,7 +82,11 @@ namespace avalanche
                         auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
 						for (auto& [key, value] : jsonRes) {
-							thisMod->setSavedValue(fmt::format("cache-badge-p{}", key), value);
+							if (key.empty()) {
+                                log::error("Key for profile is empty or invalid");
+                            } else {
+                                thisMod->setSavedValue(fmt::format("cache-badge-p{}", (std::string)key), value);
+                            };
 						};
 
 						if (thisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
@@ -117,7 +123,11 @@ namespace avalanche
                         auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
 						for (auto& [key, value] : jsonRes) {
-							thisMod->setSavedValue(fmt::format("cache-level-p{}", key), value);
+                            if (key.empty()) {
+                                log::error("Key for project is empty or invalid");
+                            } else {
+    							thisMod->setSavedValue(fmt::format("cache-level-p{}", (std::string)key), value);
+                            };
 						};
 
 						if (thisMod->getSettingValue<bool>("web-once")) fetchedLevels = jsonRes;
@@ -147,31 +157,51 @@ namespace avalanche
 
     avalanche::Profile avalanche::Handler::GetProfile(int id)
     {
-        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-p{}", (int)id)); // gets locally saved badge json
+        if (id > 0)
+        {
+            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-badge-p{}", (int)id)); // gets locally saved badge json
 
-        auto lBadge = avalanche::Profile::profileBadgeEnum.find(avalanche::Handler::apiToString[cacheStd["badge"].asString().unwrapOr(und)]);
+            auto lBadge = avalanche::Profile::profileBadgeEnum.find(avalanche::Handler::apiToString[cacheStd["badge"].asString().unwrapOr(und)]);
 
-        auto c_name = cacheStd["name"].asString().unwrapOr(und);
-        auto c_badge = (lBadge != avalanche::Profile::profileBadgeEnum.end()) ? lBadge->second : avalanche::Profile::Badge::NONE;
+            auto c_name = cacheStd["name"].asString().unwrapOr(und);
+            auto c_badge = (lBadge != avalanche::Profile::profileBadgeEnum.end()) ? lBadge->second : avalanche::Profile::Badge::NONE;
 
-        avalanche::Profile res(c_name, c_badge);
-        return res;
+            avalanche::Profile res(c_name, c_badge);
+            return res;
+        }
+        else
+        {
+            log::error("Profile ID is invalid");
+
+            avalanche::Profile res("Name", avalanche::Profile::Badge::NONE);
+            return res;
+        };
     };
 
     avalanche::Project avalanche::Handler::GetProject(int id)
     {
-        matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-level-p{}", (int)id)); // gets locally saved level json
+        if (id > 0)
+        {
+            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(fmt::format("cache-level-p{}", (int)id)); // gets locally saved level json
 
-        auto lType = avalanche::Project::projectTypeEnum.find(cacheStd["type"].asString().unwrapOr(und));
+            auto lType = avalanche::Project::projectTypeEnum.find(cacheStd["type"].asString().unwrapOr(und));
 
-        auto c_name = cacheStd["name"].asString().unwrapOr(und);
-        auto c_host = cacheStd["host"].asString().unwrapOr(und);
-        auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
-        auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
-        auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
+            auto c_name = cacheStd["name"].asString().unwrapOr(und);
+            auto c_host = cacheStd["host"].asString().unwrapOr(und);
+            auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
+            auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
+            auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
-        avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame);
-        return res;
+            avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame);
+            return res;
+        }
+        else
+        {
+            log::error("Project ID is invalid");
+
+            avalanche::Project res("Name", "Host", "https://avalanche.cubicstudios.xyz/", avalanche::Project::Type::NONE, false);
+            return res;
+        };
     };
 
     ccColor3B avalanche::Handler::getCommentColor(Profile::Badge badge)

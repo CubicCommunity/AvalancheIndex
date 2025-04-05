@@ -9,6 +9,7 @@
 #include "../Avalanche.hpp"
 
 using namespace geode::prelude;
+using namespace matjson;
 
 auto thisMod = geode::getMod();
 
@@ -73,39 +74,55 @@ namespace avalanche
     {
         badgeListReq.bind([](web::WebTask::Event *e)
                           {
-			if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok()) {
-					if (fetchedBadges == nullptr) {
-                        auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+            if (web::WebResponse *avalReqRes = e->getValue())
+            {
+                if (avalReqRes->ok())
+                {
+                    if (fetchedBadges == nullptr)
+                    {
+                        if (avalReqRes->json().isOk())
+                        {
+                            auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
-						for (auto& [key, value] : jsonRes) {
-							if (key.empty()) {
-                                log::error("Key for profile is empty or invalid");
-                            } else {
-                                std::string cacheKey = "cache-badge-p" + key;
-                                thisMod->setSavedValue(cacheKey, value);
+                            for (auto &[key, value] : jsonRes)
+                            {
+                                if (key.empty())
+                                {
+                                    log::error("Key for profile is empty or invalid");
+                                }
+                                else
+                                {
+                                    std::string cacheKey = "cache-badge-p" + key;
+                                    thisMod->setSavedValue(cacheKey, value);
+                                };
                             };
-						};
 
-						if (thisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
-                    } else {
+                            if (thisMod->getSettingValue<bool>("web-once"))
+                                fetchedBadges = jsonRes;
+                        };
+                    }
+                    else
+                    {
                         log::error("Already fetched remote data for badges");
                     };
-				} else {
-					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-					if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::error("Badge web request failed");
-				if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
-			}; });
+                }
+                else
+                {
+                    log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
+                    if (thisMod->getSettingValue<bool>("err-notifs"))
+                        Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
+                };
+            }
+            else if (web::WebProgress *p = e->getProgress())
+            {
+                log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
+            }
+            else if (e->isCancelled())
+            {
+                log::error("Badge web request failed");
+                if (thisMod->getSettingValue<bool>("err-notifs"))
+                    Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
+            }; });
 
         auto badgeReq = web::WebRequest(); // send the web request
         badgeReq.userAgent("Avalanche Index mod for Geode");
@@ -115,39 +132,55 @@ namespace avalanche
         // fetch data for all projects
         levelListReq.bind([](web::WebTask::Event *e)
                           {
-			if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok()) {
-					if (fetchedLevels == nullptr) {
-                        auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+            if (web::WebResponse *avalReqRes = e->getValue())
+            {
+                if (avalReqRes->ok())
+                {
+                    if (fetchedLevels == nullptr)
+                    {
+                        if (avalReqRes->json().isOk())
+                        {
+                            auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
-						for (auto& [key, value] : jsonRes) {
-                            if (key.empty()) {
-                                log::error("Key for project is empty or invalid");
-                            } else {
-                                std::string cacheKey = "cache-level-p" + key;
-    							thisMod->setSavedValue(cacheKey, value);
+                            for (auto &[key, value] : jsonRes)
+                            {
+                                if (key.empty())
+                                {
+                                    log::error("Key for project is empty or invalid");
+                                }
+                                else
+                                {
+                                    std::string cacheKey = "cache-level-p" + key;
+                                    thisMod->setSavedValue(cacheKey, value);
+                                };
                             };
-						};
 
-						if (thisMod->getSettingValue<bool>("web-once")) fetchedLevels = jsonRes;
-                    } else {
+                            if (thisMod->getSettingValue<bool>("web-once"))
+                                fetchedLevels = jsonRes;
+                        };
+                    }
+                    else
+                    {
                         log::error("Already fetched remote data for levels");
                     };
-				} else {
-					log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-					if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("level id progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::error("Badge web request failed");
-				if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch level", NotificationIcon::Error, 2.5f)->show();
-			}; });
+                }
+                else
+                {
+                    log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
+                    if (thisMod->getSettingValue<bool>("err-notifs"))
+                        Notification::create("Unable to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
+                };
+            }
+            else if (web::WebProgress *p = e->getProgress())
+            {
+                log::debug("level id progress: {}", p->downloadProgress().value_or(0.f));
+            }
+            else if (e->isCancelled())
+            {
+                log::error("Badge web request failed");
+                if (thisMod->getSettingValue<bool>("err-notifs"))
+                    Notification::create("Unable to fetch level", NotificationIcon::Error, 2.5f)->show();
+            }; });
 
         auto levelReq = web::WebRequest(); // send the web request
         levelReq.userAgent("Avalanche Index mod for Geode");

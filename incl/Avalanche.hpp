@@ -11,6 +11,7 @@
 #include <Geode/utils/web.hpp>
 
 using namespace geode::prelude;
+using namespace matjson;
 
 namespace avalanche // Avalanche namespace
 {

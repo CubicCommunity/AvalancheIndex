@@ -5,7 +5,7 @@
 - Supports iOS operating systems
 
 #### Developers
-- **Fixed** vulnerabilities with data functions
+- **Fixed** some vulnerabilities with data functions
 
 ### v1.0.0-prerelease.2
 ##### Fixes

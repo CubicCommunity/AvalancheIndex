@@ -534,6 +534,7 @@ class $modify(Menu, MenuLayer)
 
 				avalBtn->addChild(m_fields->avalBtnMark);
 
+#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)
 				// add particles on the featured button
 				if (CCParticleSystem *avalBtnParticles = ParticleHelper::createAvalFeaturedParticles(100.0f))
 				{
@@ -551,6 +552,7 @@ class $modify(Menu, MenuLayer)
 
 					avalMenu->addChild(avalBtnParticles);
 				};
+#endif
 
 				bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 

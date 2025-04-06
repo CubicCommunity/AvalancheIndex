@@ -2,7 +2,10 @@
 ##### iOS Support
 
 #### Changes
-- Supports iOS mobile devices
+- Supports iOS operating systems
+
+#### Developers
+- **Fixed** vulnerabilities with data functions
 
 ### v1.0.0-prerelease.2
 ##### Fixes

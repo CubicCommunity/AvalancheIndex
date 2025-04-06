@@ -663,46 +663,55 @@ class $modify(Menu, MenuLayer)
 			m_fields->avalWebListener.bind([this](web::WebTask::Event *e)
 										   {
 				if (web::WebResponse *avalReqRes = e->getValue())
-			{
-				if (avalReqRes->ok())
 				{
-					std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
-				std::string avalWebResultSaved = getThisMod->getSavedValue<std::string>("aval-project-code");
+					if (avalReqRes->ok())
+					{
+						if (avalReqRes->string().isOk())
+						{
+							std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
+							std::string avalWebResultSaved = getThisMod->getSavedValue<std::string>("aval-project-code");
 
-				bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
+							bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
 
-				log::debug("Project code '{}' fetched remotely", avalWebResultUnwrapped);
+							log::debug("Project code '{}' fetched remotely", avalWebResultUnwrapped);
 
-				if (avalWebResultUnwrapped != avalWebResultSaved || !isChecked)
-				{
-					getThisMod->setSavedValue("checked-aval-project", false);
+							if ((avalWebResultUnwrapped == avalWebResultSaved) || isChecked)
+							{
+								m_fields->avalBtnGlow->setVisible(false);
+								m_fields->avalBtnMark->setVisible(false);
+							}
+							else
+							{
+								getThisMod->setSavedValue("checked-aval-project", false);
 
-					m_fields->avalBtnGlow->setVisible(true);
-					m_fields->avalBtnMark->setVisible(true);
+								m_fields->avalBtnGlow->setVisible(true);
+								m_fields->avalBtnMark->setVisible(true);
+							};
+
+							getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
+						}
+						else
+						{
+							log::error("Failed to fetch Avalanche featured project code");
+						};
+					}
+					else
+					{
+						log::error("Unable to check server for new Avalanche featured project");
+						if (getThisMod->getSettingValue<bool>("err-notifs"))
+							Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+					};
 				}
-				else
+				else if (web::WebProgress *p = e->getProgress())
 				{
-					m_fields->avalBtnGlow->setVisible(false);
-					m_fields->avalBtnMark->setVisible(false);
-				};
-
-				getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
+					log::debug("Avalanche project code progress: {}", p->downloadProgress().value_or(0.f));
 				}
-				else
+				else if (e->isCancelled())
 				{
-					log::error("Unable to check server for new Avalanche featured project");
-					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
-				};
-			}
-			else if (web::WebProgress *p = e->getProgress())
-			{
-				log::debug("Avalanche project code progress: {}", p->downloadProgress().value_or(0.f));
-			}
-			else if (e->isCancelled())
-			{
-				log::debug("Unable to check server for new Avalanche featured project");
-				if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
-			}; });
+					log::debug("Unable to check server for new Avalanche featured project");
+					if (getThisMod->getSettingValue<bool>("err-notifs"))
+						Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+				}; });
 
 			auto avalReq = web::WebRequest();
 			m_fields->avalWebListener.setFilter(avalReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/code.txt"));

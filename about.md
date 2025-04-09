@@ -3,17 +3,17 @@
 
 Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 
-> <cy>*This mod has settings you can utilize to customize your experience.*</c>
+>![icon](frame:GJ_infoIcon_001.png?scale=0.5) <cg>*This mod has settings you can utilize to customize your experience.*</c>
 
 ### Badges
 ###### The members of Avalanche.
 When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team, unless they are the publisher of the level.
 
-- ![icon](cubicstudios.avalancheindex/director.png) Director
-- ![icon](cubicstudios.avalancheindex/team-manager.png) Team Manager
-- ![icon](cubicstudios.avalancheindex/team-member.png) Team Member
-- ![icon](cubicstudios.avalancheindex/collaborator.png) Collaborator
-- ![icon](cubicstudios.avalancheindex/cubic-studios.png) **Cubic Studios** Staff
+- ![icon](cubicstudios.avalancheindex/director.png?scale=0.625) Director
+- ![icon](cubicstudios.avalancheindex/team-manager.png?scale=0.625) Team Manager
+- ![icon](cubicstudios.avalancheindex/team-member.png?scale=0.625) Team Member
+- ![icon](cubicstudios.avalancheindex/collaborator.png?scale=0.625) Collaborator
+- ![icon](cubicstudios.avalancheindex/cubic-studios.png?scale=0.625) **Cubic Studios** Staff
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
 

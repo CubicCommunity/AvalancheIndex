@@ -77,4 +77,4 @@ You are not required to update data manually as this mod does it by itself! Happ
 
 ### Users
 ###### Regular users of this mod.
-**[📱 Learn about this mod](../../)**
+**[📱 Learn about this mod](../)**

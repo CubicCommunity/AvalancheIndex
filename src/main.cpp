@@ -4,9 +4,10 @@
 #include "./headers/AvalancheFeatured.hpp"
 
 #include <string>
-#include <format>
 #include <chrono>
 #include <map>
+
+#include <fmt/format.h>
 
 #include <Geode/Geode.hpp>
 
@@ -373,7 +374,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 		createQuickPopup(
 			proj.name.c_str(),
-			std::format("<cy>{}</c> - <cg>'{}'</c> is {}. You can watch its showcase here.", proj.host.c_str(), proj.name.c_str(), typeOfProj).c_str(),
+			fmt::format("<cy>{}</c> - <cg>'{}'</c> is {}. You can watch its showcase here.", proj.host.c_str(), proj.name.c_str(), typeOfProj).c_str(),
 			"OK", "Watch",
 			[proj](auto, bool btn2)
 			{

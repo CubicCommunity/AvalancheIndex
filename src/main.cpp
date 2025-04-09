@@ -373,7 +373,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 		createQuickPopup(
 			proj.name.c_str(),
-			std::format("<cy>{}</c> - <cg>'{}'</c> is {}. You can watch its showcase here.", proj.host, proj.name, typeOfProj).c_str(),
+			std::format("<cy>{}</c> - <cg>'{}'</c> is {}. You can watch its showcase here.", proj.host.c_str(), proj.name.c_str(), typeOfProj).c_str(),
 			"OK", "Watch",
 			[proj](auto, bool btn2)
 			{

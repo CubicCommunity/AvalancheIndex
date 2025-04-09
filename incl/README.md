@@ -74,3 +74,7 @@ class $modify(Level, LevelCell)
 ```
 
 You are not required to update data manually as this mod does it by itself! Happy modding!
+
+### Users
+###### Regular users of this mod.
+**[📱 Learn about this mod](../../)**

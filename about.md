@@ -25,12 +25,12 @@ When viewing level cells or pages, you may notice the changes in the background 
 - **<cl>Slate Blue</c> `#464D75`** - Solo level
 - **<cy>Acid Yellow</c> `#D3CF00`** - Event level
 
-Levels that show a certain glow emerging from the side are levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
+Level cells with a glow emerging from the side represent levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
 
 ### Featured
 ###### The up-and-coming Avalanche project.
 In the main menu, you may see a button in the center with the Avalanche logo. When pressed, it will create a pop-up displaying the latest Avalanche team project. You will have the option to check out the latest video or update of the project. The information button may direct you to fill out an application to join the team to then begin working on the project if you wish.
 
 ### Developers
-###### This mod is developed and maintained by members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.
+###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.
 - **[Cheeseworks](user:6408873)**

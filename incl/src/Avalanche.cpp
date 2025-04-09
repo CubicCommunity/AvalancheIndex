@@ -1,4 +1,5 @@
 #include <string>
+#include <format>
 #include <chrono>
 #include <map>
 
@@ -116,7 +117,7 @@ namespace avalanche
             }
             else if (web::WebProgress *p = e->getProgress())
             {
-                log::debug("badge id progress: {}", p->downloadProgress().value_or(0.f));
+                log::debug("badge id progress: {}", (float)p->downloadProgress().value_or(0.f));
             }
             else if (e->isCancelled())
             {
@@ -174,7 +175,7 @@ namespace avalanche
             }
             else if (web::WebProgress *p = e->getProgress())
             {
-                log::debug("level id progress: {}", p->downloadProgress().value_or(0.f));
+                log::debug("level id progress: {}", (float)p->downloadProgress().value_or(0.f));
             }
             else if (e->isCancelled())
             {
@@ -193,7 +194,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = "cache-badge-p" + std::to_string(id);
+            std::string cacheKey = std::format("cache-badge-p{}", (int)id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
@@ -218,7 +219,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = "cache-level-p" + std::to_string(id);
+            std::string cacheKey = std::format("cache-level-p{}", (int)id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 

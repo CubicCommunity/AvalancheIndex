@@ -4,7 +4,7 @@
 #include "./headers/AvalancheFeatured.hpp"
 
 #include <string>
-#include <vector>
+#include <format>
 #include <chrono>
 #include <map>
 
@@ -59,7 +59,7 @@ class $modify(ProfilePage)
 			Profile plr = getHandler.GetProfile(user->m_accountID);
 			getHandler.createBadge(plr, cell_menu, fakeText, 0.875f, this);
 
-			log::debug("Viewing profile of ID {}", user->m_accountID);
+			log::debug("Viewing profile of ID {}", (int)user->m_accountID);
 		};
 	};
 };
@@ -81,7 +81,7 @@ class $modify(CommentCell)
 			auto commentText = dynamic_cast<CCLabelBMFont *>(m_mainLayer->getChildByID("comment-text-label"));
 
 			// checks if commenter published level
-			log::debug("Checking comment on level of ID {}...", comment->m_levelID);
+			log::debug("Checking comment on level of ID {}...", (int)comment->m_levelID);
 
 			if (getThisMod->getSettingValue<bool>("comments"))
 			{
@@ -115,7 +115,7 @@ class $modify(CommentCell)
 			Profile plr = getHandler.GetProfile(comment->m_accountID);
 			getHandler.createBadge(plr, cell_menu, commentText, 0.55f, this);
 
-			log::debug("Viewing comment profile of ID {}", comment->m_accountID);
+			log::debug("Viewing comment profile of ID {}", (int)comment->m_accountID);
 		};
 	};
 };
@@ -135,18 +135,18 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 		// must be public
 		if (notPublic)
 		{
-			log::error("Level {} is unlisted", level->m_levelID.value());
+			log::error("Level {} is unlisted", (int)level->m_levelID.value());
 
 			return Project::Type::NONE;
 		}
 		else
 		{
-			log::debug("Level {} is publicly listed!", level->m_levelID.value());
+			log::debug("Level {} is publicly listed!", (int)level->m_levelID.value());
 
 			// checks if owned by publisher account
 			if (level->m_accountID.value() == ACC_PUBLISHER)
 			{
-				log::debug("Level {} is Avalanche team project", level->m_levelID.value());
+				log::debug("Level {} is Avalanche team project", (int)level->m_levelID.value());
 
 				return Project::Type::TEAM;
 			}
@@ -155,7 +155,7 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 				// checks if level is published by a team member
 				if (notSolo)
 				{
-					log::error("Level {} not associated with Avalanche", level->m_levelID.value());
+					log::error("Level {} not associated with Avalanche", (int)level->m_levelID.value());
 
 					return Project::Type::NONE;
 				}
@@ -164,13 +164,13 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 					// checks if level is rated
 					if (level->m_stars.value() >= 1)
 					{
-						log::debug("Level {} is Avalanche team member solo", level->m_levelID.value());
+						log::debug("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
 
 						return Project::Type::SOLO;
 					}
 					else
 					{
-						log::error("Level {} is unrated", level->m_levelID.value());
+						log::error("Level {} is unrated", (int)level->m_levelID.value());
 
 						return Project::Type::NONE;
 					};
@@ -186,6 +186,11 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 
 class $modify(LevelInfo, LevelInfoLayer)
 {
+	struct Fields
+	{
+		Project avalProject;
+	};
+
 	// modified vanilla init function
 	bool init(GJGameLevel *level, bool challenge)
 	{
@@ -206,6 +211,41 @@ class $modify(LevelInfo, LevelInfoLayer)
 			// whether or not display for classics only
 			bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
+			CCMenu *leftMenu = typeinfo_cast<CCMenu *>(this->getChildByID("left-side-menu"));
+
+			Project thisProj = getHandler.GetProject(level->m_levelID.value());
+
+			if (thisProj.type != Project::Type::NONE)
+				m_fields->avalProject = thisProj;
+
+			if (thisProj.type == Project::Type::NONE)
+			{
+				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+			}
+			else
+			{
+				CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
+
+				CCSprite *avalBtnSpriteIcon = CCSprite::create("button-icon.png"_spr);
+				avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
+				avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
+				avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
+				avalBtnSpriteIcon->setAnchorPoint({0.5, 0.5});
+				avalBtnSpriteIcon->setScale(0.875f);
+
+				avalBtnSprite->addChild(avalBtnSpriteIcon);
+
+				CCMenuItemSpriteExtra *avalBtn = CCMenuItemSpriteExtra::create(
+					avalBtnSprite,
+					this,
+					menu_selector(LevelInfo::onAvalancheButton));
+				avalBtn->setID("avalanche-button"_spr);
+				avalBtn->setZOrder(1);
+
+				leftMenu->addChild(avalBtn);
+				leftMenu->updateLayout();
+			};
+
 			auto levelType = scanForLevelCreator(level);
 
 			if (levelType == Project::Type::SOLO)
@@ -214,7 +254,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 				{
 					if (onlyClassic)
 					{
-						log::error("Solo level {} is platformer", level->m_levelID.value());
+						log::error("Solo level {} is platformer", (int)level->m_levelID.value());
 					}
 					else
 					{
@@ -228,11 +268,11 @@ class $modify(LevelInfo, LevelInfoLayer)
 				{
 					if (level->isPlatformer())
 					{
-						log::error("Team level {} is platformer", level->m_levelID.value());
+						log::error("Team level {} is platformer", (int)level->m_levelID.value());
 					}
 					else if (level->m_unlisted)
 					{
-						log::error("Team level {} is unlisted", level->m_levelID.value());
+						log::error("Team level {} is unlisted", (int)level->m_levelID.value());
 					}
 					else
 					{
@@ -302,6 +342,48 @@ class $modify(LevelInfo, LevelInfoLayer)
 	{
 		background->setColor({211, 207, 0});
 	};
+
+	void onAvalancheButton(CCObject *sender)
+	{
+		auto proj = m_fields->avalProject;
+
+		auto typeOfProj = "an official <cl>Avalanche</c> project";
+
+		switch (proj.type) {
+			case Project::Type::TEAM:
+			typeOfProj = "an <cl>Avalanche</c> <cy>team project</c>";
+			break;
+
+			case Project::Type::COLLAB:
+			typeOfProj = "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
+			break;
+
+			case Project::Type::EVENT:
+			typeOfProj = "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
+			break;
+
+			case Project::Type::SOLO:
+			typeOfProj = "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
+			break;
+
+			default:
+			typeOfProj = "an official <cl>Avalanche</c> project";
+			break;
+		};
+
+		createQuickPopup(
+			proj.name.c_str(),
+			std::format("<cy>{}</c> - <cg>'{}'</c> is {}. You can watch its showcase here.", proj.host, proj.name, typeOfProj).c_str(),
+			"OK", "Watch",
+			[proj](auto, bool btn2)
+			{
+				if (btn2)
+				{
+					web::openLinkInBrowser(proj.showcase_url);
+				};
+			},
+			true);
+	};
 };
 
 class $modify(Level, LevelCell)
@@ -336,7 +418,7 @@ class $modify(Level, LevelCell)
 				{
 					if (onlyClassic)
 					{
-						log::error("Solo level {} is platformer", level->m_levelID.value());
+						log::error("Solo level {} is platformer", (int)level->m_levelID.value());
 					}
 					else
 					{
@@ -350,11 +432,11 @@ class $modify(Level, LevelCell)
 				{
 					if (level->isPlatformer())
 					{
-						log::error("Team level {} is platformer", level->m_levelID.value());
+						log::error("Team level {} is platformer", (int)level->m_levelID.value());
 					}
 					else if (level->m_unlisted)
 					{
-						log::error("Team level {} is unlisted", level->m_levelID.value());
+						log::error("Team level {} is unlisted", (int)level->m_levelID.value());
 					}
 					else
 					{
@@ -706,7 +788,7 @@ class $modify(Menu, MenuLayer)
 				}
 				else if (web::WebProgress *p = e->getProgress())
 				{
-					log::debug("Avalanche project code progress: {}", p->downloadProgress().value_or(0.f));
+					log::debug("Avalanche project code progress: {}", (float)p->downloadProgress().value_or(0.f));
 				}
 				else if (e->isCancelled())
 				{

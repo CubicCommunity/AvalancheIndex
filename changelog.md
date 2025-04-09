@@ -1,3 +1,9 @@
+### v1.0.0-prerelease.4
+##### Level information layer
+
+#### Changes
+- **Added** Avalanche button in level page
+
 ### v1.0.0-prerelease.3
 ##### iOS Support
 

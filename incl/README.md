@@ -11,7 +11,16 @@ You can access data from the Avalanche Index by including the [`Avalanche.hpp`](
 using namespace avalanche;
 ```
 
-Use the `Handler` class's functions through `Handler::get()` to access functions that fetch saved data on badges and levels. Some fields may contain data based in `Project::Type` and `Profile::Badge` enum classes.
+Use the `Handler` class's methods to access methods that fetch saved data on badges and levels. Some fields may contain data based in `Project::Type` and `Profile::Badge` enum classes.
+
+> [!IMPORTANT]
+> To utilize `Handler`'s methods, you **must** initialize the class with **`Handler::get()`** beforehand. Otherwise, crucial non-static methods will not be accessible.
+>
+> ```cpp
+> Handler getHandler = Handler::get();
+> ```
+>
+> This will return an object, be sure to use the **dot operator** (`.`) to access methods.
 
 ```cpp
 using namespace avalanche;
@@ -20,22 +29,22 @@ Handler getHandler = Handler::get();
 
 class $modify(ProfilePage)
 {
-	void loadPageFromUserInfo(GJUserScore *user)
-	{
-		ProfilePage::loadPageFromUserInfo(user);
+    void loadPageFromUserInfo(GJUserScore *user)
+    {
+        ProfilePage::loadPageFromUserInfo(user);
 
-		Profile avalUser = getHandler.GetProfile(user->m_accountID);
+        Profile avalUser = getHandler.GetProfile(user->m_accountID);
 
-		if (avalUser.badge != Profile::Badge::NONE)
+        if (avalUser.badge != Profile::Badge::NONE)
         {
             log::info("{} is an Avalanche member! Hooray!", avalUser.name);
 
-			if (avalUser.badge == Profile::Badge::DIRECTOR)
-			{
-				log::info("Woah! {} is the director of Avalanche!", avalUser.name);
-			};
+            if (avalUser.badge == Profile::Badge::DIRECTOR)
+            {
+                log::info("Woah! {} is the director of Avalanche!", avalUser.name);
+            };
         };
-	};
+    };
 };
 ```
 

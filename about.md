@@ -3,7 +3,7 @@
 
 Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 
-<cy>*This mod has settings you can utilize to customize your experience.*</c>
+> <cy>*This mod has settings you can utilize to customize your experience.*</c>
 
 ### Badges
 ###### The members of Avalanche.

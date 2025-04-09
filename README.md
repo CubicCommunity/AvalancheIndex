@@ -7,7 +7,8 @@ Official Avalanche levels and profiles.
 
 Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 
-*This mod has settings you can utilize to customize your experience.*
+> [!TIP]
+> *This mod has settings you can utilize to customize your experience.*
 
 ### Badges
 ###### The members of Avalanche.

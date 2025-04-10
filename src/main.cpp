@@ -80,7 +80,7 @@ class $modify(CommentCell)
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
 
-			auto commentText = dynamic_cast<TextArea *>(m_mainLayer->getChildByID("comment-text-area")); // big comment
+			auto commentText = dynamic_cast<TextArea *>(m_mainLayer->getChildByID("comment-text-area"));	   // big comment
 			auto commentFont = dynamic_cast<CCLabelBMFont *>(m_mainLayer->getChildByID("comment-text-label")); // smol comment
 
 			// checks if commenter published level
@@ -209,7 +209,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 			// get level name node
 			auto nameText = this->getChildByID("title-label");
-			auto levelName = as<CCLabelBMFont *>(nameText);
+			auto levelName = dynamic_cast<CCLabelBMFont *>(nameText);
 
 			// whether or not display for classics only
 			bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
@@ -306,39 +306,62 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void setTeamDisplay(CCSprite *background, CCLabelBMFont *levelName)
 	{
-		auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
-		bgSprite->setColor({66, 94, 255});
-		bgSprite->setAnchorPoint({0.5, 0.5});
-		bgSprite->ignoreAnchorPointForPosition(false);
-		bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
-		bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
-		bgSprite->setZOrder(background->getZOrder());
-		bgSprite->setID("team_background"_spr);
+		if (background == nullptr || levelName == nullptr)
+		{
+			log::error("Cannot set team project display with missing background or level text nodes");
+		}
+		else
+		{
+			auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
+			bgSprite->setColor({66, 94, 255});
+			bgSprite->setAnchorPoint({0.5, 0.5});
+			bgSprite->ignoreAnchorPointForPosition(false);
+			bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
+			bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
+			bgSprite->setZOrder(background->getZOrder());
+			bgSprite->setID("team_background"_spr);
 
-		auto bgThumbnail = CCSprite::create("background.png"_spr);
-		bgThumbnail->setOpacity(75);
-		bgThumbnail->setAnchorPoint({0, 0});
-		bgThumbnail->ignoreAnchorPointForPosition(false);
-		bgThumbnail->setPosition({0, 0});
-		bgThumbnail->setZOrder(background->getZOrder() + 1);
-		bgThumbnail->setID("team_thumbnail"_spr);
+			auto bgThumbnail = CCSprite::create("background.png"_spr);
+			bgThumbnail->setOpacity(75);
+			bgThumbnail->setAnchorPoint({0, 0});
+			bgThumbnail->ignoreAnchorPointForPosition(false);
+			bgThumbnail->setPosition({0, 0});
+			bgThumbnail->setZOrder(background->getZOrder() + 1);
+			bgThumbnail->setID("team_thumbnail"_spr);
 
-		float scaleFactor = bgSprite->getContentWidth() / bgThumbnail->getContentWidth();
-		bgThumbnail->setScale(scaleFactor);
+			auto ogWidth = bgSprite->getContentWidth();
+			auto scaledWidth = bgThumbnail->getContentWidth();
 
-		background->setColor({66, 94, 255});
-		background->setZOrder(-5);
+			if (ogWidth <= 0 || scaledWidth <= 0)
+			{
+				log::error("Invalid scaled content dimensions");
+			}
+			else
+			{
+				float scaleFactor = ogWidth / scaledWidth;
+				bgThumbnail->setScale(scaleFactor);
+			};
 
-		auto levelNameOgWidth = levelName->getScaledContentWidth();
+			background->setColor({66, 94, 255});
+			background->setZOrder(-5);
 
-		levelName->setFntFile("gjFont59.fnt");
+			auto levelNameOgWidth = levelName->getScaledContentWidth();
 
-		auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
+			levelName->setFntFile("gjFont59.fnt");
 
-		levelName->setScale(levelName->getScale() * scaleDownBy);
+			if (levelNameOgWidth <= 0)
+			{
+				log::error("Invalid scaled text dimensions");
+			}
+			else
+			{
+				auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
+				levelName->setScale(levelName->getScale() * scaleDownBy);
+			};
 
-		this->addChild(bgSprite);
-		this->addChild(bgThumbnail);
+			this->addChild(bgSprite);
+			this->addChild(bgThumbnail);
+		};
 	};
 
 	void setEventDisplay(CCSprite *background)

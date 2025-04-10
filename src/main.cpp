@@ -347,14 +347,14 @@ class $modify(LevelInfo, LevelInfoLayer)
 	{
 		auto proj = m_fields->avalProject;
 
-		auto hosted = proj.host.c_str();
+		auto hosted = proj.host;
 		std::ostringstream typeOfProj; // for ios
 
 		switch (proj.type)
 		{
 		case Project::Type::TEAM:
 			hosted = "Avalanche";
-			typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host.c_str() << "</c>";
+			typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host << "</c>";
 			break;
 
 		case Project::Type::COLLAB:
@@ -377,11 +377,11 @@ class $modify(LevelInfo, LevelInfoLayer)
 		std::ostringstream body; // for ios
 		body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << proj.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
 
-		std::string resultBody = body.str().c_str();
+		std::string resultBody = body.str();
 
 		createQuickPopup(
 			proj.name.c_str(),
-			resultBody,
+			resultBody.c_str(),
 			"OK", "Watch",
 			[proj](auto, bool btn2)
 			{

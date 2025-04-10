@@ -54,10 +54,11 @@ class $modify(ProfilePage)
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
 
-			CCLabelBMFont *fakeText = nullptr;
+			TextArea *fakeText = nullptr;
+			CCLabelBMFont *fakeFont = nullptr;
 
 			Profile plr = getHandler.GetProfile(user->m_accountID);
-			getHandler.createBadge(plr, cell_menu, fakeText, 0.875f, this);
+			getHandler.createBadge(plr, cell_menu, fakeText, fakeFont, 0.875f, this);
 
 			log::debug("Viewing profile of ID {}", (int)user->m_accountID);
 		};
@@ -78,7 +79,9 @@ class $modify(CommentCell)
 			// gets a copy of the main layer
 			auto mLayer = m_mainLayer;
 			CCMenu *cell_menu = typeinfo_cast<CCMenu *>(mLayer->getChildByIDRecursive("username-menu"));
-			auto commentText = dynamic_cast<CCLabelBMFont *>(m_mainLayer->getChildByID("comment-text-label"));
+
+			auto commentText = dynamic_cast<TextArea *>(m_mainLayer->getChildByID("comment-text-area")); // big comment
+			auto commentFont = dynamic_cast<CCLabelBMFont *>(m_mainLayer->getChildByID("comment-text-label")); // smol comment
 
 			// checks if commenter published level
 			log::debug("Checking comment on level of ID {}...", (int)comment->m_levelID);
@@ -113,7 +116,7 @@ class $modify(CommentCell)
 			};
 
 			Profile plr = getHandler.GetProfile(comment->m_accountID);
-			getHandler.createBadge(plr, cell_menu, commentText, 0.55f, this);
+			getHandler.createBadge(plr, cell_menu, commentText, commentFont, 0.55f, this);
 
 			log::debug("Viewing comment profile of ID {}", (int)comment->m_accountID);
 		};

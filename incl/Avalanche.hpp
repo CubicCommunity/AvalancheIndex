@@ -105,7 +105,7 @@ namespace avalanche // Avalanche namespace
 
         // Create the badge to appear next to the player's username
         template <typename T>
-        void createBadge(Profile profile, CCMenu *cell_menu, CCLabelBMFont *comment, float size, T pointer)
+        void createBadge(Profile profile, CCMenu *cell_menu, TextArea *cmntText, CCLabelBMFont *cmntFont, float size, T pointer)
         {
             log::debug("Creating badge for {}...", profile.name);
 
@@ -157,7 +157,7 @@ namespace avalanche // Avalanche namespace
                     log::info("Finished creating badge for {}", profile.name);
                 };
 
-                if (comment == nullptr)
+                if (cmntText == nullptr && cmntFont == nullptr)
                 {
                     log::debug("No comment text node provided");
                 }
@@ -167,8 +167,22 @@ namespace avalanche // Avalanche namespace
 
                     ccColor3B col = avalanche::Handler::badgeColor[idString];
 
-                    comment->setColor({col.r, col.g, col.b});
-                    comment->setOpacity(255);
+                    if (cmntText)
+                    {
+                        cmntText->setColor(col);
+                        cmntText->colorAllLabels(col);
+                        cmntText->colorAllCharactersTo(col);
+                        cmntText->setOpacity(255);
+                    }
+                    else if (cmntFont)
+                    {
+                        cmntFont->setColor(col);
+                        cmntFont->setOpacity(255);
+                    }
+                    else
+                    {
+                        log::error("No comment text node found");
+                    };
 
                     log::info("Finished changing comment text color for {}", profile.name);
                 };

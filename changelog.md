@@ -3,6 +3,7 @@
 
 #### Changes
 - **Added** Avalanche button in level page
+- **Fixed** comment text not coloring when cell is default size
 
 ### v1.0.0-prerelease.3
 ##### iOS Support

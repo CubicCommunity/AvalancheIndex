@@ -99,6 +99,7 @@ class $modify(CommentCell)
 						log::info("Commenter {} is level publisher", comment->m_userName);
 
 						commentText = nullptr;
+						commentFont = nullptr;
 					}
 					else
 					{
@@ -306,60 +307,75 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void setTeamDisplay(CCSprite *background, CCLabelBMFont *levelName)
 	{
-		if (background == nullptr || levelName == nullptr)
+		if (!background || !levelName)
 		{
 			log::error("Cannot set team project display with missing background or level text nodes");
-		}
-		else
+			return;
+		};
+
+		auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
+		if (!bgSprite)
 		{
-			auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
-			bgSprite->setColor({66, 94, 255});
-			bgSprite->setAnchorPoint({0.5, 0.5});
-			bgSprite->ignoreAnchorPointForPosition(false);
-			bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
-			bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
-			bgSprite->setZOrder(background->getZOrder());
-			bgSprite->setID("team_background"_spr);
+			log::error("Failed to load sprite frame: game_bg_19_001.png");
+			return;
+		};
 
-			auto bgThumbnail = CCSprite::create("background.png"_spr);
-			bgThumbnail->setOpacity(75);
-			bgThumbnail->setAnchorPoint({0, 0});
-			bgThumbnail->ignoreAnchorPointForPosition(false);
-			bgThumbnail->setPosition({0, 0});
-			bgThumbnail->setZOrder(background->getZOrder() + 1);
-			bgThumbnail->setID("team_thumbnail"_spr);
+		bgSprite->setColor({66, 94, 255});
+		bgSprite->setAnchorPoint({0.5, 0.5});
+		bgSprite->ignoreAnchorPointForPosition(false);
+		bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
+		bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
+		bgSprite->setZOrder(background->getZOrder());
+		bgSprite->setID("team_background"_spr);
 
-			auto ogWidth = bgSprite->getContentWidth();
-			auto scaledWidth = bgThumbnail->getContentWidth();
+		auto bgThumbnail = CCSprite::create("background.png"_spr);
+		if (!bgThumbnail)
+		{
+			log::error("Failed to load sprite: background.png");
+			return;
+		};
 
-			if (ogWidth <= 0 || scaledWidth <= 0)
-			{
-				log::error("Invalid scaled content dimensions");
-			}
-			else
-			{
-				float scaleFactor = ogWidth / scaledWidth;
-				bgThumbnail->setScale(scaleFactor);
-			};
+		bgThumbnail->setOpacity(75);
+		bgThumbnail->setAnchorPoint({0, 0});
+		bgThumbnail->ignoreAnchorPointForPosition(false);
+		bgThumbnail->setPosition({0, 0});
+		bgThumbnail->setZOrder(background->getZOrder() + 1);
+		bgThumbnail->setID("team_thumbnail"_spr);
 
-			background->setColor({66, 94, 255});
-			background->setZOrder(-5);
+		auto ogWidth = bgSprite->getContentWidth();
+		auto scaledWidth = bgThumbnail->getContentWidth();
 
-			auto levelNameOgWidth = levelName->getScaledContentWidth();
+		if (ogWidth <= 0 || scaledWidth <= 0)
+		{
+			log::error("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero width");
+			return;
+		};
 
-			levelName->setFntFile("gjFont59.fnt");
+		float scaleFactor = ogWidth / scaledWidth;
+		bgThumbnail->setScale(scaleFactor);
 
-			if (levelNameOgWidth <= 0)
-			{
-				log::error("Invalid scaled text dimensions");
-			}
-			else
-			{
-				auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
-				levelName->setScale(levelName->getScale() * scaleDownBy);
-			};
+		background->setColor({66, 94, 255});
+		background->setZOrder(-5);
 
+		auto levelNameOgWidth = levelName->getScaledContentWidth();
+		levelName->setFntFile("gjFont59.fnt");
+		if (levelNameOgWidth <= 0)
+		{
+			log::error("Invalid level name dimensions: Original width is zero");
+			return;
+		};
+
+		auto scaleDownBy = levelNameOgWidth / levelName->getScaledContentWidth();
+		levelName->setScale(levelName->getScale() * scaleDownBy);
+
+		// Add children only if valid
+		if (bgSprite)
+		{
 			this->addChild(bgSprite);
+		};
+
+		if (bgThumbnail)
+		{
 			this->addChild(bgThumbnail);
 		};
 	};

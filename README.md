@@ -36,7 +36,7 @@ When viewing level cells or pages, you may notice the changes in the background 
 
 Level cells with a glow emerging from the side represent levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
 
-If a level is featured on Avalanche's servers, you may see a button with the Avalanche logo appear on the left side menu on the level's information page. Pressing this will create a pop-up giving more information about the level as a project by the team, whether it's a collaboration, event, or even solo.
+If a level is featured on Avalanche's servers, you may see a button with the Avalanche logo appear on the left side menu on the level's information page. Pressing this will create a pop-up giving more information about the level as a project by the team, the type of project it is, its host, etc.
 
 ### Featured
 ###### The up-and-coming Avalanche project.

@@ -3,11 +3,10 @@
 #include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
 
+#include <ostream>
 #include <string>
 #include <chrono>
 #include <map>
-
-#include <fmt/format.h>
 
 #include <Geode/Geode.hpp>
 
@@ -348,33 +347,41 @@ class $modify(LevelInfo, LevelInfoLayer)
 	{
 		auto proj = m_fields->avalProject;
 
-		auto typeOfProj = "an official <cl>Avalanche</c> project";
+		auto hosted = proj.host.c_str();
+		std::ostringstream typeOfProj; // for ios
 
-		switch (proj.type) {
-			case Project::Type::TEAM:
-			typeOfProj = "an <cl>Avalanche</c> <cy>team project</c>";
+		switch (proj.type)
+		{
+		case Project::Type::TEAM:
+			hosted = "Avalanche";
+			typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host.c_str() << "</c>";
 			break;
 
-			case Project::Type::COLLAB:
-			typeOfProj = "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
+		case Project::Type::COLLAB:
+			typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
 			break;
 
-			case Project::Type::EVENT:
-			typeOfProj = "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
+		case Project::Type::EVENT:
+			typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
 			break;
 
-			case Project::Type::SOLO:
-			typeOfProj = "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
+		case Project::Type::SOLO:
+			typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
 			break;
 
-			default:
-			typeOfProj = "an official <cl>Avalanche</c> project";
+		default:
+			typeOfProj << "an official <cl>Avalanche</c> project";
 			break;
 		};
 
+		std::ostringstream body; // for ios
+		body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << proj.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
+
+		std::string resultBody = body.str().c_str();
+
 		createQuickPopup(
 			proj.name.c_str(),
-			fmt::format("<cy>{}</c> - <cg>'{}'</c> is {}. You can watch its showcase here.", proj.host.c_str(), proj.name.c_str(), typeOfProj).c_str(),
+			resultBody,
 			"OK", "Watch",
 			[proj](auto, bool btn2)
 			{

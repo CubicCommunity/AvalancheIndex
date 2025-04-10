@@ -5,8 +5,6 @@
 
 #include <matjson.hpp>
 
-#include <fmt/format.h>
-
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/web.hpp>
@@ -196,7 +194,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = fmt::format("cache-badge-p{}", (int)id);
+            std::string cacheKey = std::string("cache-badge-p") + std::to_string(id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
@@ -221,7 +219,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = fmt::format("cache-level-p{}", (int)id);
+            std::string cacheKey = std::string("cache-level-p") + std::to_string(id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 

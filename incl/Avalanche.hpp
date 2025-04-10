@@ -169,8 +169,6 @@ namespace avalanche // Avalanche namespace
 
                     if (cmntText)
                     {
-                        cmntText->setColor(col);
-                        cmntText->colorAllLabels(col);
                         cmntText->colorAllCharactersTo(col);
                         cmntText->setOpacity(255);
                     }

@@ -64,3 +64,7 @@
 - **Added** complete implementation of mod API
   - **Transferred** all enums to API
   - **Transferred** all data functions to API
+
+---
+
+Code inherited from prototype mod **ObsidianGD Badges**.

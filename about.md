@@ -3,7 +3,7 @@
 
 Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
 
-> ![icon](frame:GJ_infoIcon_001.png?scale=0.5) <cg>*This mod has settings you can utilize to customize your experience.*</c>
+> ![icon](frame:collaborationIcon_001.png) <cg>*This mod has settings you can utilize to customize your experience.*</c>
 
 ### Badges
 ###### The members of Avalanche.
@@ -29,10 +29,11 @@ Level cells with a glow emerging from the side represent levels in Avalanche's h
 
 If a level is featured on Avalanche's servers, you may see a button with the Avalanche logo appear on the left side menu on the level's information page. Pressing this will create a pop-up giving more information about the level as a project by the team, the type of project it is, its host, etc.
 
+> ![icon](frame:GJ_infoIcon_001.png?scale=0.5) <cj>On iOS, the team project visuals may not appear due to seemingly different node structuring. Once the tools to navigate this are ready, the issue shall be solved.</c>
+
 ### Featured
 ###### The up-and-coming Avalanche project.
 In the main menu, you may see a button in the center with the Avalanche logo. When pressed, it will create a pop-up displaying the latest Avalanche team project. You will have the option to check out the latest video or update of the project. The information button may direct you to fill out an application to join the team to then begin working on the project if you wish.
 
 ### Developers
 ###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [Avalanche](https://avalanche.cubicstudios.xyz/) team.
-- **[Cheeseworks](user:6408873)**

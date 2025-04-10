@@ -38,13 +38,12 @@ Level cells with a glow emerging from the side represent levels in Avalanche's h
 
 If a level is featured on Avalanche's servers, you may see a button with the Avalanche logo appear on the left side menu on the level's information page. Pressing this will create a pop-up giving more information about the level as a project by the team, the type of project it is, its host, etc.
 
+> [!NOTE]
+> On iOS, the team project visuals may not appear due to seemingly different node structuring. Once the tools to navigate this are ready, the issue shall be solved.
+
 ### Featured
 ###### The up-and-coming Avalanche project.
 In the main menu, you may see a button in the center with the Avalanche logo. When pressed, it will create a pop-up displaying the latest Avalanche team project. You will have the option to check out the latest video or update of the project. The information button may direct you to fill out an application to join the team to then begin working on the project if you wish.
-
-### Developers
-###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Avalanche logo" /> Avalanche](https://avalanche.cubicstudios.xyz/) team.
-**[<img src="https://i.imgur.com/X8HT4jM.png" width="15" alt="Cheeseworks" /> Cheeseworks](https://www.github.com/BlueWitherer/)**
 
 ### Changelog
 ###### What's new?!
@@ -53,3 +52,6 @@ In the main menu, you may see a button in the center with the Avalanche logo. Wh
 ### Issues
 ###### What's wrong?!
 **[⚠️ Report a problem with the mod](../../issues/)**
+
+### Developers
+###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Avalanche logo" /> Avalanche](https://avalanche.cubicstudios.xyz/) team.

@@ -229,6 +229,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 			else
 			{
 				CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
+				avalBtnSprite->setScale(0.944f);
 
 				CCSprite *avalBtnSpriteIcon = CCSprite::create("button-icon.png"_spr);
 				avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
@@ -244,7 +245,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					this,
 					menu_selector(LevelInfo::onAvalancheButton));
 				avalBtn->setID("avalanche-button"_spr);
-				avalBtn->setZOrder(1);
+				avalBtn->setZOrder(10);
 
 				leftMenu->addChild(avalBtn);
 				leftMenu->updateLayout();
@@ -262,7 +263,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					}
 					else
 					{
-						LevelInfo::setSoloDisplay(background);
+						LevelInfo::setSoloDisplay(background, thisProj.fame);
 					};
 				};
 			}
@@ -288,7 +289,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 			{
 				if (displayEventLayers)
 				{
-					LevelInfo::setEventDisplay(background);
+					LevelInfo::setEventDisplay(background, thisProj.fame);
 				};
 			};
 
@@ -300,9 +301,12 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
-	void setSoloDisplay(CCSprite *background)
+	void setSoloDisplay(CCSprite *background, bool fame = false)
 	{
 		background->setColor({70, 77, 117});
+
+		if (fame)
+			LevelInfo::setFame(background);
 	};
 
 	void setTeamDisplay(CCSprite *background, CCLabelBMFont *levelName)
@@ -380,9 +384,63 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
-	void setEventDisplay(CCSprite *background)
+	void setEventDisplay(CCSprite *background, bool fame = false)
 	{
 		background->setColor({211, 207, 0});
+
+		if (fame)
+			LevelInfo::setFame(background);
+	};
+
+	void setFame(CCSprite *background)
+	{
+		bool showFame = getThisMod->getSettingValue<bool>("show-fame");
+
+		if (showFame)
+		{
+			if (!background)
+			{
+				log::error("Cannot set team project display with missing background or level text nodes");
+				return;
+			};
+
+			auto bgThumbnail = CCSprite::create("fame-bg.png"_spr);
+			if (!bgThumbnail)
+			{
+				log::error("Failed to load sprite: background.png");
+				return;
+			};
+
+			bgThumbnail->setOpacity(75);
+			bgThumbnail->setAnchorPoint({0.5, 0.5});
+			bgThumbnail->ignoreAnchorPointForPosition(false);
+			bgThumbnail->setPosition({this->getContentWidth() / 2, this->getContentHeight() / 2});
+			bgThumbnail->setZOrder(background->getZOrder() + 1);
+			bgThumbnail->setID("team_thumbnail"_spr);
+
+			auto ogWidth = this->getContentWidth();
+			auto scaledWidth = bgThumbnail->getContentWidth();
+
+			if (ogWidth <= 0 || scaledWidth <= 0)
+			{
+				log::error("Invalid dimensions for scaling: this or bgThumbnail has zero width");
+				return;
+			};
+
+			float scaleFactor = ogWidth / scaledWidth;
+			bgThumbnail->setScale(scaleFactor);
+
+			background->setZOrder(-5);
+
+			if (bgThumbnail)
+			{
+				this->addChild(bgThumbnail);
+			};
+		}
+		else
+		{
+			log::error("Display of famed effect disabled");
+		};
 	};
 
 	void onAvalancheButton(CCObject *sender)
@@ -596,6 +654,10 @@ class $modify(Level, LevelCell)
 			fameGlow->setScale(newScale);
 
 			this->addChild(fameGlow);
+		}
+		else
+		{
+			log::error("Display of famed effect disabled");
 		};
 	};
 };

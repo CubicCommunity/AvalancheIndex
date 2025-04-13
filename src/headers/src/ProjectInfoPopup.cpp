@@ -1,4 +1,4 @@
-#include "../ProjectInfoPopupLayer.hpp"
+#include "../ProjectInfoPopup.hpp"
 
 #include "../../incl/Avalanche.hpp"
 
@@ -16,20 +16,20 @@
 using namespace avalanche;
 using namespace geode::prelude;
 
-ProjectInfoPopupLayer *ProjectInfoPopupLayer::create()
+ProjectInfoPopup *ProjectInfoPopup::create()
 {
-  auto ret = new ProjectInfoPopupLayer;
+  auto ret = new ProjectInfoPopup;
   if (ret->initAnchored(440, 290))
   {
     ret->autorelease();
     return ret;
   };
 
-  delete ret;
+  CC_SAFE_DELETE(ret);
   return nullptr;
 };
 
-void ProjectInfoPopupLayer::infoPopup(CCObject *)
+void ProjectInfoPopup::infoPopup(CCObject *)
 {
   auto proj = m_avalProject;
 
@@ -79,7 +79,7 @@ void ProjectInfoPopupLayer::infoPopup(CCObject *)
       true);
 };
 
-bool ProjectInfoPopupLayer::setup()
+bool ProjectInfoPopup::setup()
 {
   setID("project-popup"_spr);
   setTitle("Loading...");
@@ -103,34 +103,25 @@ bool ProjectInfoPopupLayer::setup()
   auto infoBtn = CCMenuItemSpriteExtra::create(
       infoBtnSprite,
       this,
-      menu_selector(ProjectInfoPopupLayer::infoPopup));
+      menu_selector(ProjectInfoPopup::infoPopup));
   infoBtn->setID("info-button");
   infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 17.5f, m_mainLayer->getScaledContentHeight() - 17.5f);
 
   overlayMenu->addChild(infoBtn);
 
-  m_loadingCircle->setParentLayer(m_mainLayer);
-  m_loadingCircle->setPosition({widthCS / 2, heightCS / 2});
-  m_loadingCircle->ignoreAnchorPointForPosition(false);
-  m_loadingCircle->setAnchorPoint({0.5, 0.5});
-  m_loadingCircle->setScale(1.f);
-  m_loadingCircle->show();
-
   return true;
 };
 
-ProjectInfoPopupLayer *ProjectInfoPopupLayer::setProject(Project avalProject)
+ProjectInfoPopup *ProjectInfoPopup::setProject(Project avalProject)
 {
   m_avalProject = avalProject;
-
-  m_loadingCircle->fadeAndRemove();
 
   setTitle(avalProject.name);
 
   return this;
 };
 
-void ProjectInfoPopupLayer::show()
+void ProjectInfoPopup::show()
 {
   if (m_noElasticity)
     return FLAlertLayer::show();

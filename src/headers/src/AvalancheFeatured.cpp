@@ -19,21 +19,6 @@ https://github.com/cdc-sys/level-thumbs-mod
 
 using namespace geode::prelude;
 
-void AvalancheFeatured::openApplicationPopup(CCObject *)
-{
-  createQuickPopup(
-      "Learn More",
-      "Would you like to check out the latest <cl>Avalanche</c> project?",
-      "Cancel", "Yes",
-      [this](auto, bool btn2)
-      {
-        if (btn2)
-        {
-          CCApplication::sharedApplication()->openURL("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
-        };
-      });
-};
-
 AvalancheFeatured *AvalancheFeatured::create()
 {
   auto ret = new AvalancheFeatured();
@@ -59,6 +44,21 @@ void AvalancheFeatured::infoPopup(CCObject *)
         if (btn2)
         {
           web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/apply/");
+        };
+      });
+};
+
+void AvalancheFeatured::openApplicationPopup(CCObject *)
+{
+  createQuickPopup(
+      "Learn More",
+      "Would you like to check out the latest <cl>Avalanche</c> project?",
+      "Cancel", "Yes",
+      [this](auto, bool btn2)
+      {
+        if (btn2)
+        {
+          CCApplication::sharedApplication()->openURL("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
         };
       });
 };
@@ -213,7 +213,6 @@ bool AvalancheFeatured::setup()
             };
         }; });
 
-    // @geode-ignore(unknown-resource)
     auto downloadTask = reqThumb.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png");
     m_downloadListener.setFilter(downloadTask);
   };
@@ -244,7 +243,6 @@ void AvalancheFeatured::onDownloadFinished(CCSprite *image)
 
 void AvalancheFeatured::onDownloadFail()
 {
-  // @geode-ignore(unknown-resource)
   CCSprite *image = CCSprite::create("unavailable.png"_spr);
   float scale = m_maxHeight / image->getContentSize().height;
 
@@ -275,6 +273,7 @@ void AvalancheFeatured::show()
     m_ZOrder = 105;
 
   m_scene->addChild(this);
+
   setOpacity(0);
   runAction(CCFadeTo::create(0.14, opacity));
   setVisible(true);

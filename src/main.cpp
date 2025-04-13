@@ -3,7 +3,7 @@
 #include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
 
-#include "./headers/popup/ProjectInfoPopupLayer.hpp"
+#include "./headers/ProjectInfoPopup.hpp"
 
 #include <ostream>
 #include <string>
@@ -230,27 +230,32 @@ class $modify(LevelInfo, LevelInfoLayer)
 			}
 			else
 			{
-				CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
-				avalBtnSprite->setScale(0.944f);
+				auto showProjectInfo = getThisMod->getSettingValue<bool>("show-proj-info");
 
-				CCSprite *avalBtnSpriteIcon = CCSprite::create("button-icon.png"_spr);
-				avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
-				avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
-				avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
-				avalBtnSpriteIcon->setAnchorPoint({0.5, 0.5});
-				avalBtnSpriteIcon->setScale(0.875f);
+				if (showProjectInfo)
+				{
+					CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
+					avalBtnSprite->setScale(0.944f);
 
-				avalBtnSprite->addChild(avalBtnSpriteIcon);
+					CCSprite *avalBtnSpriteIcon = CCSprite::create("button-icon.png"_spr);
+					avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
+					avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
+					avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
+					avalBtnSpriteIcon->setAnchorPoint({0.5, 0.5});
+					avalBtnSpriteIcon->setScale(0.875f);
 
-				CCMenuItemSpriteExtra *avalBtn = CCMenuItemSpriteExtra::create(
-					avalBtnSprite,
-					this,
-					menu_selector(LevelInfo::onAvalancheButton));
-				avalBtn->setID("avalanche-button"_spr);
-				avalBtn->setZOrder(10);
+					avalBtnSprite->addChild(avalBtnSpriteIcon);
 
-				leftMenu->addChild(avalBtn);
-				leftMenu->updateLayout();
+					CCMenuItemSpriteExtra *avalBtn = CCMenuItemSpriteExtra::create(
+						avalBtnSprite,
+						this,
+						menu_selector(LevelInfo::onAvalancheButton));
+					avalBtn->setID("avalanche-button"_spr);
+					avalBtn->setZOrder(10);
+
+					leftMenu->addChild(avalBtn);
+					leftMenu->updateLayout();
+				};
 			};
 
 			auto levelType = scanForLevelCreator(level);
@@ -447,7 +452,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void onAvalancheButton(CCObject *sender)
 	{
-		ProjectInfoPopupLayer::create()->setProject(m_fields->avalProject)->show();
+		ProjectInfoPopup::create()->setProject(m_fields->avalProject)->show();
 	};
 };
 

@@ -5,19 +5,17 @@
 #include <Geode/ui/Popup.hpp>
 #include <Geode/cocos/include/cocos2d.h>
 
-class ProjectInfoPopupLayer : public geode::Popup<>
+class ProjectInfoPopup : public geode::Popup<>
 {
 public:
-  static ProjectInfoPopupLayer *create();
+  static ProjectInfoPopup *create();
 
-  ProjectInfoPopupLayer *setProject(avalanche::Project avalProject);
+  ProjectInfoPopup *setProject(avalanche::Project avalProject);
 
   void show() override;
 
 protected:
   avalanche::Project m_avalProject;
-
-  LoadingCircle *m_loadingCircle = LoadingCircle::create();
 
   void infoPopup(CCObject *);
 

@@ -3,6 +3,8 @@
 #include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
 
+#include "./headers/popup/ProjectInfoPopupLayer.hpp"
+
 #include <ostream>
 #include <string>
 #include <chrono>
@@ -412,9 +414,9 @@ class $modify(LevelInfo, LevelInfoLayer)
 			};
 
 			bgThumbnail->setOpacity(75);
-			bgThumbnail->setAnchorPoint({0.5, 0.5});
+			bgThumbnail->setAnchorPoint({0.5, 0});
 			bgThumbnail->ignoreAnchorPointForPosition(false);
-			bgThumbnail->setPosition({this->getContentWidth() / 2, this->getContentHeight() / 2});
+			bgThumbnail->setPosition({this->getContentWidth() / 2, 0});
 			bgThumbnail->setZOrder(background->getZOrder() + 1);
 			bgThumbnail->setID("team_thumbnail"_spr);
 
@@ -445,52 +447,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void onAvalancheButton(CCObject *sender)
 	{
-		auto proj = m_fields->avalProject;
-
-		auto hosted = proj.host;
-		std::ostringstream typeOfProj; // for ios
-
-		switch (proj.type)
-		{
-		case Project::Type::TEAM:
-			hosted = "Avalanche";
-			typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host << "</c>";
-			break;
-
-		case Project::Type::COLLAB:
-			typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
-			break;
-
-		case Project::Type::EVENT:
-			typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
-			break;
-
-		case Project::Type::SOLO:
-			typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
-			break;
-
-		default:
-			typeOfProj << "an official <cl>Avalanche</c> project";
-			break;
-		};
-
-		std::ostringstream body; // for ios
-		body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << proj.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
-
-		std::string resultBody = body.str();
-
-		createQuickPopup(
-			proj.name.c_str(),
-			resultBody.c_str(),
-			"OK", "Watch",
-			[proj](auto, bool btn2)
-			{
-				if (btn2)
-				{
-					web::openLinkInBrowser(proj.showcase_url);
-				};
-			},
-			true);
+		ProjectInfoPopupLayer::create()->setProject(m_fields->avalProject)->show();
 	};
 };
 

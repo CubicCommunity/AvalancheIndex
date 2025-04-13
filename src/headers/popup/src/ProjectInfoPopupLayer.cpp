@@ -1,5 +1,7 @@
 #include "../ProjectInfoPopupLayer.hpp"
 
+#include "../../incl/Avalanche.hpp"
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/General.hpp>
@@ -11,6 +13,7 @@
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
 
+using namespace avalanche;
 using namespace geode::prelude;
 
 ProjectInfoPopupLayer *ProjectInfoPopupLayer::create()
@@ -28,34 +31,69 @@ ProjectInfoPopupLayer *ProjectInfoPopupLayer::create()
 
 void ProjectInfoPopupLayer::infoPopup(CCObject *)
 {
-  FLAlertLayer::create(
-      "Example Pop-up Layer",
-      "<cr>Developer.</c> This is an <cy>example pop-up layer</c> for the ease of <cp>OGDPS</c> developement. This pop-up is here to serve as a template if more pop-ups are to be created.",
-      "OK")
-      ->show();
+  auto proj = m_avalProject;
+
+  auto hosted = proj.host;
+  std::ostringstream typeOfProj; // for ios
+
+  switch (proj.type)
+  {
+  case Project::Type::TEAM:
+    hosted = "Avalanche";
+    typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host << "</c>";
+    break;
+
+  case Project::Type::COLLAB:
+    typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
+    break;
+
+  case Project::Type::EVENT:
+    typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
+    break;
+
+  case Project::Type::SOLO:
+    typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
+    break;
+
+  default:
+    typeOfProj << "an official <cl>Avalanche</c> project";
+    break;
+  };
+
+  std::ostringstream body; // for ios
+  body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << proj.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+      proj.name.c_str(),
+      resultBody.c_str(),
+      "OK", "Watch",
+      [proj](auto, bool btn2)
+      {
+        if (btn2)
+        {
+          web::openLinkInBrowser(proj.showcase_url);
+        };
+      },
+      true);
 };
 
 bool ProjectInfoPopupLayer::setup()
 {
-  setID("CustomPopup"_spr);
-  setTitle("Custom Popup Layer");
+  setID("project-popup"_spr);
+  setTitle("Loading...");
   auto [widthCS, heightCS] = m_mainLayer->getContentSize();
   auto [widthP, heightP] = m_mainLayer->getPosition();
   const auto buttons_height = 0.82f * heightCS;
 
-  auto bg2_layer = CCLayerColor::create();
-  bg2_layer->setColor({});
-  bg2_layer->setOpacity(75);
-  bg2_layer->setPosition({45, 13});
-  bg2_layer->setContentSize({widthCS, heightCS});
-  m_mainLayer->addChild(bg2_layer);
-
   // for buttons to work
   CCMenu *overlayMenu = CCMenu::create();
-  overlayMenu->setID("overlay-menu");
+  overlayMenu->setID("popup-overlay-menu"_spr);
   overlayMenu->ignoreAnchorPointForPosition(false);
   overlayMenu->setPosition(widthCS / 2, heightCS / 2);
   overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
+
   m_mainLayer->addChild(overlayMenu);
 
   // info button
@@ -64,12 +102,32 @@ bool ProjectInfoPopupLayer::setup()
 
   auto infoBtn = CCMenuItemSpriteExtra::create(
       infoBtnSprite,
-      this, menu_selector(ProjectInfoPopupLayer::infoPopup));
+      this,
+      menu_selector(ProjectInfoPopupLayer::infoPopup));
   infoBtn->setID("info-button");
   infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 17.5f, m_mainLayer->getScaledContentHeight() - 17.5f);
+
   overlayMenu->addChild(infoBtn);
 
+  m_loadingCircle->setParentLayer(m_mainLayer);
+  m_loadingCircle->setPosition({widthCS / 2, heightCS / 2});
+  m_loadingCircle->ignoreAnchorPointForPosition(false);
+  m_loadingCircle->setAnchorPoint({0.5, 0.5});
+  m_loadingCircle->setScale(1.f);
+  m_loadingCircle->show();
+
   return true;
+};
+
+ProjectInfoPopupLayer *ProjectInfoPopupLayer::setProject(Project avalProject)
+{
+  m_avalProject = avalProject;
+
+  m_loadingCircle->fadeAndRemove();
+
+  setTitle(avalProject.name);
+
+  return this;
 };
 
 void ProjectInfoPopupLayer::show()
@@ -88,7 +146,9 @@ void ProjectInfoPopupLayer::show()
 
   if (!m_ZOrder)
     m_ZOrder = 105;
+
   m_scene->addChild(this);
+
   setOpacity(0);
   runAction(CCFadeTo::create(0.14, opacity));
   setVisible(true);

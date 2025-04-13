@@ -34,6 +34,5 @@ protected:
   void onDownloadFinished(CCSprite *sprite);
   void onDownloadFail();
   void imageCreationFinished(CCImage *image);
-  void recenter(CCObject *sender);
   void openApplicationPopup(CCObject *sender);
 };

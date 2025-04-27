@@ -1,6 +1,8 @@
 # <img src="logo.png" width="30" alt="The mod's logo." /> Avalanche Index
 Official Avalanche levels and profiles.
 
+---
+
 > [<img alt="Latest Version" src="https://img.shields.io/github/v/release/CubicCommunity/AvalancheIndex?include_prereleases&sort=semver&display_name=release&style=for-the-badge&logo=github&logoColor=ffffff&label=Version">](../../releases/)    [<img alt="Code License" src="https://img.shields.io/github/license/CubicCommunity/AvalancheIndex?style=for-the-badge&logo=gnu&logoColor=ffffff&label=License">](LICENSE.md)
 >  
 > [<img alt="Mod Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
@@ -9,6 +11,8 @@ Easily spot legitimate Avalanche profiles and projects at a glance. No more need
 
 > [!TIP]
 > *This mod has settings you can utilize to customize your experience.*
+
+---
 
 ### Badges
 ###### The members of Avalanche.
@@ -23,6 +27,8 @@ When viewing someone's profile or comment, you'll likely see a badge next to the
 | <img src="resources/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | **Cubic Studios** Staff      |
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
+
+---
 
 ### Levels
 ###### The Avalanche team projects.
@@ -41,17 +47,25 @@ If a level is featured on Avalanche's servers, you may see a button with the Ava
 > [!NOTE]
 > On iOS, the team project visuals may not appear due to seemingly different node structuring. Once the tools to navigate this are ready, the issue shall be solved.
 
+---
+
 ### Featured
 ###### The up-and-coming Avalanche project.
 In the main menu, you may see a button in the center with the Avalanche logo. When pressed, it will create a pop-up displaying the latest Avalanche team project. You will have the option to check out the latest video or update of the project. The information button may direct you to fill out an application to join the team to then begin working on the project if you wish.
+
+---
 
 ### Changelog
 ###### What's new?!
 **[📜 View the latest updates and patches](changelog.md)**
 
+---
+
 ### Issues
 ###### What's wrong?!
 **[⚠️ Report a problem with the mod](../../issues/)**
+
+---
 
 ### Developers
 ###### This mod is developed and maintained by **[Cubic Studios](https://www.cubicstudios.xyz/)**, and members and collaborators of the [<img src="https://i.imgur.com/3QH6N17.png" width="15" alt="Avalanche logo" /> Avalanche](https://avalanche.cubicstudios.xyz/) team.

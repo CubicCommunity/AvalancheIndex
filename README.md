@@ -59,11 +59,13 @@ In the main menu, you may see a button in the center with the Avalanche logo. Wh
 ###### What's new?!
 **[📜 View the latest updates and patches](changelog.md)**
 
----
-
 ### Issues
 ###### What's wrong?!
 **[⚠️ Report a problem with the mod](../../issues/)**
+
+### Development
+###### Work with the mod directly.
+**[⌨️ Check the API out](./incl/)**
 
 ---
 

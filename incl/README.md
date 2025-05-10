@@ -20,7 +20,7 @@ Use the `Handler` class's methods to access methods that fetch saved data on bad
 > Handler getHandler = Handler::get();
 > ```
 >
-> This will return an object, be sure to use the **dot operator** (`.`) to access methods.
+> This will return an *object*, be sure to use the **dot operator** (`.`) to access methods.
 
 ```cpp
 using namespace avalanche;

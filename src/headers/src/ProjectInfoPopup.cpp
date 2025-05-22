@@ -112,6 +112,8 @@ bool ProjectInfoPopup::setup()
 
 ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 {
+  log::warn("Project info popup still unfinished");
+
   m_level = level;
   m_avalProject = Handler::get().GetProject(m_level->m_levelID.value());
 

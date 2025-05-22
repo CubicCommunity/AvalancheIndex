@@ -21,7 +21,12 @@ protected:
   GJGameLevel *m_level;
   Project m_avalProject;
 
+  CCMenu *overlayMenu;
+
   void infoPopup(CCObject *);
+  void onFameInfo(CCObject *);
+
+  void onPlayShowcase(CCObject *);
 
   bool setup() override;
 };

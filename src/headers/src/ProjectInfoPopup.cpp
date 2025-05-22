@@ -59,7 +59,7 @@ void ProjectInfoPopup::infoPopup(CCObject *)
   };
 
   std::ostringstream body; // for ios
-  body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << m_avalProject.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
+  body << "<cy>" << std::string(hosted) << "</c> - '<cg>" << m_avalProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
 
   std::string resultBody = body.str();
 
@@ -71,7 +71,59 @@ void ProjectInfoPopup::infoPopup(CCObject *)
       {
         if (btn2)
         {
+          log::info("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
           web::openLinkInBrowser(this->m_avalProject.showcase_url);
+        }
+        else
+        {
+          log::debug("User clicked OK");
+        };
+      },
+      true);
+};
+
+void ProjectInfoPopup::onFameInfo(CCObject *)
+{
+  createQuickPopup(
+      "Avalanche Hall of Fame",
+      "This level is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.",
+      "OK", "Learn More",
+      [](auto, bool btn2)
+      {
+        if (btn2)
+        {
+          log::info("Opening Hall of Fame link in browser");
+          web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
+        }
+        else
+        {
+          log::debug("User clicked OK");
+        };
+      },
+      true);
+};
+
+void ProjectInfoPopup::onPlayShowcase(CCObject *)
+{
+  std::ostringstream body; // for ios
+  body << "Watch the showcase of <cy>" << m_avalProject.host << "</c> - '<cg>" << m_avalProject.name << "</c>'?";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+      m_avalProject.name.c_str(),
+      resultBody.c_str(),
+      "Cancel", "Watch",
+      [this](auto, bool btn2)
+      {
+        if (btn2)
+        {
+          log::info("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
+          web::openLinkInBrowser(this->m_avalProject.showcase_url);
+        }
+        else
+        {
+          log::debug("User clicked OK");
         };
       },
       true);
@@ -81,29 +133,32 @@ bool ProjectInfoPopup::setup()
 {
   setID("project-popup"_spr);
   setTitle("Loading...");
+
+  m_title->setFntFile("bigFont.fnt");
+  m_title->setScale(1.25f);
+
   auto [widthCS, heightCS] = m_mainLayer->getContentSize();
   auto [widthP, heightP] = m_mainLayer->getPosition();
-  const auto buttons_height = 0.82f * heightCS;
 
   // for buttons to work
-  CCMenu *overlayMenu = CCMenu::create();
+  overlayMenu = CCMenu::create();
   overlayMenu->setID("popup-overlay-menu"_spr);
   overlayMenu->ignoreAnchorPointForPosition(false);
-  overlayMenu->setPosition(widthCS / 2, heightCS / 2);
+  overlayMenu->setPosition({widthCS / 2.f, heightCS / 2.f});
   overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
 
   m_mainLayer->addChild(overlayMenu);
 
   // info button
   auto infoBtnSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
-  infoBtnSprite->setScale(0.75);
+  infoBtnSprite->setScale(0.75f);
 
   auto infoBtn = CCMenuItemSpriteExtra::create(
       infoBtnSprite,
       this,
       menu_selector(ProjectInfoPopup::infoPopup));
   infoBtn->setID("info-button");
-  infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 17.5f, m_mainLayer->getScaledContentHeight() - 17.5f);
+  infoBtn->setPosition({m_mainLayer->getScaledContentWidth() - 17.5f, m_mainLayer->getScaledContentHeight() - 17.5f});
 
   overlayMenu->addChild(infoBtn);
 
@@ -118,6 +173,82 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
   m_avalProject = Handler::get().GetProject(m_level->m_levelID.value());
 
   setTitle(m_avalProject.name);
+
+  if (m_avalProject.fame)
+  {
+    log::info("Project '{}' is in the Hall of Fame", m_avalProject.name);
+
+    m_title->setFntFile("goldFont.fnt");
+    m_title->setScale(1.f);
+
+    auto fameFrame_layout = AxisLayout::create(Axis::Row);
+    fameFrame_layout->setCrossAxisLineAlignment(AxisAlignment::Center);
+    fameFrame_layout->setCrossAxisAlignment(AxisAlignment::Center);
+    fameFrame_layout->setAxisAlignment(AxisAlignment::Center);
+    fameFrame_layout->setGrowCrossAxis(false);
+    fameFrame_layout->setAxisReverse(false);
+    fameFrame_layout->setAutoScale(false);
+    fameFrame_layout->setGap(5.f);
+
+    auto fameFrame = CCMenu::create();
+    fameFrame->setID("popup-fame-frame"_spr);
+    fameFrame->ignoreAnchorPointForPosition(false);
+    fameFrame->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_title->getPositionY() - 20.f});
+    fameFrame->setScaledContentSize({m_mainLayer->getScaledContentWidth() * 0.75f, 12.5f});
+    fameFrame->setLayout(fameFrame_layout);
+
+    auto fameIcon = CCSprite::createWithSpriteFrameName("GJ_bigStar_001.png");
+    fameIcon->setScale(0.25f);
+
+    auto fameLabel = CCLabelBMFont::create("Avalanche Hall of Fame", "goldFont.fnt");
+    fameLabel->ignoreAnchorPointForPosition(false);
+    fameLabel->setAnchorPoint({0.5, 0.5});
+    fameLabel->setScale(0.375f);
+
+    auto fameBtn = CCMenuItemSpriteExtra::create(
+        fameLabel,
+        this,
+        menu_selector(ProjectInfoPopup::onFameInfo));
+
+    fameFrame->addChild(fameIcon);
+    fameFrame->addChild(fameBtn);
+
+    fameFrame->updateLayout(true);
+
+    overlayMenu->addChild(fameFrame);
+  }
+  else
+  {
+    log::debug("Project '{}' is not in the Hall of Fame", m_avalProject.name);
+  };
+
+  auto comingSoon = CCLabelBMFont::create("More coming soon...", "bigFont.fnt");
+  comingSoon->ignoreAnchorPointForPosition(false);
+  comingSoon->setAnchorPoint({0.5, 0.5});
+  comingSoon->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() / 2.f});
+  comingSoon->setScale(0.5f);
+
+  overlayMenu->addChild(comingSoon);
+
+  auto playShowcase_label = CCLabelBMFont::create("Watch the Showcase", "chatFont.fnt");
+  playShowcase_label->ignoreAnchorPointForPosition(false);
+  playShowcase_label->setAnchorPoint({0.5, 0.5});
+  playShowcase_label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 75.f});
+  playShowcase_label->setScale(1.f);
+
+  overlayMenu->addChild(playShowcase_label);
+
+  auto playShowcase_sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
+  playShowcase_sprite->setScale(0.5f);
+
+  auto playShowcase = CCMenuItemSpriteExtra::create(
+      playShowcase_sprite,
+      this,
+      menu_selector(ProjectInfoPopup::onPlayShowcase));
+  playShowcase->setID("play-showcase-button"_spr);
+  playShowcase->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 40.f});
+
+  overlayMenu->addChild(playShowcase);
 
   return this;
 };

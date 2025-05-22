@@ -192,11 +192,6 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 
 class $modify(LevelInfo, LevelInfoLayer)
 {
-	struct Fields
-	{
-		Project avalProject;
-	};
-
 	// modified vanilla init function
 	bool init(GJGameLevel *level, bool challenge)
 	{
@@ -220,9 +215,6 @@ class $modify(LevelInfo, LevelInfoLayer)
 			CCMenu *leftMenu = typeinfo_cast<CCMenu *>(this->getChildByID("left-side-menu"));
 
 			Project thisProj = getHandler.GetProject(level->m_levelID.value());
-
-			if (thisProj.type != Project::Type::NONE)
-				m_fields->avalProject = thisProj;
 
 			if (thisProj.type == Project::Type::NONE)
 			{
@@ -452,7 +444,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void onAvalancheButton(CCObject *sender)
 	{
-		ProjectInfoPopup::create()->setProject(m_fields->avalProject)->show();
+		ProjectInfoPopup::create()->setProject(this->m_level)->show();
 	};
 };
 

@@ -5,17 +5,21 @@
 #include <Geode/ui/Popup.hpp>
 #include <Geode/cocos/include/cocos2d.h>
 
+using namespace avalanche;
+using namespace geode::prelude;
+
 class ProjectInfoPopup : public geode::Popup<>
 {
 public:
   static ProjectInfoPopup *create();
 
-  ProjectInfoPopup *setProject(avalanche::Project avalProject);
+  ProjectInfoPopup *setProject(GJGameLevel *level);
 
   void show() override;
 
 protected:
-  avalanche::Project m_avalProject;
+  GJGameLevel *m_level;
+  Project m_avalProject;
 
   void infoPopup(CCObject *);
 

@@ -31,16 +31,14 @@ ProjectInfoPopup *ProjectInfoPopup::create()
 
 void ProjectInfoPopup::infoPopup(CCObject *)
 {
-  auto proj = m_avalProject;
+  auto hosted = m_avalProject.host;
+  std::ostringstream typeOfProj;
 
-  auto hosted = proj.host;
-  std::ostringstream typeOfProj; // for ios
-
-  switch (proj.type)
+  switch (m_avalProject.type)
   {
   case Project::Type::TEAM:
     hosted = "Avalanche";
-    typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host << "</c>";
+    typeOfProj << "a <cg>team project</c> hosted by <cy>" << m_avalProject.host << "</c>";
     break;
 
   case Project::Type::COLLAB:
@@ -61,19 +59,19 @@ void ProjectInfoPopup::infoPopup(CCObject *)
   };
 
   std::ostringstream body; // for ios
-  body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << proj.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
+  body << "<cy>" << std::string(hosted) << "</c> - <cg>'" << m_avalProject.name << "'</c> is " << typeOfProj.str() << ". You can watch its showcase here.";
 
   std::string resultBody = body.str();
 
   createQuickPopup(
-      proj.name.c_str(),
+      m_avalProject.name.c_str(),
       resultBody.c_str(),
       "OK", "Watch",
-      [proj](auto, bool btn2)
+      [this](auto, bool btn2)
       {
         if (btn2)
         {
-          web::openLinkInBrowser(proj.showcase_url);
+          web::openLinkInBrowser(this->m_avalProject.showcase_url);
         };
       },
       true);
@@ -112,11 +110,12 @@ bool ProjectInfoPopup::setup()
   return true;
 };
 
-ProjectInfoPopup *ProjectInfoPopup::setProject(Project avalProject)
+ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 {
-  m_avalProject = avalProject;
+  m_level = level;
+  m_avalProject = Handler::get().GetProject(m_level->m_levelID.value());
 
-  setTitle(avalProject.name);
+  setTitle(m_avalProject.name);
 
   return this;
 };

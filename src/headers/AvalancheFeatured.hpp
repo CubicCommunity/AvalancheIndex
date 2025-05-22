@@ -20,6 +20,8 @@ public:
   void show() override;
 
 protected:
+  CCMenu *m_overlayMenu;
+
   float m_maxHeight = 220;
   EventListener<web::WebTask> m_downloadListener;
   LoadingCircle *m_loadingCircle = LoadingCircle::create();

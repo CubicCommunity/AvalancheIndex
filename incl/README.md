@@ -17,15 +17,15 @@ Use the `Handler` class's methods to access methods that fetch saved data on bad
 > To utilize `Handler`'s methods, you **must** initialize the class with **`Handler::get()`** beforehand. Otherwise, crucial non-static methods will not be accessible.
 >
 > ```cpp
-> Handler getHandler = Handler::get();
+> Handler *getHandler = Handler::get();
 > ```
 >
-> This will return an *object* - be sure to use the **dot operator** (`.`) to access methods.
+> This will return an *pointer* - be sure to use the **arrow operator** (`->`) to access methods.
 
 ```cpp
 using namespace avalanche;
 
-Handler getHandler = Handler::get();
+Handler *getHandler = Handler::get();
 
 class $modify(ProfilePage)
 {
@@ -33,7 +33,7 @@ class $modify(ProfilePage)
     {
         ProfilePage::loadPageFromUserInfo(user);
 
-        Profile avalUser = getHandler.GetProfile(user->m_accountID);
+        Profile avalUser = getHandler->GetProfile(user->m_accountID);
 
         if (avalUser.badge != Profile::Badge::NONE)
         {
@@ -51,7 +51,7 @@ class $modify(ProfilePage)
 ```cpp
 using namespace avalanche;
 
-Handler getHandler = Handler::get();
+Handler *getHandler = Handler::get();
 
 class $modify(Level, LevelCell)
 {
@@ -59,7 +59,7 @@ class $modify(Level, LevelCell)
 	{
 		LevelCell::loadFromLevel(level);
 
-		Project avalLevel = getHandler.GetProject(level->m_levelID.value());
+		Project avalLevel = getHandler->GetProject(level->m_levelID.value());
 
 		if (avalLevel.type == Project::Type::TEAM)
 		{
@@ -67,7 +67,7 @@ class $modify(Level, LevelCell)
 		}
 		else if (avalLevel.type == Project::Type::EVENT)
 		{
-			log::info("The level '{}' by {} won an Avalanche event!", avalLevel.name, avalLevel.host);
+			log::info("The level '{}' by {} won an Avalanche event! Yay!", avalLevel.name, avalLevel.host);
 		};
 	};
 };

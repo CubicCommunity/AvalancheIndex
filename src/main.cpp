@@ -50,7 +50,7 @@ class $modify(ProfilePage)
 
 		if (getThisMod->getSettingValue<bool>("badge-profile"))
 		{
-			getHandler.scanAll();
+			getHandler->scanAll();
 
 			// gets a copy of the main layer
 			auto mLayer = m_mainLayer;
@@ -59,8 +59,8 @@ class $modify(ProfilePage)
 			TextArea *fakeText = nullptr;
 			CCLabelBMFont *fakeFont = nullptr;
 
-			Profile plr = getHandler.GetProfile(user->m_accountID);
-			getHandler.createBadge(plr, cell_menu, fakeText, fakeFont, 0.875f, this);
+			Profile plr = getHandler->GetProfile(user->m_accountID);
+			getHandler->createBadge(plr, cell_menu, fakeText, fakeFont, 0.875f, this);
 
 			log::debug("Viewing profile of ID {}", (int)user->m_accountID);
 		};
@@ -76,7 +76,7 @@ class $modify(CommentCell)
 
 		if (getThisMod->getSettingValue<bool>("badge-comments"))
 		{
-			getHandler.scanAll();
+			getHandler->scanAll();
 
 			// gets a copy of the main layer
 			auto mLayer = m_mainLayer;
@@ -118,8 +118,8 @@ class $modify(CommentCell)
 				commentText = nullptr;
 			};
 
-			Profile plr = getHandler.GetProfile(comment->m_accountID);
-			getHandler.createBadge(plr, cell_menu, commentText, commentFont, 0.55f, this);
+			Profile plr = getHandler->GetProfile(comment->m_accountID);
+			getHandler->createBadge(plr, cell_menu, commentText, commentFont, 0.55f, this);
 
 			log::debug("Viewing comment profile of ID {}", (int)comment->m_accountID);
 		};
@@ -129,12 +129,12 @@ class $modify(CommentCell)
 // attempts to fetch data on level or badge locally to verify ownership of the level
 Project::Type scanForLevelCreator(GJGameLevel *level)
 {
-	auto project = getHandler.GetProject(level->m_levelID.value());
+	auto project = getHandler->GetProject(level->m_levelID.value());
 
 	if (project.type == Project::Type::NONE)
 	{
 		// get the member's badge data
-		auto cacheSolo = Handler::badgeStringID[getHandler.GetProfile(level->m_accountID.value()).badge];
+		auto cacheSolo = Handler::badgeStringID[getHandler->GetProfile(level->m_accountID.value()).badge];
 		bool notSolo = Handler::badgeSpriteName[cacheSolo].empty() && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::COLLABORATOR]] && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::CUBIC]];
 		bool notPublic = level->m_unlisted || level->m_friendsOnly;
 
@@ -214,7 +214,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 			CCMenu *leftMenu = typeinfo_cast<CCMenu *>(this->getChildByID("left-side-menu"));
 
-			Project thisProj = getHandler.GetProject(level->m_levelID.value());
+			Project thisProj = getHandler->GetProject(level->m_levelID.value());
 
 			if (thisProj.type == Project::Type::NONE)
 			{
@@ -471,7 +471,7 @@ class $modify(Level, LevelCell)
 
 		if (color && levelName)
 		{
-			auto lvl = getHandler.GetProject(level->m_levelID.value());
+			auto lvl = getHandler->GetProject(level->m_levelID.value());
 			auto levelType = scanForLevelCreator(level);
 
 			if (levelType == Project::Type::SOLO)
@@ -737,7 +737,7 @@ class $modify(Menu, MenuLayer)
 				log::error("Avalanche featured project button disabled");
 			};
 
-			getHandler.scanAll();
+			getHandler->scanAll();
 
 			return true;
 		}

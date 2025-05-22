@@ -15,6 +15,8 @@ using namespace geode::prelude;
 
 namespace avalanche // Avalanche Index mod namespace
 {
+    inline const std::string OFFICIAL_NAME = "Avalanche"; // Team name
+
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 
     constexpr const char *URL_BADGES = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProfiles.json"; // URL to remote JSON file containing all data on profiles
@@ -77,10 +79,10 @@ namespace avalanche // Avalanche Index mod namespace
     {
     public:
         // Get the Handler functions
-        static Handler &get()
+        static Handler *get()
         {
             static Handler instance;
-            return instance;
+            return &instance;
         };
 
         // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting

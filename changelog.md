@@ -67,4 +67,4 @@
 
 ---
 
-Code inherited from prototype mod **ObsidianGD Badges**.
+Code inherited from prototype mod **[ObsidianGD Badges](https://www.github.com/CubicCommunity/ObsidianGD-Badges/)**.

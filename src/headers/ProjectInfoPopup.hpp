@@ -21,7 +21,7 @@ protected:
   GJGameLevel *m_level;
   Project m_avalProject;
 
-  CCMenu *overlayMenu;
+  CCMenu *m_overlayMenu;
 
   void infoPopup(CCObject *);
   void onFameInfo(CCObject *);

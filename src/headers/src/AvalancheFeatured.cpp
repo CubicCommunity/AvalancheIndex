@@ -102,7 +102,7 @@ bool AvalancheFeatured::setup()
 
   overlayMenu->addChild(infoBtn);
 
-  // sideArt deco
+  // corner art deco
   auto art_bottomLeft = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
   art_bottomLeft->setID("bottom-left-corner");
   art_bottomLeft->setAnchorPoint({0, 0});

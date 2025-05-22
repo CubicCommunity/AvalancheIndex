@@ -3,7 +3,7 @@ Official Avalanche levels and profiles.
 
 ### Development
 ###### Work with the mod directly.
-You can access data from the Avalanche Index by including the [`Avalanche.hpp`](Avalanche.hpp) file in your code. Make sure to use the `avalanche` namespace to directly access all the needed classes and values.
+You can access data from the Avalanche Index by including the [`Avalanche.hpp`](./Avalanche.hpp) file in your code. Make sure to use the `avalanche` namespace to directly access all the needed classes and values.
 
 ```cpp
 #include <cubicstudios.avalancheindex/incl/Avalanche.hpp>
@@ -20,7 +20,7 @@ Use the `Handler` class's methods to access methods that fetch saved data on bad
 > Handler getHandler = Handler::get();
 > ```
 >
-> This will return an *object*, be sure to use the **dot operator** (`.`) to access methods.
+> This will return an *object* - be sure to use the **dot operator** (`.`) to access methods.
 
 ```cpp
 using namespace avalanche;

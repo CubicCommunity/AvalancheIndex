@@ -163,7 +163,7 @@ bool ProjectInfoPopup::setup()
       this,
       menu_selector(ProjectInfoPopup::infoPopup));
   infoBtn->setID("info-button");
-  infoBtn->setPosition({m_mainLayer->getScaledContentWidth() - 12.5f, m_mainLayer->getScaledContentHeight() - 12.5f});
+  infoBtn->setPosition({m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f});
 
   m_overlayMenu->addChild(infoBtn);
 

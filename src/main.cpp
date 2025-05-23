@@ -38,8 +38,8 @@ auto getThisMod = geode::getMod();
 // avalanche data handler
 auto getHandler = Handler::get();
 
-// if the server was already checked for the new avalanche project :O
-bool pingedProjectData = false;
+// if the server wasn't already checked for the new avalanche project :O
+bool noProjectPing = true;
 
 class $modify(ProfilePage)
 {
@@ -710,11 +710,11 @@ class $modify(Menu, MenuLayer)
 				{
 					Menu::onCheckForNewAval(fakeObj);
 				}
-				else if (!pingedProjectData)
+				else if (noProjectPing)
 				{
 					Menu::onCheckForNewAval(fakeObj);
 
-					pingedProjectData = true;
+					noProjectPing = false;
 				}
 				else
 				{

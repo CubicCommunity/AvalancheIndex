@@ -99,7 +99,7 @@ bool AvalancheFeatured::setup()
       infoBtnSprite,
       this, menu_selector(AvalancheFeatured::infoPopup));
   infoBtn->setID("info-button");
-  infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 17.5f, m_mainLayer->getScaledContentHeight() - 17.5f);
+  infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f);
   infoBtn->setZOrder(126);
 
   m_overlayMenu->addChild(infoBtn);

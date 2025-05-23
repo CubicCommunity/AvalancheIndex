@@ -128,7 +128,7 @@ void ProjectInfoPopup::onPlayShowcase(CCObject *)
         }
         else
         {
-          log::debug("User clicked OK");
+          log::debug("User clicked Cancel");
         };
       },
       true);
@@ -167,52 +167,6 @@ bool ProjectInfoPopup::setup()
 
   m_overlayMenu->addChild(infoBtn);
 
-  // corner art deco
-
-  auto art_bottomLeft = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
-  art_bottomLeft->setID("bottom-left-corner");
-  art_bottomLeft->setAnchorPoint({0, 0});
-  art_bottomLeft->setPosition({0, 0});
-  art_bottomLeft->setScale(1.250);
-  art_bottomLeft->setFlipX(false);
-  art_bottomLeft->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
-
-  m_overlayMenu->addChild(art_bottomLeft);
-
-  auto art_bottomRight = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
-  art_bottomRight->setID("bottom-right-corner");
-  art_bottomRight->setAnchorPoint({1, 0});
-  art_bottomRight->setPosition({m_overlayMenu->getScaledContentWidth(), 0});
-  art_bottomRight->setScale(1.250);
-  art_bottomRight->setFlipX(true);
-  art_bottomRight->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
-
-  m_overlayMenu->addChild(art_bottomRight);
-
-  auto art_topLeft = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
-  art_topLeft->setID("top-left-corner");
-  art_topLeft->setAnchorPoint({0, 1});
-  art_topLeft->setPosition({0, m_overlayMenu->getScaledContentHeight()});
-  art_topLeft->setScale(1.250);
-  art_topLeft->setFlipX(false);
-  art_topLeft->setFlipY(true);
-  art_topLeft->setZOrder(-1);
-
-  m_overlayMenu->addChild(art_topLeft);
-
-  auto art_topRight = CCSprite::createWithSpriteFrameName("rewardCorner_001.png");
-  art_topRight->setID("top-right-corner");
-  art_topRight->setAnchorPoint({1, 1});
-  art_topRight->setPosition({m_overlayMenu->getScaledContentWidth(), m_overlayMenu->getScaledContentHeight()});
-  art_topRight->setScale(1.250);
-  art_topRight->setFlipX(true);
-  art_topRight->setFlipY(true);
-  art_topRight->setZOrder(-1);
-
-  m_overlayMenu->addChild(art_topRight);
-
   return true;
 };
 
@@ -231,6 +185,8 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 
     m_title->setFntFile("goldFont.fnt");
     m_title->setScale(1.f);
+
+    m_cornerArtType = "dailyLevelCorner_001.png";
 
     auto fameFrame_layout = AxisLayout::create(Axis::Row);
     fameFrame_layout->setCrossAxisLineAlignment(AxisAlignment::Center);
@@ -260,7 +216,6 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
         fameLabel,
         this,
         menu_selector(ProjectInfoPopup::onFameInfo));
-
     fameFrame->addChild(fameIcon);
     fameFrame->addChild(fameBtn);
 
@@ -273,12 +228,56 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
     log::debug("Project '{}' is not in the Hall of Fame", m_avalProject.name);
   };
 
+  auto art_bottomLeft = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+  art_bottomLeft->setID("bottom-left-corner");
+  art_bottomLeft->setAnchorPoint({0, 0});
+  art_bottomLeft->setPosition({0, 0});
+  art_bottomLeft->setScale(1.250);
+  art_bottomLeft->setFlipX(false);
+  art_bottomLeft->setFlipY(false);
+  art_bottomLeft->setZOrder(-1);
+
+  m_overlayMenu->addChild(art_bottomLeft);
+
+  auto art_bottomRight = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+  art_bottomRight->setID("bottom-right-corner");
+  art_bottomRight->setAnchorPoint({1, 0});
+  art_bottomRight->setPosition({m_overlayMenu->getScaledContentWidth(), 0});
+  art_bottomRight->setScale(1.250);
+  art_bottomRight->setFlipX(true);
+  art_bottomRight->setFlipY(false);
+  art_bottomLeft->setZOrder(-1);
+
+  m_overlayMenu->addChild(art_bottomRight);
+
+  auto art_topLeft = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+  art_topLeft->setID("top-left-corner");
+  art_topLeft->setAnchorPoint({0, 1});
+  art_topLeft->setPosition({0, m_overlayMenu->getScaledContentHeight()});
+  art_topLeft->setScale(1.250);
+  art_topLeft->setFlipX(false);
+  art_topLeft->setFlipY(true);
+  art_topLeft->setZOrder(-1);
+
+  m_overlayMenu->addChild(art_topLeft);
+
+  auto art_topRight = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+  art_topRight->setID("top-right-corner");
+  art_topRight->setAnchorPoint({1, 1});
+  art_topRight->setPosition({m_overlayMenu->getScaledContentWidth(), m_overlayMenu->getScaledContentHeight()});
+  art_topRight->setScale(1.250);
+  art_topRight->setFlipX(true);
+  art_topRight->setFlipY(true);
+  art_topRight->setZOrder(-1);
+
+  m_overlayMenu->addChild(art_topRight);
+
   auto comingSoon = CCLabelBMFont::create("More coming soon...", "bigFont.fnt");
   comingSoon->setID("coming-soon-label");
   comingSoon->ignoreAnchorPointForPosition(false);
   comingSoon->setAnchorPoint({0.5, 0.5});
   comingSoon->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() / 2.f});
-  comingSoon->setScale(0.5f);
+  comingSoon->setScale(0.25f);
 
   m_overlayMenu->addChild(comingSoon);
 
@@ -286,7 +285,7 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
   playShowcase_label->setID("play-showcase-label");
   playShowcase_label->ignoreAnchorPointForPosition(false);
   playShowcase_label->setAnchorPoint({0.5, 0.5});
-  playShowcase_label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 65.f});
+  playShowcase_label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 60.f});
   playShowcase_label->setScale(1.f);
 
   m_overlayMenu->addChild(playShowcase_label);
@@ -299,7 +298,7 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
       this,
       menu_selector(ProjectInfoPopup::onPlayShowcase));
   playShowcase->setID("play-showcase-button"_spr);
-  playShowcase->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 35.f});
+  playShowcase->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 30.f});
 
   m_overlayMenu->addChild(playShowcase);
 

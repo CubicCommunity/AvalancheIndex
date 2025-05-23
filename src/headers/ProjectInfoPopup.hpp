@@ -23,6 +23,8 @@ protected:
 
   CCMenu *m_overlayMenu;
 
+  std::string m_cornerArtType = "rewardCorner_001.png";
+
   void infoPopup(CCObject *);
   void onFameInfo(CCObject *);
 

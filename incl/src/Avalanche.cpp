@@ -6,13 +6,16 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/GeodeUI.hpp>
+
 #include <Geode/utils/web.hpp>
+#include <Geode/utils/terminate.hpp>
 
 #include "../Avalanche.hpp"
 
 using namespace geode::prelude;
 
-auto thisMod = geode::getMod();
+auto thisMod = getMod();
 
 namespace avalanche
 {
@@ -253,86 +256,74 @@ namespace avalanche
         switch (badge)
         {
         case avalanche::Profile::Badge::CUBIC:
-            geode::createQuickPopup(
+            createQuickPopup(
                 "Cubic Studios",
                 "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.",
                 "OK", "Learn More",
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                    {
                         web::openLinkInBrowser("https://www.cubicstudios.xyz/");
-                    };
                 });
             break;
 
         case avalanche::Profile::Badge::DIRECTOR:
-            geode::createQuickPopup(
+            createQuickPopup(
                 "Avalanche Director",
                 "This user is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.",
                 "OK", "Learn More",
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                    {
                         web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
-                    };
                 });
             break;
 
         case avalanche::Profile::Badge::MANAGER:
-            geode::createQuickPopup(
+            createQuickPopup(
                 "Avalanche Manager",
                 "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.",
                 "OK", "Learn More",
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                    {
                         web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
-                    };
                 });
             break;
 
         case avalanche::Profile::Badge::MEMBER:
-            geode::createQuickPopup(
+            createQuickPopup(
                 "Avalanche Team Member",
                 "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.",
                 "OK", "Learn More",
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                    {
                         web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
-                    };
                 });
             break;
 
         case avalanche::Profile::Badge::COLLABORATOR:
-            geode::createQuickPopup(
+            createQuickPopup(
                 "Team Collaborator",
                 "This user is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.",
                 "OK", "Learn More",
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                    {
                         web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
-                    };
                 });
             break;
 
         default:
-            geode::createQuickPopup(
+            createQuickPopup(
                 "Oops!",
                 "This badge has <cr>no available information</c>. This is likely unintentional, please report it as an issue in the mod's repository.",
                 "OK", "Report",
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                    {
                         web::openLinkInBrowser("https://www.github.com/CubicCommunity/AvalancheIndex/issues/");
-                    };
                 });
             break;
         };

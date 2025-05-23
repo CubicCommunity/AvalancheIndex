@@ -4,15 +4,17 @@ https://github.com/cdc-sys/level-thumbs-mod
 */
 
 #include "../AvalancheFeatured.hpp"
-#include "../ImageCache.hpp"
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/General.hpp>
+#include <Geode/ui/LazySprite.hpp>
 #include <Geode/ui/Notification.hpp>
 
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/cocos.hpp>
+#include <Geode/utils/terminate.hpp>
 
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
@@ -35,21 +37,27 @@ AvalancheFeatured *AvalancheFeatured::create()
 
 void AvalancheFeatured::infoPopup(CCObject *)
 {
-  geode::createQuickPopup(
+  log::info("Opening featured info popup");
+  createQuickPopup(
       "Avalanche Featured",
       "This is the latest project <cl>Avalanche</c> is currently working on. If the form is open, you can <cg>apply to join the team</c> to work on this and future projects.",
       "OK", "Apply",
       [](auto, bool btn2)
       {
         if (btn2)
-        {
           web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/apply/");
-        };
       });
+};
+
+void AvalancheFeatured::changelogPopup(CCObject *)
+{
+  log::info("Opening changelog popup");
+  openChangelogPopup(getMod());
 };
 
 void AvalancheFeatured::openApplicationPopup(CCObject *)
 {
+  log::info("Opening team application popup");
   createQuickPopup(
       "Learn More",
       "Would you like to check out the latest <cl>Avalanche</c> project?",
@@ -57,9 +65,7 @@ void AvalancheFeatured::openApplicationPopup(CCObject *)
       [this](auto, bool btn2)
       {
         if (btn2)
-        {
-          CCApplication::sharedApplication()->openURL("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
-        };
+          web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
       });
 };
 
@@ -97,7 +103,8 @@ bool AvalancheFeatured::setup()
 
   auto infoBtn = CCMenuItemSpriteExtra::create(
       infoBtnSprite,
-      this, menu_selector(AvalancheFeatured::infoPopup));
+      this,
+      menu_selector(AvalancheFeatured::infoPopup));
   infoBtn->setID("info-button");
   infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f);
   infoBtn->setZOrder(126);
@@ -170,59 +177,54 @@ bool AvalancheFeatured::setup()
   m_mainLayer->addChild(m_clippingNode);
 
   ButtonSprite *infoSprite = ButtonSprite::create("View");
-  m_infoBtn = CCMenuItemSpriteExtra::create(infoSprite, this, menu_selector(AvalancheFeatured::openApplicationPopup));
-
+  m_infoBtn = CCMenuItemSpriteExtra::create(
+      infoSprite,
+      this,
+      menu_selector(AvalancheFeatured::openApplicationPopup));
   m_infoBtn->setPosition({widthCS / 2, 6});
   m_infoBtn->setVisible(true);
   m_infoBtn->setZOrder(3);
 
   m_buttonMenu->addChild(m_infoBtn);
 
-  m_loadingCircle->setParentLayer(m_mainLayer);
-  m_loadingCircle->setPosition({widthCS / 2, heightCS / 2});
-  m_loadingCircle->ignoreAnchorPointForPosition(false);
-  m_loadingCircle->setAnchorPoint({0.5, 0.5});
-  m_loadingCircle->setScale(1.f);
-  m_loadingCircle->show();
+  // featured project thumbnail
+  auto lazySprite = LazySprite::create(m_overlayMenu->getScaledContentSize(), true);
+  lazySprite->setID("thumbnail");
+  lazySprite->setPosition({m_mainLayer->getContentWidth() / 2, m_mainLayer->getContentHeight() / 2});
 
-  if (CCImage *image = ImageCache::get()->getImage("projectThumbnail"))
-  {
-    m_image = image;
-    m_loadingCircle->fadeAndRemove();
-    imageCreationFinished(m_image);
-    return true;
-  }
-  else
-  {
-    auto reqThumb = web::WebRequest();
+  lazySprite->setLoadCallback([this, lazySprite](Result<> res)
+                              {
+                                if (res)
+                                {
+                                  // Success: scale and position the sprite
+                                  log::info("Sprite loaded successfully");
+                                }
+                                else
+                                {
+                                  // Failure: set fallback image
+                                  log::error("Sprite failed to load, setting fallback: {}", res.unwrapErr());
+                                  lazySprite->initWithSpriteFrameName("unavailable.png"_spr);
+                                };
+                                
+                                float scale = m_maxHeight / lazySprite->getContentSize().height;
 
-    m_downloadListener.bind([this](web::WebTask::Event *e)
-                            {
-        if (auto res = e->getValue())
-        {
-            if (!res->ok()) {
-                onDownloadFail();
-            } else {
-                auto data = res->data();
+                                lazySprite->setScale(scale);
+                                lazySprite->setUserObject("scale", CCFloat::create(scale)); });
 
-                std::thread imageThread = std::thread([data,this](){
-                    m_image = new CCImage();
-                    m_image->autorelease();
-                    m_image->initWithImageData(const_cast<uint8_t*>(data.data()),data.size());
+  lazySprite->loadFromUrl("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png", LazySprite::Format::kFmtPng, false);
+  m_clippingNode->addChild(lazySprite);
 
-                    geode::Loader::get()->queueInMainThread([this](){
-                        ImageCache::get()->addImage(m_image, "projectThumbnail");
-                        imageCreationFinished(m_image);
-                    });
-                });
+  auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
+  changelogBtnSprite->setScale(0.5f);
 
-                imageThread.detach();
-            };
-        }; });
+  auto changelogBtn = CCMenuItemSpriteExtra::create(
+      changelogBtnSprite,
+      this,
+      menu_selector(AvalancheFeatured::changelogPopup));
+  changelogBtn->setID("changelog-button");
+  changelogBtn->setPosition({25, 25});
 
-    auto downloadTask = reqThumb.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png");
-    m_downloadListener.setFilter(downloadTask);
-  };
+  m_overlayMenu->addChild(changelogBtn);
 
   return true;
 };

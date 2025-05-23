@@ -12,9 +12,11 @@
 
 #include <Geode/Geode.hpp>
 
+#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/Notification.hpp>
 
 #include <Geode/utils/web.hpp>
+#include <Geode/utils/terminate.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/ProfilePage.hpp>
@@ -33,7 +35,7 @@ using namespace geode::prelude;
 using namespace avalanche;
 
 // its modding time :3
-auto getThisMod = geode::getMod();
+auto getThisMod = getMod();
 
 // avalanche data handler
 auto getHandler = Handler::get();
@@ -631,6 +633,58 @@ class $modify(Menu, MenuLayer)
 	{
 		if (MenuLayer::init())
 		{
+			std::string ver = getThisMod->getVersion().toVString();
+			log::debug("Loaded mod version {}", ver);
+
+			bool viewChangelog = getThisMod->getSettingValue<bool>("view-changelog");
+
+			if (viewChangelog)
+			{
+				std::string changelogVer = getThisMod->getSavedValue<std::string>("changelog-ver");
+
+				if (changelogVer.empty())
+				{
+					log::debug("No changelog version found, setting to {}", ver);
+					changelogVer = getThisMod->setSavedValue<std::string>("changelog-ver", ver);
+				}
+				else
+				{
+					log::debug("Changelog version found: {}", changelogVer);
+
+					// check if the changelog was already shown
+					if (changelogVer == ver)
+					{
+						log::debug("Changelog already shown for version {}", ver);
+					}
+					else
+					{
+						createQuickPopup(
+							"Avalanche Index Updated",
+							"Check out the new features in the changelog!",
+							"Cancel", "OK",
+							[](auto, bool btn2)
+							{
+								if (btn2)
+								{
+									openChangelogPopup(getThisMod);
+								}
+								else
+								{
+									log::debug("User clicked Cancel");
+								};
+							},
+							true);
+
+						getThisMod->setSavedValue<std::string>("changelog-ver", ver);
+						getThisMod->setSavedValue<bool>("checked-aval-project", false);
+					};
+				};
+			}
+			else
+			{
+				log::debug("Changelog alert disabled");
+			};
+
 			auto winSizeX = this->getScaledContentWidth();
 			auto winSizeY = this->getScaledContentHeight();
 

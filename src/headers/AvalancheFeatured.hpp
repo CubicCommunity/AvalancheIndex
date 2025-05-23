@@ -33,6 +33,7 @@ protected:
   bool setup() override;
 
   void infoPopup(CCObject *);
+  void changelogPopup(CCObject *);
   void onDownloadFinished(CCSprite *sprite);
   void onDownloadFail();
   void imageCreationFinished(CCImage *image);

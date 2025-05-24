@@ -1,3 +1,5 @@
+#include "../Avalanche.hpp"
+
 #include <string>
 #include <chrono>
 #include <map>
@@ -10,8 +12,6 @@
 
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/terminate.hpp>
-
-#include "../Avalanche.hpp"
 
 using namespace geode::prelude;
 

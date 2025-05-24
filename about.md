@@ -1,4 +1,4 @@
-# ![Avalanche Index](cubicstudios.avalancheindex/wordmark.png)
+# ![Avalanche Index](frame:cubicstudios.avalancheindex/wordmark.png)
 **Official Avalanche levels and profiles.**
 
 ---
@@ -9,15 +9,20 @@ Easily spot legitimate Avalanche profiles and projects at a glance. No more need
 
 ---
 
+## About
+The *Avalanche Index* mod fetches and processes data from an external repository to highlight players and levels that are official to Avalanche. This mod is meant to be utilized as a tool by the Geometry Dash players in Avalanche's community to better discern between official and otherwise misleading and unofficial users and levels.
+
+---
+
 ### Badges
 ###### The members of Avalanche.
 When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team, unless they are the publisher of the level.
 
-- ![icon](cubicstudios.avalancheindex/director.png?scale=0.625) Director
-- ![icon](cubicstudios.avalancheindex/team-manager.png?scale=0.625) Team Manager
-- ![icon](cubicstudios.avalancheindex/team-member.png?scale=0.625) Team Member
-- ![icon](cubicstudios.avalancheindex/collaborator.png?scale=0.625) Collaborator
-- ![icon](cubicstudios.avalancheindex/cubic-studios.png?scale=0.625) **Cubic Studios** Staff
+- ![icon](frame:cubicstudios.avalancheindex/director.png?scale=0.625) Director
+- ![icon](frame:cubicstudios.avalancheindex/team-manager.png?scale=0.625) Team Manager
+- ![icon](frame:cubicstudios.avalancheindex/team-member.png?scale=0.625) Team Member
+- ![icon](frame:cubicstudios.avalancheindex/collaborator.png?scale=0.625) Collaborator
+- ![icon](frame:cubicstudios.avalancheindex/cubic-studios.png?scale=0.625) **Cubic Studios** Staff
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
 

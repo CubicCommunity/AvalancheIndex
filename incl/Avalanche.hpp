@@ -15,7 +15,7 @@ using namespace geode::prelude;
 
 namespace avalanche // Avalanche Index mod namespace
 {
-    inline const std::string OFFICIAL_NAME = "Avalanche"; // Team name
+    inline const std::string OFFICIAL_TEAM_NAME = "Avalanche"; // Team name
 
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 

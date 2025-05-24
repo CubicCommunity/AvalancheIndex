@@ -90,6 +90,7 @@ bool AvalancheFeatured::setup()
   m_overlayMenu->setZOrder(10);
   m_mainLayer->addChild(m_overlayMenu);
 
+  // featured header sprite
   auto titleSprite = CCSprite::createWithSpriteFrameName("featured.png"_spr);
   titleSprite->setID("title-sprite");
   titleSprite->ignoreAnchorPointForPosition(false);
@@ -157,6 +158,8 @@ bool AvalancheFeatured::setup()
 
   m_overlayMenu->addChild(art_topRight);
 
+  // for popup
+
   CCScale9Sprite *border = CCScale9Sprite::create("GJ_square07.png");
   border->setContentSize(m_bgSprite->getContentSize());
   border->setPosition(m_bgSprite->getPosition());
@@ -175,6 +178,8 @@ bool AvalancheFeatured::setup()
 
   m_mainLayer->addChild(border);
   m_mainLayer->addChild(m_clippingNode);
+
+  // links to project vid
 
   ButtonSprite *infoSprite = ButtonSprite::create("View");
   m_infoBtn = CCMenuItemSpriteExtra::create(
@@ -215,7 +220,7 @@ bool AvalancheFeatured::setup()
   m_clippingNode->addChild(lazySprite);
 
   auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-  changelogBtnSprite->setScale(0.5f);
+  changelogBtnSprite->setScale(0.75f);
 
   auto changelogBtn = CCMenuItemSpriteExtra::create(
       changelogBtnSprite,

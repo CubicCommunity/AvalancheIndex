@@ -20,6 +20,7 @@ public:
 protected:
   GJGameLevel *m_level;
   Project m_avalProject;
+  std::string m_avalPublisher = "Avalanche";
 
   CCMenu *m_overlayMenu;
 

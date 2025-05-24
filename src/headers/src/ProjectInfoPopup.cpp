@@ -31,13 +31,11 @@ ProjectInfoPopup *ProjectInfoPopup::create()
 
 void ProjectInfoPopup::infoPopup(CCObject *)
 {
-  std::string hosted = m_avalProject.host;
   std::ostringstream typeOfProj;
 
   switch (m_avalProject.type)
   {
   case Project::Type::TEAM:
-    hosted = OFFICIAL_NAME;
     typeOfProj << "a <cg>team project</c> hosted by <cy>" << m_avalProject.host << "</c>";
     break;
 
@@ -58,8 +56,8 @@ void ProjectInfoPopup::infoPopup(CCObject *)
     break;
   };
 
-  std::ostringstream body; // for ios
-  body << "<cy>" << std::string(hosted) << "</c> - '<cg>" << m_avalProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
+  std::ostringstream body;
+  body << "<cy>" << std::string(m_avalPublisher) << "</c> - '<cg>" << m_avalProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
 
   std::string resultBody = body.str();
 
@@ -84,9 +82,15 @@ void ProjectInfoPopup::infoPopup(CCObject *)
 
 void ProjectInfoPopup::onFameInfo(CCObject *)
 {
+
+  std::ostringstream body;
+  body << "This level, '<cg>" << m_avalProject.name << "</c>', is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.";
+
+  std::string resultBody = body.str();
+
   createQuickPopup(
-      "Avalanche Hall of Fame",
-      "This level is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.",
+      "Hall of Fame",
+      resultBody.c_str(),
       "OK", "Learn More",
       [](auto, bool btn2)
       {
@@ -105,13 +109,8 @@ void ProjectInfoPopup::onFameInfo(CCObject *)
 
 void ProjectInfoPopup::onPlayShowcase(CCObject *)
 {
-  std::string hosted = m_avalProject.host;
-
-  if (m_avalProject.type == Project::Type::TEAM)
-    hosted = OFFICIAL_NAME;
-
-  std::ostringstream body; // for ios
-  body << "Watch the showcase of <cy>" << hosted << "</c> - '<cg>" << m_avalProject.name << "</c>'?";
+  std::ostringstream body;
+  body << "Watch the full showcase video for <cy>" << m_avalPublisher << "</c> - '<cg>" << m_avalProject.name << "</c>'?";
 
   std::string resultBody = body.str();
 
@@ -167,15 +166,29 @@ bool ProjectInfoPopup::setup()
 
   m_overlayMenu->addChild(infoBtn);
 
+  log::warn("Project info popup still unfinished, please use ProjectInfoPopup::setProject() to finish setting it up before displaying it");
+
   return true;
 };
 
 ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 {
-  log::warn("Project info popup still unfinished");
-
   m_level = level;
   m_avalProject = Handler::get()->GetProject(m_level->m_levelID.value());
+
+  if (m_avalProject.type == Project::Type::NONE)
+  {
+    log::error("Avalanche project type is NONE");
+    return this;
+  }
+  else if (m_avalProject.type == Project::Type::TEAM)
+  {
+    m_avalPublisher = OFFICIAL_TEAM_NAME;
+  }
+  else
+  {
+    m_avalPublisher = m_avalProject.host;
+  };
 
   setTitle(m_avalProject.name);
 
@@ -281,14 +294,34 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 
   m_overlayMenu->addChild(comingSoon);
 
+  auto hostLabelTxt = "Published by";
+
+  if (m_avalProject.type == Project::Type::TEAM)
+    hostLabelTxt = "Hosted by";
+
+  auto hostName_label = CCLabelBMFont::create(hostLabelTxt, "bigFont.fnt");
+  hostName_label->setID("host-name-label");
+  hostName_label->ignoreAnchorPointForPosition(false);
+  hostName_label->setAnchorPoint({0, 0.5});
+  hostName_label->setPosition({10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 50.f});
+  hostName_label->setScale(0.25f);
+
+  auto hostName = CCLabelBMFont::create(m_avalPublisher.c_str(), "goldFont.fnt");
+  hostName->setID("host-name");
+  hostName->ignoreAnchorPointForPosition(false);
+  hostName->setAnchorPoint({0, 0.5});
+  hostName->setPosition({10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 35.f});
+  hostName->setScale(0.75f);
+
+  m_overlayMenu->addChild(hostName_label);
+  m_overlayMenu->addChild(hostName);
+
   auto playShowcase_label = CCLabelBMFont::create("Watch the Showcase", "chatFont.fnt");
   playShowcase_label->setID("play-showcase-label");
   playShowcase_label->ignoreAnchorPointForPosition(false);
   playShowcase_label->setAnchorPoint({0.5, 0.5});
   playShowcase_label->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 60.f});
   playShowcase_label->setScale(1.f);
-
-  m_overlayMenu->addChild(playShowcase_label);
 
   auto playShowcase_sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
   playShowcase_sprite->setScale(0.5f);
@@ -300,6 +333,7 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
   playShowcase->setID("play-showcase-button"_spr);
   playShowcase->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, 30.f});
 
+  m_overlayMenu->addChild(playShowcase_label);
   m_overlayMenu->addChild(playShowcase);
 
   return this;

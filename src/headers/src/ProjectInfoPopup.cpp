@@ -57,7 +57,7 @@ void ProjectInfoPopup::infoPopup(CCObject *)
   };
 
   std::ostringstream body;
-  body << "<cy>" << std::string(m_avalPublisher) << "</c> - '<cg>" << m_avalProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
+  body << "<cy>" << m_avalPublisher << "</c> - '<cg>" << m_avalProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
 
   std::string resultBody = body.str();
 
@@ -192,6 +192,25 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 
   setTitle(m_avalProject.name);
 
+  auto fameFrame_layout = AxisLayout::create(Axis::Row);
+  fameFrame_layout->setCrossAxisLineAlignment(AxisAlignment::Center);
+  fameFrame_layout->setCrossAxisAlignment(AxisAlignment::Center);
+  fameFrame_layout->setAxisAlignment(AxisAlignment::Center);
+  fameFrame_layout->setGrowCrossAxis(false);
+  fameFrame_layout->setAxisReverse(false);
+  fameFrame_layout->setAutoScale(false);
+  fameFrame_layout->setGap(5.f);
+
+  auto fameFrame = CCMenu::create();
+  fameFrame->setID("fame-frame"_spr);
+  fameFrame->ignoreAnchorPointForPosition(false);
+  fameFrame->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_title->getPositionY() - 20.f});
+  fameFrame->setScaledContentSize({m_mainLayer->getScaledContentWidth() * 0.75f, 12.5f});
+  fameFrame->setLayout(fameFrame_layout);
+
+  fameFrame->updateLayout(true);
+  m_overlayMenu->addChild(fameFrame);
+
   if (m_avalProject.fame)
   {
     log::info("Project '{}' is in the Hall of Fame", m_avalProject.name);
@@ -200,22 +219,6 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
     m_title->setScale(1.f);
 
     m_cornerArtType = "dailyLevelCorner_001.png";
-
-    auto fameFrame_layout = AxisLayout::create(Axis::Row);
-    fameFrame_layout->setCrossAxisLineAlignment(AxisAlignment::Center);
-    fameFrame_layout->setCrossAxisAlignment(AxisAlignment::Center);
-    fameFrame_layout->setAxisAlignment(AxisAlignment::Center);
-    fameFrame_layout->setGrowCrossAxis(false);
-    fameFrame_layout->setAxisReverse(false);
-    fameFrame_layout->setAutoScale(false);
-    fameFrame_layout->setGap(5.f);
-
-    auto fameFrame = CCMenu::create();
-    fameFrame->setID("popup-fame-frame"_spr);
-    fameFrame->ignoreAnchorPointForPosition(false);
-    fameFrame->setPosition({m_mainLayer->getScaledContentWidth() / 2.f, m_title->getPositionY() - 20.f});
-    fameFrame->setScaledContentSize({m_mainLayer->getScaledContentWidth() * 0.75f, 12.5f});
-    fameFrame->setLayout(fameFrame_layout);
 
     auto fameIcon = CCSprite::createWithSpriteFrameName("GJ_bigStar_001.png");
     fameIcon->setScale(0.25f);
@@ -233,8 +236,6 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
     fameFrame->addChild(fameBtn);
 
     fameFrame->updateLayout(true);
-
-    m_overlayMenu->addChild(fameFrame);
   }
   else
   {
@@ -306,7 +307,7 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
   hostName_label->setPosition({10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 50.f});
   hostName_label->setScale(0.25f);
 
-  auto hostName = CCLabelBMFont::create(m_avalPublisher.c_str(), "goldFont.fnt");
+  auto hostName = CCLabelBMFont::create(m_avalProject.host.c_str(), "goldFont.fnt");
   hostName->setID("host-name");
   hostName->ignoreAnchorPointForPosition(false);
   hostName->setAnchorPoint({0, 0.5});

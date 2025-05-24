@@ -138,7 +138,7 @@ namespace avalanche // Avalanche Index mod namespace
 
                         auto newBadge = avalanche::Handler::badgeSpriteName[idString].c_str(); // gets sprite filename
 
-                        CCSprite *badgeSprite = CCSprite::create(newBadge);
+                        CCSprite *badgeSprite = CCSprite::createWithSpriteFrameName(newBadge);
                         badgeSprite->setScale(size);
 
                         CCMenuItemSpriteExtra *badge = CCMenuItemSpriteExtra::create(

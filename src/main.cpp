@@ -231,7 +231,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
 					avalBtnSprite->setScale(0.944f);
 
-					CCSprite *avalBtnSpriteIcon = CCSprite::create("button-icon.png"_spr);
+					CCSprite *avalBtnSpriteIcon = CCSprite::createWithSpriteFrameName("button-icon.png"_spr);
 					avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
 					avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
 					avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
@@ -333,7 +333,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 		bgSprite->setZOrder(background->getZOrder());
 		bgSprite->setID("team_background"_spr);
 
-		auto bgThumbnail = CCSprite::create("background.png"_spr);
+		auto bgThumbnail = CCSprite::createWithSpriteFrameName("background.png"_spr);
 		if (!bgThumbnail)
 		{
 			log::error("Failed to load sprite: background.png");
@@ -405,7 +405,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 				return;
 			};
 
-			auto bgThumbnail = CCSprite::create("fame-bg.png"_spr);
+			auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr);
 			if (!bgThumbnail)
 			{
 				log::error("Failed to load sprite: background.png");
@@ -593,7 +593,7 @@ class $modify(Level, LevelCell)
 
 		if (showFame)
 		{
-			auto fameGlow = CCSprite::create("fame.png"_spr);
+			auto fameGlow = CCSprite::createWithSpriteFrameName("fame.png"_spr);
 			fameGlow->setZOrder(newColor->getZOrder() + 1);
 			fameGlow->ignoreAnchorPointForPosition(false);
 			fameGlow->setAnchorPoint({0, 0});
@@ -700,7 +700,7 @@ class $modify(Menu, MenuLayer)
 
 				this->addChild(avalMenu);
 
-				auto avalBtnSprite = CCSprite::create("logo_circle_aval.png"_spr);
+				auto avalBtnSprite = CCSprite::createWithSpriteFrameName("button-icon-framed.png"_spr);
 				avalBtnSprite->ignoreAnchorPointForPosition(false);
 				avalBtnSprite->setScale(0.0875f);
 

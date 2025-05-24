@@ -1,4 +1,4 @@
-# ![Avalanche Index](cubicstudios.avalancheindex/banner.png)
+# ![Avalanche Index](cubicstudios.avalancheindex/wordmark.png)
 **Official Avalanche levels and profiles.**
 
 ---

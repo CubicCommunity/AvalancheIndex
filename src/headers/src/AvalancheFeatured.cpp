@@ -90,7 +90,7 @@ bool AvalancheFeatured::setup()
   m_overlayMenu->setZOrder(10);
   m_mainLayer->addChild(m_overlayMenu);
 
-  auto titleSprite = CCSprite::create("featured.png"_spr);
+  auto titleSprite = CCSprite::createWithSpriteFrameName("featured.png"_spr);
   titleSprite->setID("title-sprite");
   titleSprite->ignoreAnchorPointForPosition(false);
   titleSprite->setPosition({widthCS / 2, heightCS - 2.5f});
@@ -227,41 +227,6 @@ bool AvalancheFeatured::setup()
   m_overlayMenu->addChild(changelogBtn);
 
   return true;
-};
-
-void AvalancheFeatured::imageCreationFinished(CCImage *image)
-{
-  CCTexture2D *texture = new CCTexture2D();
-  texture->autorelease();
-  texture->initWithImage(image);
-  onDownloadFinished(CCSprite::createWithTexture(texture));
-};
-
-void AvalancheFeatured::onDownloadFinished(CCSprite *image)
-{
-  float scale = m_maxHeight / image->getContentSize().height;
-
-  image->setScale(scale);
-  image->setUserObject("scale", CCFloat::create(scale));
-  image->setPosition({m_mainLayer->getContentWidth() / 2, m_mainLayer->getContentHeight() / 2});
-
-  image->setID("thumbnail");
-  m_clippingNode->addChild(image);
-  m_loadingCircle->fadeAndRemove();
-};
-
-void AvalancheFeatured::onDownloadFail()
-{
-  CCSprite *image = CCSprite::create("unavailable.png"_spr);
-  float scale = m_maxHeight / image->getContentSize().height;
-
-  image->setScale(scale);
-  image->setUserObject("scale", CCFloat::create(scale));
-  image->setPosition({m_mainLayer->getContentWidth() / 2, m_mainLayer->getContentHeight() / 2});
-  image->setID("thumbnail");
-
-  m_clippingNode->addChild(image);
-  m_loadingCircle->fadeAndRemove();
 };
 
 void AvalancheFeatured::show()

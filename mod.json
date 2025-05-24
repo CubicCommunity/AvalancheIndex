@@ -27,6 +27,20 @@
 		"url": "https://www.github.com/CubicCommunity/AvalancheIndex/issues/"
 	},
 	"resources": {
+		"spritesheets": {
+			"backgrounds": [
+				"resources/backgrounds/*.png"
+			],
+			"badges": [
+				"resources/badges/*.png"
+			],
+			"banners": [
+				"resources/banners/*.png"
+			],
+			"interface": [
+				"resources/ui/*.png"
+			]
+		},
 		"sprites": [
 			"resources/*.png"
 		]

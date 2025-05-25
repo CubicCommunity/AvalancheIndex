@@ -1,11 +1,12 @@
 #include "../Avalanche.hpp"
 
 #include <string>
-#include <format>
 #include <chrono>
 #include <map>
 
 #include <matjson.hpp>
+
+#include <fmt/core.h>
 
 #include <Geode/Geode.hpp>
 
@@ -97,7 +98,7 @@ namespace avalanche
                                 }
                                 else
                                 {
-                                    std::string cacheKey = std::format("cache-badge-p{}", (std::string)key);
+                                    std::string cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
                                     thisMod->setSavedValue(cacheKey, value);
                                 };
                             };
@@ -155,7 +156,7 @@ namespace avalanche
                                 }
                                 else
                                 {
-                                    std::string cacheKey = std::format("cache-level-p{}", (std::string)key);
+                                    std::string cacheKey = fmt::format("cache-level-p{}", (std::string)key);
                                     thisMod->setSavedValue(cacheKey, value);
                                 };
                             };
@@ -197,7 +198,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = std::format("cache-badge-p{}", (int)id);
+            std::string cacheKey = fmt::format("cache-badge-p{}", (int)id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
@@ -222,7 +223,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = std::format("cache-level-p{}", (int)id);
+            std::string cacheKey = fmt::format("cache-level-p{}", (int)id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 

@@ -1,8 +1,3 @@
-/*
-borrowed from an older version of
-https://github.com/cdc-sys/level-thumbs-mod
-*/
-
 #include "../AvalancheFeatured.hpp"
 
 #include <Geode/Geode.hpp>
@@ -46,7 +41,8 @@ void AvalancheFeatured::infoPopup(CCObject *)
       {
         if (btn2)
           web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/apply/");
-      });
+      },
+      true);
 };
 
 void AvalancheFeatured::changelogPopup(CCObject *)
@@ -66,7 +62,8 @@ void AvalancheFeatured::openApplicationPopup(CCObject *)
       {
         if (btn2)
           web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
-      });
+      },
+      true);
 };
 
 bool AvalancheFeatured::setup()
@@ -79,13 +76,13 @@ bool AvalancheFeatured::setup()
   auto [widthCS, heightCS] = m_mainLayer->getContentSize();
   auto [widthP, heightP] = m_mainLayer->getPosition();
 
-  const auto buttons_height = 0.82f * heightCS;
+  auto buttons_height = 0.82f * heightCS;
 
   // for buttons to work
   m_overlayMenu = CCMenu::create();
   m_overlayMenu->setID("overlay-menu");
   m_overlayMenu->ignoreAnchorPointForPosition(false);
-  m_overlayMenu->setPosition(widthCS / 2, heightCS / 2);
+  m_overlayMenu->setPosition({widthCS / 2, heightCS / 2});
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
   m_overlayMenu->setZOrder(10);
   m_mainLayer->addChild(m_overlayMenu);
@@ -107,7 +104,7 @@ bool AvalancheFeatured::setup()
       this,
       menu_selector(AvalancheFeatured::infoPopup));
   infoBtn->setID("info-button");
-  infoBtn->setPosition(m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f);
+  infoBtn->setPosition({m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f});
   infoBtn->setZOrder(126);
 
   m_overlayMenu->addChild(infoBtn);

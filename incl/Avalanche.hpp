@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <exception>
 
 #include <cocos2d.h>
 #include <matjson.hpp>
@@ -81,8 +82,8 @@ namespace avalanche // Avalanche Index mod namespace
         // Get the Handler functions
         static Handler *get()
         {
-            static Handler instance;
-            return &instance;
+            static Handler ptr;
+            return &ptr;
         };
 
         // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
@@ -105,9 +106,9 @@ namespace avalanche // Avalanche Index mod namespace
         void getBadgeInfo(Profile::Badge badge);
         void onInfoBadge(CCObject *sender);
 
-        // Create the badge to appear next to the player's username
+        // Create badge and format comment for a player
         template <typename T>
-        void createBadge(Profile profile, CCMenu *cell_menu, TextArea *cmntText, CCLabelBMFont *cmntFont, float size, T pointer)
+        void createBadge(T pointer, Profile profile, CCMenu *cell_menu, TextArea *cmntText = nullptr, CCLabelBMFont *cmntFont = nullptr, float size = 0.625f)
         {
             log::debug("Creating badge for {}...", profile.name);
 
@@ -151,7 +152,7 @@ namespace avalanche // Avalanche Index mod namespace
                         cell_menu->addChild(badge);
                         cell_menu->updateLayout();
                     }
-                    catch (...)
+                    catch (std::exception &e)
                     {
                         log::error("Failed to create badge for {}...", profile.name);
                     };

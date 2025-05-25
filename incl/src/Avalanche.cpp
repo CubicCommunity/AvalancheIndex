@@ -1,6 +1,7 @@
 #include "../Avalanche.hpp"
 
 #include <string>
+#include <format>
 #include <chrono>
 #include <map>
 
@@ -96,7 +97,7 @@ namespace avalanche
                                 }
                                 else
                                 {
-                                    std::string cacheKey = "cache-badge-p" + key;
+                                    std::string cacheKey = std::format("cache-badge-p{}", (std::string)key);
                                     thisMod->setSavedValue(cacheKey, value);
                                 };
                             };
@@ -154,7 +155,7 @@ namespace avalanche
                                 }
                                 else
                                 {
-                                    std::string cacheKey = "cache-level-p" + key;
+                                    std::string cacheKey = std::format("cache-level-p{}", (std::string)key);
                                     thisMod->setSavedValue(cacheKey, value);
                                 };
                             };
@@ -196,7 +197,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = std::string("cache-badge-p") + std::to_string(id);
+            std::string cacheKey = std::format("cache-badge-p{}", (int)id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
@@ -221,7 +222,7 @@ namespace avalanche
     {
         if (id > 0)
         {
-            std::string cacheKey = std::string("cache-level-p") + std::to_string(id);
+            std::string cacheKey = std::format("cache-level-p{}", (int)id);
 
             matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 

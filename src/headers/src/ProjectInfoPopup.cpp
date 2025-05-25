@@ -82,7 +82,6 @@ void ProjectInfoPopup::infoPopup(CCObject *)
 
 void ProjectInfoPopup::onFameInfo(CCObject *)
 {
-
   std::ostringstream body;
   body << "This level, '<cg>" << m_avalProject.name << "</c>', is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.";
 
@@ -166,7 +165,7 @@ bool ProjectInfoPopup::setup()
 
   m_overlayMenu->addChild(infoBtn);
 
-  log::warn("Project info popup still unfinished, please use ProjectInfoPopup::setProject() to finish setting it up before displaying it");
+  log::warn("Project info popup still unfinished, please use ProjectInfoPopup::setProject to finish setting it up before displaying it");
 
   return true;
 };

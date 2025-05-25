@@ -62,7 +62,7 @@ class $modify(ProfilePage)
 			CCLabelBMFont *fakeFont = nullptr;
 
 			Profile plr = getHandler->GetProfile(user->m_accountID);
-			getHandler->createBadge(plr, cell_menu, fakeText, fakeFont, 0.875f, this);
+			getHandler->createBadge(this, plr, cell_menu, fakeText, fakeFont, 0.875f);
 
 			log::debug("Viewing profile of ID {}", (int)user->m_accountID);
 		};
@@ -121,7 +121,7 @@ class $modify(CommentCell)
 			};
 
 			Profile plr = getHandler->GetProfile(comment->m_accountID);
-			getHandler->createBadge(plr, cell_menu, commentText, commentFont, 0.55f, this);
+			getHandler->createBadge(this, plr, cell_menu, commentText, commentFont, 0.55f);
 
 			log::debug("Viewing comment profile of ID {}", (int)comment->m_accountID);
 		};
@@ -136,51 +136,71 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 	if (project.type == Project::Type::NONE)
 	{
 		// get the member's badge data
-		auto cacheSolo = Handler::badgeStringID[getHandler->GetProfile(level->m_accountID.value()).badge];
-		bool notSolo = Handler::badgeSpriteName[cacheSolo].empty() && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::COLLABORATOR]] && Handler::badgeSpriteName[cacheSolo] != Handler::badgeSpriteName[Handler::badgeStringID[Profile::Badge::CUBIC]];
-		bool notPublic = level->m_unlisted || level->m_friendsOnly;
+		auto profile = getHandler->GetProfile(level->m_accountID.value());
+		auto badge = profile.badge;
+		auto cacheSolo = Handler::badgeStringID[badge];
 
-		// must be public
-		if (notPublic)
+		auto &badgeSpriteName = Handler::badgeSpriteName;
+		auto &collabSprite = badgeSpriteName.at(Handler::badgeStringID[Profile::Badge::COLLABORATOR]);
+		auto &cubicSprite = badgeSpriteName.at(Handler::badgeStringID[Profile::Badge::CUBIC]);
+
+		const auto it = badgeSpriteName.find(cacheSolo);
+		if (it == badgeSpriteName.end())
 		{
-			log::error("Level {} is unlisted", (int)level->m_levelID.value());
+			log::error("Key '{}' not found in badgeSpriteName!", cacheSolo);
 
 			return Project::Type::NONE;
 		}
 		else
 		{
-			log::debug("Level {} is publicly listed!", (int)level->m_levelID.value());
+			const auto &soloSprite = it->second;
 
-			// checks if owned by publisher account
-			if (level->m_accountID.value() == ACC_PUBLISHER)
+			bool notSolo = soloSprite.empty() && (soloSprite != collabSprite) && (soloSprite != cubicSprite);
+
+			bool notPublic = level->m_unlisted || level->m_friendsOnly;
+
+			// must be public
+			if (notPublic)
 			{
-				log::debug("Level {} is Avalanche team project", (int)level->m_levelID.value());
+				log::error("Level {} is unlisted", (int)level->m_levelID.value());
 
-				return Project::Type::TEAM;
+				return Project::Type::NONE;
 			}
 			else
 			{
-				// checks if level is published by a team member
-				if (notSolo)
-				{
-					log::error("Level {} not associated with Avalanche", (int)level->m_levelID.value());
+				log::debug("Level {} is publicly listed!", (int)level->m_levelID.value());
 
-					return Project::Type::NONE;
+				// checks if owned by publisher account
+				if (level->m_accountID.value() == ACC_PUBLISHER)
+				{
+					log::debug("Level {} is Avalanche team project", (int)level->m_levelID.value());
+
+					return Project::Type::TEAM;
 				}
 				else
 				{
-					// checks if level is rated
-					if (level->m_stars.value() >= 1)
+					// checks if level is published by a team member
+					if (notSolo)
 					{
-						log::debug("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
+						log::error("Level {} not associated with Avalanche", (int)level->m_levelID.value());
 
-						return Project::Type::SOLO;
+						return Project::Type::NONE;
 					}
 					else
 					{
-						log::error("Level {} is unrated", (int)level->m_levelID.value());
+						// checks if level is rated
+						if (level->m_stars.value() >= 1)
+						{
+							log::debug("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
 
-						return Project::Type::NONE;
+							return Project::Type::SOLO;
+						}
+						else
+						{
+							log::error("Level {} is unrated", (int)level->m_levelID.value());
+
+							return Project::Type::NONE;
+						};
 					};
 				};
 			};
@@ -736,25 +756,34 @@ class $modify(Menu, MenuLayer)
 
 				avalBtn->addChild(m_fields->avalBtnMark);
 
-#if !defined(GEODE_IS_MACOS) && !defined(GEODE_IS_IOS)
-				// add particles on the featured button
-				if (CCParticleSystem *avalBtnParticles = ParticleHelper::createAvalFeaturedParticles(100.0f))
+				try
 				{
-					avalBtnParticles->setPosition(avalBtn->getPosition());
-					avalBtnParticles->setAnchorPoint({0.5f, 0.5f});
-					avalBtnParticles->setScale(1.0f);
-					avalBtnParticles->setZOrder(-2);
-					avalBtnParticles->setStartColor({6, 2, 32, 255});
-					avalBtnParticles->setEndColor({33, 33, 33, 100});
-					avalBtnParticles->setEmissionRate(20.f);
-					avalBtnParticles->setRotatePerSecond(22.5f);
-					avalBtnParticles->setStartSize(5.f);
-					avalBtnParticles->setEndSize(1.25f);
-					avalBtnParticles->setID("avalanche-featured-button-particles"_spr);
+					// add particles on the featured button
+					if (CCParticleSystem *avalBtnParticles = ParticleHelper::createAvalFeaturedParticles(100.0f))
+					{
+						avalBtnParticles->setPosition(avalBtn->getPosition());
+						avalBtnParticles->setAnchorPoint({0.5f, 0.5f});
+						avalBtnParticles->setScale(1.0f);
+						avalBtnParticles->setZOrder(-2);
+						avalBtnParticles->setStartColor({6, 2, 32, 255});
+						avalBtnParticles->setEndColor({33, 33, 33, 100});
+						avalBtnParticles->setEmissionRate(20.f);
+						avalBtnParticles->setRotatePerSecond(22.5f);
+						avalBtnParticles->setStartSize(5.f);
+						avalBtnParticles->setEndSize(1.25f);
+						avalBtnParticles->setID("button-particles"_spr);
 
-					avalMenu->addChild(avalBtnParticles);
+						avalMenu->addChild(avalBtnParticles);
+					}
+					else
+					{
+						log::error("Failed to create Avalanche featured button particles");
+					};
+				}
+				catch (std::exception &e)
+				{
+					log::error("Failed to create Avalanche featured button particles: {}", e.what());
 				};
-#endif
 
 				bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
 
@@ -866,11 +895,13 @@ class $modify(Menu, MenuLayer)
 		{
 			m_fields->avalWebListener.bind([this](web::WebTask::Event *e)
 										   {
-				if (web::WebResponse *avalReqRes = e->getValue())
+			if (web::WebResponse *avalReqRes = e->getValue())
+			{
+				if (avalReqRes->ok())
 				{
-					if (avalReqRes->ok())
+					if (avalReqRes->string().isOk())
 					{
-						if (avalReqRes->string().isOk())
+						try
 						{
 							std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
 							std::string avalWebResultSaved = getThisMod->getSavedValue<std::string>("aval-project-code");
@@ -894,28 +925,38 @@ class $modify(Menu, MenuLayer)
 
 							getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
 						}
-						else
+						catch (std::exception &e)
 						{
-							log::error("Failed to fetch Avalanche featured project code");
+							log::error("Error processing Avalanche project code: {}", e.what());
+
+							if (getThisMod->getSettingValue<bool>("err-notifs"))
+								Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
 						};
 					}
 					else
 					{
-						log::error("Unable to check server for new Avalanche featured project");
-						if (getThisMod->getSettingValue<bool>("err-notifs"))
-							Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+						log::error("Failed to fetch Avalanche featured project code");
 					};
 				}
-				else if (web::WebProgress *p = e->getProgress())
+				else
 				{
-					log::debug("Avalanche project code progress: {}", (float)p->downloadProgress().value_or(0.f));
-				}
-				else if (e->isCancelled())
-				{
-					log::debug("Unable to check server for new Avalanche featured project");
+					log::error("Unable to check server for new Avalanche featured project");
+
 					if (getThisMod->getSettingValue<bool>("err-notifs"))
 						Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
-				}; });
+				};
+			}
+			else if (web::WebProgress *p = e->getProgress())
+			{
+				log::debug("Avalanche project code progress: {}", (float)p->downloadProgress().value_or(0.f));
+			}
+			else if (e->isCancelled())
+			{
+				log::debug("Unable to check server for new Avalanche featured project");
+
+				if (getThisMod->getSettingValue<bool>("err-notifs"))
+					Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+			}; });
 
 			auto avalReq = web::WebRequest();
 			m_fields->avalWebListener.setFilter(avalReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/code.txt"));

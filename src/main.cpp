@@ -722,7 +722,7 @@ class $modify(Menu, MenuLayer)
 
 				auto avalBtnSprite = CCSprite::createWithSpriteFrameName("button-icon-framed.png"_spr);
 				avalBtnSprite->ignoreAnchorPointForPosition(false);
-				avalBtnSprite->setScale(0.0875f);
+				avalBtnSprite->setScale(0.75f);
 
 				auto avalBtn = CCMenuItemSpriteExtra::create(
 					avalBtnSprite,

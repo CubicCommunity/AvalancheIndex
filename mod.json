@@ -1,5 +1,5 @@
 {
-	"geode": "4.4.0",
+	"geode": "4.5.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -125,7 +125,7 @@
 			"default": true
 		},
 		"show-aval-featured": {
-			"name": "Main Menu Avalanche Button",
+			"name": "Featured Project Button",
 			"description": "Display a button in the main menu that shows the featured <cl>Avalanche</c> <cy>team project</c>.",
 			"type": "bool",
 			"default": true

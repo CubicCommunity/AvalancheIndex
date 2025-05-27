@@ -10,18 +10,18 @@ Easily spot legitimate Avalanche profiles and projects at a glance. No more need
 ---
 
 ## About
-The *Avalanche Index* mod fetches and processes data from an external repository to highlight players and levels that are official to Avalanche. The purpose of this mod is to be utilized as a tool by the Geometry Dash players who are active in Avalanche's community to help better discern while in-game between official and otherwise misleading users and levels.
+The *Avalanche Index* mod fetches and processes data from an external repository to verify players and levels in-game that are official to Avalanche. The purpose of this mod is to be utilized as a tool by the Geometry Dash players who are active in Avalanche's community to help better discern while in-game between official and otherwise misleading users and levels.
 
 #### Recommended
-These mods allow *Avalanche Index* to work better!
+These mods allow the Avalanche Index mod to work better!
 
-- **[Badges API](mod:jouca.badgesapi)**
+- **[Badges API](mod:jouca.badgesapi)** - *Team badges on comments and profiles*
 
 ---
 
 ### Badges
 ###### The members of Avalanche.
-When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team, unless they are the publisher of the level.
+When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team, unless they are the publisher of the level. Comment text colors can be customized in the mod's settings.
 
 - ![icon](frame:cubicstudios.avalancheindex/director.png?scale=0.625) Director
 - ![icon](frame:cubicstudios.avalancheindex/team-manager.png?scale=0.625) Team Manager
@@ -29,7 +29,7 @@ When viewing someone's profile or comment, you'll likely see a badge next to the
 - ![icon](frame:cubicstudios.avalancheindex/collaborator.png?scale=0.625) Collaborator
 - ![icon](frame:cubicstudios.avalancheindex/cubic-studios.png?scale=0.625) **Cubic Studios** Staff
 
-You can also press the icon of the badge itself in-game to get more information about the role itself.
+You can also press the icon of the badge to get more information about the role behind it itself.
 
 ---
 
@@ -44,8 +44,6 @@ When viewing level cells or pages, you may notice the changes in the background 
 Level cells with a glow emerging from the side represent levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.
 
 If a level is featured on Avalanche's servers, you may see a button with the Avalanche logo appear on the left side menu on the level's information page. Pressing this will create a pop-up giving more information about the level as a project by the team, the type of project it is, its host, etc. You will also see a button to watch its full showcase video.
-
-> ![icon](frame:GJ_infoIcon_001.png?scale=0.5) <cj>On iOS, the team project visuals may not appear due to seemingly different node structuring. Once the tools to navigate this are ready, the issue shall be solved.</c>
 
 ---
 

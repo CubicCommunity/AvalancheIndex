@@ -251,7 +251,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 					CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
 					avalBtnSprite->setScale(0.944f);
 
-					CCSprite *avalBtnSpriteIcon = CCSprite::createWithSpriteFrameName("button-icon.png"_spr);
+					CCSprite *avalBtnSpriteIcon = CCSprite::createWithSpriteFrameName("button-logo.png"_spr);
 					avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
 					avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
 					avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
@@ -353,10 +353,10 @@ class $modify(LevelInfo, LevelInfoLayer)
 		bgSprite->setZOrder(background->getZOrder());
 		bgSprite->setID("team_background"_spr);
 
-		auto bgThumbnail = CCSprite::createWithSpriteFrameName("background.png"_spr);
+		auto bgThumbnail = CCSprite::createWithSpriteFrameName("project-bg.png"_spr);
 		if (!bgThumbnail)
 		{
-			log::error("Failed to load sprite: background.png");
+			log::error("Failed to load sprite: project-bg.png");
 			return;
 		};
 
@@ -428,7 +428,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 			auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr);
 			if (!bgThumbnail)
 			{
-				log::error("Failed to load sprite: background.png");
+				log::error("Failed to load sprite: project-bg.png");
 				return;
 			};
 
@@ -613,7 +613,7 @@ class $modify(Level, LevelCell)
 
 		if (showFame)
 		{
-			auto fameGlow = CCSprite::createWithSpriteFrameName("fame.png"_spr);
+			auto fameGlow = CCSprite::createWithSpriteFrameName("fame-glow.png"_spr);
 			fameGlow->setZOrder(newColor->getZOrder() + 1);
 			fameGlow->ignoreAnchorPointForPosition(false);
 			fameGlow->setAnchorPoint({0, 0});
@@ -621,7 +621,7 @@ class $modify(Level, LevelCell)
 			fameGlow->setColor(glow);
 			fameGlow->setID("fame"_spr);
 
-			float contHeight = 90.f;
+			float contHeight = fameGlow->getContentHeight();
 			float newcHeight = this->m_height;
 
 			float scaledBy = newcHeight / contHeight;
@@ -720,7 +720,7 @@ class $modify(Menu, MenuLayer)
 
 				this->addChild(avalMenu);
 
-				auto avalBtnSprite = CCSprite::createWithSpriteFrameName("button-icon-framed.png"_spr);
+				auto avalBtnSprite = CCSprite::createWithSpriteFrameName("button-logo-framed.png"_spr);
 				avalBtnSprite->ignoreAnchorPointForPosition(false);
 				avalBtnSprite->setScale(0.75f);
 
@@ -737,7 +737,7 @@ class $modify(Menu, MenuLayer)
 				// featured ring
 				m_fields->avalBtnGlow = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
 				m_fields->avalBtnGlow->setID("featuredRing"_spr);
-				m_fields->avalBtnGlow->setScale(1.125f);
+				m_fields->avalBtnGlow->setScale(1.25f);
 				m_fields->avalBtnGlow->ignoreAnchorPointForPosition(false);
 				m_fields->avalBtnGlow->setPosition({avalBtnSprite->getScaledContentWidth() / 2, (avalBtnSprite->getScaledContentHeight() / 2) * 0.65f});
 				m_fields->avalBtnGlow->setAnchorPoint({0.5f, 0.5f});

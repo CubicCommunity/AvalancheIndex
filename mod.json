@@ -28,16 +28,16 @@
 	},
 	"resources": {
 		"spritesheets": {
-			"backgrounds": [
+			"AVAL_backgrounds": [
 				"resources/backgrounds/*.png"
 			],
-			"badges": [
+			"AVAL_badges": [
 				"resources/badges/*.png"
 			],
-			"banners": [
+			"AVAL_banners": [
 				"resources/banners/*.png"
 			],
-			"interface": [
+			"AVAL_ui": [
 				"resources/ui/*.png"
 			]
 		},

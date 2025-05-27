@@ -10,7 +10,12 @@ Easily spot legitimate Avalanche profiles and projects at a glance. No more need
 ---
 
 ## About
-The *Avalanche Index* mod fetches and processes data from an external repository to highlight players and levels that are official to Avalanche. This mod is meant to be utilized as a tool by the Geometry Dash players in Avalanche's community to better discern between official and otherwise misleading and unofficial users and levels.
+The *Avalanche Index* mod fetches and processes data from an external repository to highlight players and levels that are official to Avalanche. The purpose of this mod is to be utilized as a tool by the Geometry Dash players who are active in Avalanche's community to help better discern while in-game between official and otherwise misleading users and levels.
+
+#### Recommended
+These mods allow *Avalanche Index* to work better!
+
+- **[Badges API](mod:jouca.badgesapi)**
 
 ---
 

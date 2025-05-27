@@ -15,7 +15,12 @@ Easily spot legitimate Avalanche profiles and projects at a glance. No more need
 ---
 
 ## About
-The *Avalanche Index* mod fetches and processes data from an external repository to highlight players and levels that are official to Avalanche. This mod is meant to be utilized as a tool by the Geometry Dash players in Avalanche's community to better discern between official and otherwise misleading and unofficial users and levels.
+The *Avalanche Index* mod fetches and processes data from an external repository to highlight players and levels that are official to Avalanche. The purpose of this mod is to be utilized as a tool by the Geometry Dash players who are active in Avalanche's community to help better discern while in-game between official and otherwise misleading users and levels.
+
+#### Recommended
+These mods allow *Avalanche Index* to work better!
+
+- **[Badges API](https://github.com/Jouca/BadgesAPI)**
 
 ---
 
@@ -23,13 +28,13 @@ The *Avalanche Index* mod fetches and processes data from an external repository
 ###### The members of Avalanche.
 When viewing someone's profile or comment, you'll likely see a badge next to their name. This means they form part of, or are associated with, Avalanche in some way. These are the badges that you may see appear next the name of said person. The text color of members' comments will also change depending on their role in the team, unless they are the publisher of the level.
 
-| **Icon**                                                                              | **Role**                     |
-|:-------------------------------------------------------------------------------------:|------------------------------|
-| <img src="resources/badges/director.png" width="25" alt="Director badge" />           | Director                     |
-| <img src="resources/badges/team-manager.png" width="25" alt="Manager badge" />        | Manager                      |
-| <img src="resources/badges/team-member.png" width="25" alt="Team member badge" />     | Team Member                  |
-| <img src="resources/badges/collaborator.png" width="25" alt="Collaborator badge" />   | Collaborator                 |
-| <img src="resources/badges/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | **Cubic Studios** Staff      |
+|                                       **Icon**                                        | **Role**                |
+| :-----------------------------------------------------------------------------------: | ----------------------- |
+|      <img src="resources/badges/director.png" width="25" alt="Director badge" />      | Director                |
+|    <img src="resources/badges/team-manager.png" width="25" alt="Manager badge" />     | Manager                 |
+|   <img src="resources/badges/team-member.png" width="25" alt="Team member badge" />   | Team Member             |
+|  <img src="resources/badges/collaborator.png" width="25" alt="Collaborator badge" />  | Collaborator            |
+| <img src="resources/badges/cubic-studios.png" width="25" alt="Cubic Studios badge" /> | **Cubic Studios** Staff |
 
 You can also press the icon of the badge itself in-game to get more information about the role itself.
 
@@ -39,10 +44,10 @@ You can also press the icon of the badge itself in-game to get more information 
 ###### The Avalanche team projects.
 When viewing level cells or pages, you may notice the changes in the background color. The level is either a team project on Avalanche's publisher account, or a solo or a collaboration hosted and published independently by a team member. These are the colors you may find highlighting such. The title font for team projects will also change.
 
-| **Color**                 | **Type**     |
-|---------------------------|:------------:|
+| **Color**                 |   **Type**   |
+| ------------------------- | :----------: |
 | **Azure Blue `#425EFF`**  | Team Project |
-| **Slate Blue `#464D75`**  | Solo Level   |
+| **Slate Blue `#464D75`**  |  Solo Level  |
 | **Acid Yellow `#D3CF00`** | Event Level  |
 
 Level cells with a glow emerging from the side represent levels in Avalanche's hall of fame. These levels stand out the most among the team's creations. By default, unrated or unlisted levels will not be highlighted.

@@ -22,6 +22,14 @@
 		"homepage": "https://avalanche.cubicstudios.xyz/",
 		"community": "https://www.dsc.gg/cubic"
 	},
+	"dependencies": {
+		"geode.node-ids": ">=1.20.0"
+	},
+	"api": {
+		"include": [
+			"include/*.hpp"
+		]
+	},
 	"issues": {
 		"info": "You may report issues with the mod in the AvalancheIndex repository.",
 		"url": "https://www.github.com/CubicCommunity/AvalancheIndex/issues/"
@@ -43,15 +51,6 @@
 		},
 		"sprites": [
 			"resources/*.png"
-		]
-	},
-	"dependencies": {
-		"geode.node-ids": ">=1.20.0",
-		"jouca.badgesapi": ">=1.2.0"
-	},
-	"api": {
-		"include": [
-			"include/*.hpp"
 		]
 	},
 	"settings": {
@@ -234,7 +233,7 @@
 		},
 		"check-aval": {
 			"name": "Quicker Project Update",
-			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>.",
+			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>. <cr>This will still depend on user input and is not live.</c>",
 			"type": "bool",
 			"enable-if": "setting:show-aval-featured",
 			"enable-if-description": "The Featured Project button must be enabled.",

@@ -534,7 +534,7 @@ class $modify(Level, LevelCell)
 		// whether or not display for classics only
 		bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
-		if (color && levelName)
+		if ((color) && (levelName))
 		{
 			auto lvl = getHandler->GetProject(level->m_levelID.value());
 			auto levelType = scanForLevelCreator(level);
@@ -746,8 +746,8 @@ class $modify(Menu, MenuLayer)
 	{
 		EventListener<web::WebTask> avalWebListener;
 
-		CCSprite *avalBtnGlow;
-		CCSprite *avalBtnMark;
+		CCSprite *avalBtnGlow = nullptr;
+		CCSprite *avalBtnMark = nullptr;
 	};
 
 	bool init()
@@ -816,8 +816,8 @@ class $modify(Menu, MenuLayer)
 				// avalanche menu
 				auto avalMenu = CCMenu::create();
 				avalMenu->ignoreAnchorPointForPosition(false);
-				avalMenu->setPosition(winSizeX / 2, (winSizeY / 2) - 70.f);
-				avalMenu->setScaledContentSize(CCSize(winSizeX - 75.f, 50.f));
+				avalMenu->setPosition({winSizeX / 2, (winSizeY / 2) - 70.f});
+				avalMenu->setScaledContentSize({winSizeX - 75.f, 50.f});
 
 				this->addChild(avalMenu);
 
@@ -829,33 +829,65 @@ class $modify(Menu, MenuLayer)
 					avalBtnSprite,
 					this,
 					menu_selector(Menu::onAvalFeaturedButton));
-				avalBtn->setPosition(avalMenu->getScaledContentWidth() / 2, avalMenu->getScaledContentHeight() / 2);
+				avalBtn->setPosition({avalMenu->getScaledContentWidth() / 2, avalMenu->getScaledContentHeight() / 2});
 				avalBtn->setID("avalanche-featured-button"_spr);
 				avalBtn->ignoreAnchorPointForPosition(false);
 
 				avalMenu->addChild(avalBtn);
 
 				// featured ring
-				m_fields->avalBtnGlow = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
-				m_fields->avalBtnGlow->setID("featuredRing"_spr);
-				m_fields->avalBtnGlow->setScale(1.25f);
-				m_fields->avalBtnGlow->ignoreAnchorPointForPosition(false);
-				m_fields->avalBtnGlow->setPosition({avalBtnSprite->getScaledContentWidth() / 2, (avalBtnSprite->getScaledContentHeight() / 2) * 0.65f});
-				m_fields->avalBtnGlow->setAnchorPoint({0.5f, 0.5f});
-				m_fields->avalBtnGlow->setZOrder(-1);
-				m_fields->avalBtnGlow->setVisible(false);
+				if (m_fields->avalBtnGlow)
+				{
+					log::error("Avalanche featured button glow sprite already initialized");
+				}
+				else
+				{
+					m_fields->avalBtnGlow = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
 
-				avalBtn->addChild(m_fields->avalBtnGlow);
+					m_fields->avalBtnGlow->setID("featuredRing"_spr);
+					m_fields->avalBtnGlow->setScale(1.25f);
+					m_fields->avalBtnGlow->ignoreAnchorPointForPosition(false);
+					m_fields->avalBtnGlow->setPosition({avalBtnSprite->getScaledContentWidth() / 2, (avalBtnSprite->getScaledContentHeight() / 2) * 0.65f});
+					m_fields->avalBtnGlow->setAnchorPoint({0.5f, 0.5f});
+					m_fields->avalBtnGlow->setZOrder(-1);
+					m_fields->avalBtnGlow->setVisible(false);
 
-				m_fields->avalBtnMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
-				m_fields->avalBtnMark->setID("notifMark"_spr);
-				m_fields->avalBtnMark->setScale(0.5f);
-				m_fields->avalBtnMark->ignoreAnchorPointForPosition(false);
-				m_fields->avalBtnMark->setPosition({avalBtn->getScaledContentWidth() * 0.875f, avalBtn->getScaledContentHeight() * 0.875f});
-				m_fields->avalBtnMark->setAnchorPoint({0.5f, 0.5f});
-				m_fields->avalBtnMark->setVisible(false);
+					if (auto created = avalBtn->getChildByID("featuredRing"_spr))
+					{
+						auto markID = created->getID().c_str();
+						log::error("Avalanche featured button glow sprite already exists: {}", markID);
+					}
+					else
+					{
+						avalBtn->addChild(m_fields->avalBtnGlow);
+					};
+				};
 
-				avalBtn->addChild(m_fields->avalBtnMark);
+				// unread mark
+				if (m_fields->avalBtnMark)
+				{
+					log::error("Avalanche featured button mark sprite already initialized");
+				}
+				else
+				{
+					m_fields->avalBtnMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
+					m_fields->avalBtnMark->setID("notifMark"_spr);
+					m_fields->avalBtnMark->setScale(0.5f);
+					m_fields->avalBtnMark->ignoreAnchorPointForPosition(false);
+					m_fields->avalBtnMark->setPosition({avalBtn->getScaledContentWidth() * 0.875f, avalBtn->getScaledContentHeight() * 0.875f});
+					m_fields->avalBtnMark->setAnchorPoint({0.5f, 0.5f});
+					m_fields->avalBtnMark->setVisible(false);
+
+					if (auto created = avalBtn->getChildByID("notifMark"_spr))
+					{
+						auto markID = created->getID().c_str();
+						log::error("Avalanche featured button mark sprite already exists: {}", markID);
+					}
+					else
+					{
+						avalBtn->addChild(m_fields->avalBtnMark);
+					};
+				};
 
 				try
 				{
@@ -937,26 +969,44 @@ class $modify(Menu, MenuLayer)
 
 	void onDaily(CCObject *sender)
 	{
-		Menu::onCheckForNewAval(sender);
+		Menu::quickCheck(sender);
 		MenuLayer::onDaily(sender);
 	};
 
 	void onStats(CCObject *sender)
 	{
-		Menu::onCheckForNewAval(sender);
+		Menu::quickCheck(sender);
 		MenuLayer::onStats(sender);
 	};
 
 	void onMyProfile(CCObject *sender)
 	{
-		Menu::onCheckForNewAval(sender);
+		Menu::quickCheck(sender);
 		MenuLayer::onMyProfile(sender);
 	};
 
 	void onOptions(CCObject *sender)
 	{
-		Menu::onCheckForNewAval(sender);
+		Menu::quickCheck(sender);
 		MenuLayer::onOptions(sender);
+	};
+
+	void onMoreGames(CCObject *sender)
+	{
+		Menu::quickCheck(sender);
+		MenuLayer::onMoreGames(sender);
+	};
+
+	void onGarage(CCObject *sender)
+	{
+		Menu::quickCheck(sender);
+		MenuLayer::onGarage(sender);
+	};
+
+	void onCreator(CCObject *sender)
+	{
+		Menu::quickCheck(sender);
+		MenuLayer::onCreator(sender);
 	};
 
 	/*

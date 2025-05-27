@@ -65,6 +65,10 @@ class $modify(ProfilePage)
 			getHandler->createBadge(this, plr, cell_menu, fakeText, fakeFont, 0.875f);
 
 			log::debug("Viewing profile of ID {}", (int)user->m_accountID);
+		}
+		else
+		{
+			log::debug("Profile badge disabled");
 		};
 	};
 };
@@ -124,6 +128,10 @@ class $modify(CommentCell)
 			getHandler->createBadge(this, plr, cell_menu, commentText, commentFont, 0.55f);
 
 			log::debug("Viewing comment profile of ID {}", (int)comment->m_accountID);
+		}
+		else
+		{
+			log::debug("Comment badge disabled");
 		};
 	};
 };
@@ -269,6 +277,10 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 					leftMenu->addChild(avalBtn);
 					leftMenu->updateLayout();
+				}
+				else
+				{
+					log::warn("Project info button not shown, setting up level info layer");
 				};
 			};
 
@@ -286,6 +298,10 @@ class $modify(LevelInfo, LevelInfoLayer)
 					{
 						LevelInfo::setSoloDisplay(background, thisProj.fame);
 					};
+				}
+				else
+				{
+					log::warn("Solo layers not displayed, setting up level info layer");
 				};
 			}
 			else if (levelType == Project::Type::TEAM)
@@ -304,6 +320,10 @@ class $modify(LevelInfo, LevelInfoLayer)
 					{
 						LevelInfo::setTeamDisplay(background, levelName);
 					};
+				}
+				else
+				{
+					log::warn("Team layers not displayed, setting up level info layer");
 				};
 			}
 			else if (levelType == Project::Type::EVENT)
@@ -311,7 +331,15 @@ class $modify(LevelInfo, LevelInfoLayer)
 				if (displayEventLayers)
 				{
 					LevelInfo::setEventDisplay(background, thisProj.fame);
+				}
+				else
+				{
+					log::warn("Event layers not displayed, setting up level info layer");
 				};
+			}
+			else
+			{
+				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			};
 
 			return true;
@@ -324,143 +352,158 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 	void setSoloDisplay(CCSprite *background, bool fame = false)
 	{
-		background->setColor({70, 77, 117});
+		if (background)
+		{
+			background->setColor({70, 77, 117});
 
-		if (fame)
-			LevelInfo::setFame(background);
+			if (fame)
+				LevelInfo::setFame(background);
+		}
+		else
+		{
+			log::error("Cannot set solo display with missing background");
+		};
 	};
 
 	void setTeamDisplay(CCSprite *background, CCLabelBMFont *levelName)
 	{
-		if (!background || !levelName)
+		if ((background) && (levelName))
 		{
-			log::error("Cannot set team project display with missing background or level text nodes");
-			return;
-		};
+			if (auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png"))
+			{
+				bgSprite->setColor({66, 94, 255});
+				bgSprite->setAnchorPoint({0.5, 0.5});
+				bgSprite->ignoreAnchorPointForPosition(false);
+				bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
+				bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
+				bgSprite->setZOrder(background->getZOrder());
+				bgSprite->setID("team_background"_spr);
 
-		auto bgSprite = CCSprite::createWithSpriteFrameName("game_bg_19_001.png");
-		if (!bgSprite)
+				if (auto bgThumbnail = CCSprite::createWithSpriteFrameName("project-bg.png"_spr))
+				{
+					bgThumbnail->setOpacity(75);
+					bgThumbnail->setPosition({0, 0});
+					bgThumbnail->setAnchorPoint({0, 0});
+					bgThumbnail->ignoreAnchorPointForPosition(false);
+					bgThumbnail->setZOrder(background->getZOrder() + 1);
+					bgThumbnail->setID("team_thumbnail"_spr);
+
+					auto ogWidth = bgSprite->getContentWidth();
+					auto ogHeight = bgSprite->getContentHeight();
+
+					auto thumbWidth = bgThumbnail->getContentWidth();
+					auto thumbHeight = bgThumbnail->getContentHeight();
+
+					if ((ogWidth <= 0 || thumbWidth <= 0) || (ogHeight <= 0 || thumbHeight <= 0))
+					{
+						log::error("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero width/height");
+					}
+					else
+					{
+						float scaleX = ogWidth / thumbWidth;
+						float scaleY = ogHeight / thumbHeight;
+
+						float scaleFactor = std::min(scaleX, scaleY);
+						bgThumbnail->setScale(scaleFactor);
+					};
+
+					this->addChild(bgThumbnail);
+				}
+				else
+				{
+					log::error("Failed to load sprite: project-bg.png");
+				};
+
+				this->addChild(bgSprite);
+			}
+			else
+			{
+				log::error("Failed to load sprite: game_bg_19_001.png");
+			};
+
+			background->setColor({66, 94, 255});
+			background->setZOrder(-5);
+
+			auto levelNameOgWidth = levelName->getScaledContentWidth();
+			levelName->setFntFile("gjFont59.fnt");
+
+			if (levelNameOgWidth <= 0)
+			{
+				log::error("Invalid level name dimensions: Original width is zero");
+			}
+			else
+			{
+				auto scaleDownBy = levelNameOgWidth / levelName->getScaledContentWidth();
+				levelName->setScale(levelName->getScale() * scaleDownBy);
+			};
+		}
+		else
 		{
-			log::error("Failed to load sprite frame: game_bg_19_001.png");
-			return;
-		};
-
-		bgSprite->setColor({66, 94, 255});
-		bgSprite->setAnchorPoint({0.5, 0.5});
-		bgSprite->ignoreAnchorPointForPosition(false);
-		bgSprite->setContentSize({this->getScaledContentWidth(), this->getScaledContentWidth()});
-		bgSprite->setPosition({this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2});
-		bgSprite->setZOrder(background->getZOrder());
-		bgSprite->setID("team_background"_spr);
-
-		auto bgThumbnail = CCSprite::createWithSpriteFrameName("project-bg.png"_spr);
-		if (!bgThumbnail)
-		{
-			log::error("Failed to load sprite: project-bg.png");
-			return;
-		};
-
-		bgThumbnail->setOpacity(75);
-		bgThumbnail->setAnchorPoint({0, 0});
-		bgThumbnail->ignoreAnchorPointForPosition(false);
-		bgThumbnail->setPosition({0, 0});
-		bgThumbnail->setZOrder(background->getZOrder() + 1);
-		bgThumbnail->setID("team_thumbnail"_spr);
-
-		auto ogWidth = bgSprite->getContentWidth();
-		auto scaledWidth = bgThumbnail->getContentWidth();
-
-		if (ogWidth <= 0 || scaledWidth <= 0)
-		{
-			log::error("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero width");
-			return;
-		};
-
-		float scaleFactor = ogWidth / scaledWidth;
-		bgThumbnail->setScale(scaleFactor);
-
-		background->setColor({66, 94, 255});
-		background->setZOrder(-5);
-
-		auto levelNameOgWidth = levelName->getScaledContentWidth();
-		levelName->setFntFile("gjFont59.fnt");
-		if (levelNameOgWidth <= 0)
-		{
-			log::error("Invalid level name dimensions: Original width is zero");
-			return;
-		};
-
-		auto scaleDownBy = levelNameOgWidth / levelName->getScaledContentWidth();
-		levelName->setScale(levelName->getScale() * scaleDownBy);
-
-		// Add children only if valid
-		if (bgSprite)
-		{
-			this->addChild(bgSprite);
-		};
-
-		if (bgThumbnail)
-		{
-			this->addChild(bgThumbnail);
+			log::error("Failed to set team display: background or level name is null");
 		};
 	};
 
 	void setEventDisplay(CCSprite *background, bool fame = false)
 	{
-		background->setColor({211, 207, 0});
+		if (background)
+		{
+			background->setColor({211, 207, 0});
 
-		if (fame)
-			LevelInfo::setFame(background);
+			if (fame)
+				LevelInfo::setFame(background);
+		}
+		else
+		{
+			log::error("Cannot set event display with missing background");
+		};
 	};
 
 	void setFame(CCSprite *background)
 	{
-		bool showFame = getThisMod->getSettingValue<bool>("show-fame");
-
-		if (showFame)
+		if (background)
 		{
-			if (!background)
+			bool showFame = getThisMod->getSettingValue<bool>("show-fame");
+
+			if (showFame)
 			{
-				log::error("Cannot set team project display with missing background or level text nodes");
-				return;
-			};
+				if (auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr))
+				{
+					bgThumbnail->setOpacity(75);
+					bgThumbnail->setAnchorPoint({0.5, 0});
+					bgThumbnail->ignoreAnchorPointForPosition(false);
+					bgThumbnail->setPosition({this->getContentWidth() / 2, 0});
+					bgThumbnail->setZOrder(background->getZOrder() + 1);
+					bgThumbnail->setID("team_thumbnail"_spr);
 
-			auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr);
-			if (!bgThumbnail)
+					auto ogWidth = this->getContentWidth();
+					auto scaledWidth = bgThumbnail->getContentWidth();
+
+					if (ogWidth <= 0 || scaledWidth <= 0)
+					{
+						log::error("Invalid dimensions for scaling: this or bgThumbnail has zero width");
+						return;
+					};
+
+					float scaleFactor = ogWidth / scaledWidth;
+					bgThumbnail->setScale(scaleFactor);
+
+					background->setZOrder(-5);
+
+					this->addChild(bgThumbnail);
+				}
+				else
+				{
+					log::error("Failed to load sprite: fame-bg.png");
+				};
+			}
+			else
 			{
-				log::error("Failed to load sprite: project-bg.png");
-				return;
-			};
-
-			bgThumbnail->setOpacity(75);
-			bgThumbnail->setAnchorPoint({0.5, 0});
-			bgThumbnail->ignoreAnchorPointForPosition(false);
-			bgThumbnail->setPosition({this->getContentWidth() / 2, 0});
-			bgThumbnail->setZOrder(background->getZOrder() + 1);
-			bgThumbnail->setID("team_thumbnail"_spr);
-
-			auto ogWidth = this->getContentWidth();
-			auto scaledWidth = bgThumbnail->getContentWidth();
-
-			if (ogWidth <= 0 || scaledWidth <= 0)
-			{
-				log::error("Invalid dimensions for scaling: this or bgThumbnail has zero width");
-				return;
-			};
-
-			float scaleFactor = ogWidth / scaledWidth;
-			bgThumbnail->setScale(scaleFactor);
-
-			background->setZOrder(-5);
-
-			if (bgThumbnail)
-			{
-				this->addChild(bgThumbnail);
+				log::error("Display of hall of fame effect disabled");
 			};
 		}
 		else
 		{
-			log::error("Display of famed effect disabled");
+			log::error("Cannot set hall of fame display with missing background");
 		};
 	};
 
@@ -508,6 +551,10 @@ class $modify(Level, LevelCell)
 					{
 						Level::setSoloDisplay(color, lvl.fame);
 					};
+				}
+				else
+				{
+					log::warn("Solo cells not displayed, setting up level cell");
 				};
 			}
 			else if (levelType == Project::Type::TEAM)
@@ -526,6 +573,10 @@ class $modify(Level, LevelCell)
 					{
 						Level::setTeamDisplay(color, levelName, lvl.fame);
 					};
+				}
+				else
+				{
+					log::warn("Team cells not displayed, setting up level cell");
 				};
 			}
 			else if (levelType == Project::Type::EVENT)
@@ -533,7 +584,15 @@ class $modify(Level, LevelCell)
 				if (displayEventCells)
 				{
 					Level::setEventDisplay(color, lvl.fame);
+				}
+				else
+				{
+					log::warn("Event cells not displayed, setting up level cell");
 				};
+			}
+			else
+			{
+				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			};
 		}
 		else
@@ -544,96 +603,138 @@ class $modify(Level, LevelCell)
 
 	void setSoloDisplay(CCLayerColor *colorNode, bool fame = false)
 	{
-		auto newColor = CCLayerColor::create({70, 77, 117, 255});
-		newColor->setScaledContentSize(colorNode->getScaledContentSize());
-		newColor->setAnchorPoint(colorNode->getAnchorPoint());
-		newColor->setPosition(colorNode->getPosition());
-		newColor->setZOrder(colorNode->getZOrder() - 2);
-		newColor->setScale(colorNode->getScale());
-		newColor->setID("solo_color"_spr);
-
-		colorNode->removeMeAndCleanup();
-		this->addChild(newColor);
-
-		if (fame)
+		if (colorNode)
 		{
-			Level::setFame(newColor, {255, 255, 255});
+			if (auto newColor = CCLayerColor::create({70, 77, 117, 255}))
+			{
+				newColor->setScaledContentSize(colorNode->getScaledContentSize());
+				newColor->setAnchorPoint(colorNode->getAnchorPoint());
+				newColor->setPosition(colorNode->getPosition());
+				newColor->setZOrder(colorNode->getZOrder() - 2);
+				newColor->setScale(colorNode->getScale());
+				newColor->setID("solo_color"_spr);
+
+				colorNode->removeMeAndCleanup();
+				this->addChild(newColor);
+
+				if (fame)
+					Level::setFame(newColor, {255, 255, 255});
+			}
+			else
+			{
+				log::error("Failed to create solo display color layer");
+			};
+		}
+		else
+		{
+			log::error("Cannot set solo display with missing color node");
 		};
 	};
 
 	void setTeamDisplay(CCLayerColor *colorNode, CCLabelBMFont *levelName, bool fame = false)
 	{
-		auto newColor = CCLayerColor::create({66, 94, 255, 255});
-		newColor->setScaledContentSize(colorNode->getScaledContentSize());
-		newColor->setAnchorPoint(colorNode->getAnchorPoint());
-		newColor->setPosition(colorNode->getPosition());
-		newColor->setZOrder(colorNode->getZOrder() - 2);
-		newColor->setScale(colorNode->getScale());
-		newColor->setID("team_color"_spr);
-
-		auto levelNameOgWidth = levelName->getScaledContentWidth();
-
-		levelName->setFntFile("gjFont59.fnt");
-
-		auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
-
-		levelName->setScale(levelName->getScale() * scaleDownBy);
-
-		colorNode->removeMeAndCleanup();
-		this->addChild(newColor);
-
-		if (fame)
+		if ((colorNode) && (levelName))
 		{
-			Level::setFame(newColor, {255, 244, 95});
+			if (auto newColor = CCLayerColor::create({66, 94, 255, 255}))
+			{
+				newColor->setScaledContentSize(colorNode->getScaledContentSize());
+				newColor->setAnchorPoint(colorNode->getAnchorPoint());
+				newColor->setPosition(colorNode->getPosition());
+				newColor->setZOrder(colorNode->getZOrder() - 2);
+				newColor->setScale(colorNode->getScale());
+				newColor->setID("team_color"_spr);
+
+				auto levelNameOgWidth = levelName->getScaledContentWidth();
+
+				levelName->setFntFile("gjFont59.fnt");
+
+				auto scaleDownBy = (levelNameOgWidth / levelName->getScaledContentWidth());
+
+				levelName->setScale(levelName->getScale() * scaleDownBy);
+
+				colorNode->removeMeAndCleanup();
+				this->addChild(newColor);
+
+				if (fame)
+					Level::setFame(newColor, {255, 244, 95});
+			}
+			else
+			{
+				log::error("Failed to create team display color layer");
+			};
+		}
+		else
+		{
+			log::error("Failed to set team display: color node or level name is null");
 		};
 	};
 
 	void setEventDisplay(CCLayerColor *colorNode, bool fame = false)
 	{
-		auto newColor = CCLayerColor::create({211, 207, 0, 255});
-		newColor->setScaledContentSize(colorNode->getScaledContentSize());
-		newColor->setAnchorPoint(colorNode->getAnchorPoint());
-		newColor->setPosition(colorNode->getPosition());
-		newColor->setZOrder(colorNode->getZOrder() - 2);
-		newColor->setScale(colorNode->getScale());
-		newColor->setID("event_color"_spr);
-
-		colorNode->removeMeAndCleanup();
-		this->addChild(newColor);
-
-		if (fame)
+		if (colorNode)
 		{
-			Level::setFame(newColor, {85, 249, 255});
+			if (auto newColor = CCLayerColor::create({211, 207, 0, 255}))
+			{
+				newColor->setScaledContentSize(colorNode->getScaledContentSize());
+				newColor->setAnchorPoint(colorNode->getAnchorPoint());
+				newColor->setPosition(colorNode->getPosition());
+				newColor->setZOrder(colorNode->getZOrder() - 2);
+				newColor->setScale(colorNode->getScale());
+				newColor->setID("event_color"_spr);
+
+				colorNode->removeMeAndCleanup();
+				this->addChild(newColor);
+
+				if (fame)
+					Level::setFame(newColor, {85, 249, 255});
+			}
+			else
+			{
+				log::error("Failed to create event display color layer");
+			};
+		}
+		else
+		{
+			log::error("Cannot set event display with missing color node");
 		};
 	};
 
 	void setFame(CCLayerColor *newColor, ccColor3B glow = {255, 255, 255})
 	{
-		bool showFame = getThisMod->getSettingValue<bool>("show-fame");
-
-		if (showFame)
+		if (newColor)
 		{
-			auto fameGlow = CCSprite::createWithSpriteFrameName("fame-glow.png"_spr);
-			fameGlow->setZOrder(newColor->getZOrder() + 1);
-			fameGlow->ignoreAnchorPointForPosition(false);
-			fameGlow->setAnchorPoint({0, 0});
-			fameGlow->setPosition({0, 0});
-			fameGlow->setColor(glow);
-			fameGlow->setID("fame"_spr);
+			bool showFame = getThisMod->getSettingValue<bool>("show-fame");
 
-			float contHeight = fameGlow->getContentHeight();
-			float newcHeight = this->m_height;
+			if (showFame)
+			{
+				if (auto fameGlow = CCSprite::create("fame-glow.png"_spr))
+				{
+					fameGlow->setZOrder(newColor->getZOrder() + 1);
+					fameGlow->ignoreAnchorPointForPosition(false);
+					fameGlow->setAnchorPoint({0, 0});
+					fameGlow->setPosition({0, 0});
+					fameGlow->setColor(glow);
+					fameGlow->setID("fame"_spr);
 
-			float scaledBy = newcHeight / contHeight;
-			float newScale = 0.36f * scaledBy; // for compact lists
+					// for compact lists
+					float reScale = (this->m_height / fameGlow->getContentHeight()) * this->getScale();
+					fameGlow->setScale(reScale);
 
-			fameGlow->setScale(newScale);
-
-			this->addChild(fameGlow);
+					this->addChild(fameGlow);
+				}
+				else
+				{
+					log::error("Failed to load sprite: fame-glow.png");
+				};
+			}
+			else
+			{
+				log::error("Display of famed effect disabled");
+			};
 		}
 		else
 		{
-			log::error("Display of famed effect disabled");
+			log::error("Cannot set hall of fame display with missing color node or glow color");
 		};
 	};
 };
@@ -836,55 +937,46 @@ class $modify(Menu, MenuLayer)
 
 	void onDaily(CCObject *sender)
 	{
-		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
-
-		if (alwaysCheck)
-		{
-			Menu::onCheckForNewAval(sender);
-		};
-
+		Menu::onCheckForNewAval(sender);
 		MenuLayer::onDaily(sender);
 	};
 
 	void onStats(CCObject *sender)
 	{
-		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
-
-		if (alwaysCheck)
-		{
-			Menu::onCheckForNewAval(sender);
-		};
-
+		Menu::onCheckForNewAval(sender);
 		MenuLayer::onStats(sender);
 	};
 
 	void onMyProfile(CCObject *sender)
 	{
-		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
-
-		if (alwaysCheck)
-		{
-			Menu::onCheckForNewAval(sender);
-		};
-
+		Menu::onCheckForNewAval(sender);
 		MenuLayer::onMyProfile(sender);
 	};
 
 	void onOptions(CCObject *sender)
 	{
-		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
-
-		if (alwaysCheck)
-		{
-			Menu::onCheckForNewAval(sender);
-		};
-
+		Menu::onCheckForNewAval(sender);
 		MenuLayer::onOptions(sender);
 	};
 
 	/*
 	mod functions
 	*/
+
+	// checks for aval project updates
+	void quickCheck(CCObject *sender)
+	{
+		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+
+		if (alwaysCheck)
+		{
+			Menu::onCheckForNewAval(sender);
+		}
+		else
+		{
+			log::debug("Avalanche project check skipped");
+		};
+	};
 
 	// pings the server to check if a new aval project is available
 	void onCheckForNewAval(CCObject *)

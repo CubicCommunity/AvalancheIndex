@@ -20,8 +20,8 @@ namespace avalanche // Avalanche Index mod namespace
 
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 
-    constexpr const char *URL_BADGES = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProfiles.json"; // URL to remote JSON file containing all data on profiles
-    constexpr const char *URL_LEVELS = "https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/data/avalProjects.json"; // URL to remote JSON file containing all data on projects
+    constexpr const char *URL_BADGES = "https://gh.cubicstudios.xyz/WebLPS/data/avalProfiles.json"; // URL to remote JSON file containing all data on profiles
+    constexpr const char *URL_LEVELS = "https://gh.cubicstudios.xyz/WebLPS/data/avalProjects.json"; // URL to remote JSON file containing all data on projects
 
     constexpr const char *und = "undefined";
     constexpr const char *err = "404: Not Found";
@@ -29,8 +29,8 @@ namespace avalanche // Avalanche Index mod namespace
     extern matjson::Value fetchedBadges; // JSON object of data on all badges pulled remotely
     extern matjson::Value fetchedLevels; // JSON object of data on all levels pulled remotely
 
-    extern EventListener<web::WebTask> badgeListReq; // Web request listener for Profile data
-    extern EventListener<web::WebTask> levelListReq; // Web request listener for Project data
+    extern EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
+    extern EventListener<web::WebTask> levelListReq; // Web request listener for team project data
 
     class Profile
     {

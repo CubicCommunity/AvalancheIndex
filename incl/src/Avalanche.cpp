@@ -92,9 +92,10 @@ namespace avalanche
 
                             for (auto &[key, value] : jsonRes)
                             {
-                                if (key.empty())
+                                // key is an id and therefore must have numbers only
+                                if (key.empty() || key.find_first_not_of("0123456789") != std::string::npos)
                                 {
-                                    log::error("Key for profile is empty or invalid");
+                                    log::error("Key for profile of ID '{}' is invalid", (std::string)key);
                                 }
                                 else
                                 {
@@ -150,9 +151,10 @@ namespace avalanche
 
                             for (auto &[key, value] : jsonRes)
                             {
-                                if (key.empty())
+                                // key is an id and therefore must have numbers only
+                                if (key.empty() || key.find_first_not_of("0123456789") != std::string::npos)
                                 {
-                                    log::error("Key for project is empty or invalid");
+                                    log::error("Key for project of ID '{}' is invalid", (std::string)key);
                                 }
                                 else
                                 {

@@ -1101,7 +1101,7 @@ class $modify(Menu, MenuLayer)
 			}; });
 
 			auto avalReq = web::WebRequest();
-			m_fields->avalWebListener.setFilter(avalReq.get("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/code.txt"));
+			m_fields->avalWebListener.setFilter(avalReq.get("https://gh.cubicstudios.xyz/WebLPS/aval-project/code.txt"));
 		}
 		else
 		{

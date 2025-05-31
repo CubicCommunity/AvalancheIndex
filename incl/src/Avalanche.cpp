@@ -13,21 +13,21 @@
 #include <Geode/ui/GeodeUI.hpp>
 
 #include <Geode/utils/web.hpp>
-#include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;
 
-auto thisMod = getMod();
+Mod *thisMod = getMod();
 
 namespace avalanche
 {
     int ACC_PUBLISHER = 31079132;
+    auto URL_MOD_ISSUES = thisMod->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE).c_str(); // URL to the mod's issues page on GitHub
 
     matjson::Value fetchedBadges = nullptr;
     matjson::Value fetchedLevels = nullptr;
 
-    EventListener<web::WebTask> badgeListReq;
-    EventListener<web::WebTask> levelListReq;
+    EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
+    EventListener<web::WebTask> levelListReq; // Web request listener for team project data
 
     std::map<std::string, avalanche::Profile::Badge> avalanche::Profile::profileBadgeEnum{
         {"cubic-studios-badge"_spr, avalanche::Profile::Badge::CUBIC},
@@ -134,7 +134,7 @@ namespace avalanche
         auto badgeReq = web::WebRequest(); // send the web request
         badgeReq.userAgent("Avalanche Index mod for Geode");
         badgeReq.timeout(std::chrono::seconds(30));
-        badgeListReq.setFilter(badgeReq.get(URL_BADGES));
+        badgeListReq.setFilter(badgeReq.get(URL_API_BADGES));
 
         // fetch data for all projects
         levelListReq.bind([](web::WebTask::Event *e)
@@ -193,7 +193,7 @@ namespace avalanche
         auto levelReq = web::WebRequest(); // send the web request
         levelReq.userAgent("Avalanche Index mod for Geode");
         levelReq.timeout(std::chrono::seconds(30));
-        levelListReq.setFilter(levelReq.get(URL_LEVELS));
+        levelListReq.setFilter(levelReq.get(URL_API_LEVELS));
     };
 
     avalanche::Profile avalanche::Handler::GetProfile(int id)
@@ -244,7 +244,7 @@ namespace avalanche
         {
             log::error("Project ID is invalid");
 
-            avalanche::Project res("Name", "Host", "https://avalanche.cubicstudios.xyz/", avalanche::Project::Type::NONE, false);
+            avalanche::Project res("Name", "Host", URL_AVALANCHE, avalanche::Project::Type::NONE, false);
             return res;
         };
     };
@@ -267,7 +267,7 @@ namespace avalanche
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                        web::openLinkInBrowser("https://www.cubicstudios.xyz/");
+                        web::openLinkInBrowser(URL_CUBIC);
                 });
             break;
 
@@ -279,7 +279,7 @@ namespace avalanche
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                        web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
+                        web::openLinkInBrowser(URL_AVALANCHE);
                 });
             break;
 
@@ -291,7 +291,7 @@ namespace avalanche
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                        web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
+                        web::openLinkInBrowser(URL_AVALANCHE);
                 });
             break;
 
@@ -303,7 +303,7 @@ namespace avalanche
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                        web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
+                        web::openLinkInBrowser(URL_AVALANCHE);
                 });
             break;
 
@@ -315,7 +315,7 @@ namespace avalanche
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                        web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
+                        web::openLinkInBrowser(URL_AVALANCHE);
                 });
             break;
 
@@ -327,7 +327,7 @@ namespace avalanche
                 [](auto, bool btn2)
                 {
                     if (btn2)
-                        web::openLinkInBrowser("https://www.github.com/CubicCommunity/AvalancheIndex/issues/");
+                        web::openLinkInBrowser(URL_MOD_ISSUES);
                 });
             break;
         };

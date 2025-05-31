@@ -22,6 +22,8 @@ Use the `Handler` class's methods to access methods that fetch saved data on bad
 >
 > This will return a *pointer* - be sure to use the **arrow operator** (`->`) to access methods.
 
+
+Here's some sample code to fetch and handle data from an Avalanche profile.
 ```cpp
 using namespace avalanche;
 
@@ -48,6 +50,7 @@ class $modify(ProfilePage)
 };
 ```
 
+Here's some sample code to fetch and handle data from an Avalanche project.
 ```cpp
 using namespace avalanche;
 

@@ -190,12 +190,12 @@ bool AvalancheFeatured::setup()
   m_buttonMenu->addChild(m_infoBtn);
 
   // featured project thumbnail
-  auto lazySprite = LazySprite::create(m_overlayMenu->getScaledContentSize(), true);
-  lazySprite->setID("thumbnail");
-  lazySprite->setPosition({m_mainLayer->getContentWidth() / 2, m_mainLayer->getContentHeight() / 2});
+  auto projThumb = LazySprite::create(m_overlayMenu->getScaledContentSize(), true);
+  projThumb->setID("thumbnail");
+  projThumb->setPosition({m_mainLayer->getContentWidth() / 2, m_mainLayer->getContentHeight() / 2});
 
-  lazySprite->setLoadCallback([this, lazySprite](Result<> res)
-                              {
+  projThumb->setLoadCallback([this, projThumb](Result<> res)
+                             {
                                 if (res)
                                 {
                                   // Success: scale and position the sprite
@@ -205,16 +205,16 @@ bool AvalancheFeatured::setup()
                                 {
                                   // Failure: set fallback image
                                   log::error("Sprite failed to load, setting fallback: {}", res.unwrapErr());
-                                  lazySprite->initWithSpriteFrameName("unavailable.png"_spr);
+                                  projThumb->initWithSpriteFrameName("unavailable.png"_spr);
                                 };
-                                
-                                float scale = m_maxHeight / lazySprite->getContentSize().height;
 
-                                lazySprite->setScale(scale);
-                                lazySprite->setUserObject("scale", CCFloat::create(scale)); });
+                                float scale = m_maxHeight / projThumb->getContentSize().height;
 
-  lazySprite->loadFromUrl("https://raw.githubusercontent.com/CubicCommunity/WebLPS/main/aval-project/thumbnail.png", LazySprite::Format::kFmtPng, false);
-  m_clippingNode->addChild(lazySprite);
+                                projThumb->setScale(scale);
+                                projThumb->setUserObject("scale", CCFloat::create(scale)); });
+
+  projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
+  m_clippingNode->addChild(projThumb);
 
   auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
   changelogBtnSprite->setScale(0.75f);

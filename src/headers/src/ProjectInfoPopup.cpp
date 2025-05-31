@@ -96,7 +96,7 @@ void ProjectInfoPopup::onFameInfo(CCObject *)
         if (btn2)
         {
           log::info("Opening Hall of Fame link in browser");
-          web::openLinkInBrowser("https://avalanche.cubicstudios.xyz/");
+          web::openLinkInBrowser(URL_AVALANCHE);
         }
         else
         {
@@ -182,7 +182,7 @@ ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
   }
   else if (m_avalProject.type == Project::Type::TEAM)
   {
-    m_avalPublisher = OFFICIAL_TEAM_NAME;
+    m_avalPublisher = "Avalanche";
   }
   else
   {

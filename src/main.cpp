@@ -19,17 +19,20 @@
 #include <Geode/utils/terminate.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
+#include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/ProfilePage.hpp>
 #include <Geode/modify/CommentCell.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelCell.hpp>
 
 #include <Geode/binding/MenuLayer.hpp>
+#include <Geode/binding/PauseLayer.hpp>
 #include <Geode/binding/ProfilePage.hpp>
 #include <Geode/binding/CommentCell.hpp>
 #include <Geode/binding/LevelInfoLayer.hpp>
 #include <Geode/binding/LevelCell.hpp>
 #include <Geode/binding/GameLevelManager.hpp>
+#include <Geode/binding/PlayLayer.hpp>
 
 using namespace geode::prelude;
 using namespace avalanche;
@@ -739,15 +742,88 @@ class $modify(Level, LevelCell)
 	};
 };
 
+// add avalanche featured project button to the pause menu
+class $modify(Pause, PauseLayer)
+{
+	struct Fields
+	{
+		GJGameLevel *m_level = PlayLayer::get()->m_level; // level to show info for
+	};
+
+	void customSetup()
+	{
+		PauseLayer::customSetup();
+
+		if (auto rightMenu = this->getChildByID("right-button-menu"))
+		{
+			if (m_fields->m_level)
+			{
+				Project thisProj = getHandler->GetProject(m_fields->m_level->m_levelID.value());
+
+				if (thisProj.type == Project::Type::NONE)
+				{
+					log::error("Level {} is not an Avalanche project", (int)m_fields->m_level->m_levelID.value());
+				}
+				else
+				{
+					auto showProjectInfo = getThisMod->getSettingValue<bool>("show-proj-info");
+
+					if (showProjectInfo)
+					{
+						CCSprite *avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
+						avalBtnSprite->setScale(0.6f);
+
+						CCSprite *avalBtnSpriteIcon = CCSprite::createWithSpriteFrameName("button-logo.png"_spr);
+						avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
+						avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
+						avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
+						avalBtnSpriteIcon->setAnchorPoint({0.5, 0.5});
+						avalBtnSpriteIcon->setScale(0.875f);
+
+						avalBtnSprite->addChild(avalBtnSpriteIcon);
+
+						CCMenuItemSpriteExtra *avalBtn = CCMenuItemSpriteExtra::create(
+							avalBtnSprite,
+							this,
+							menu_selector(Pause::onAvalancheButton));
+						avalBtn->setID("avalanche-button"_spr);
+						avalBtn->setZOrder(10);
+
+						rightMenu->addChild(avalBtn);
+						rightMenu->updateLayout();
+					}
+					else
+					{
+						log::warn("Project info button not shown, setting up pause menu");
+					};
+				};
+			}
+			else
+			{
+				log::error("Pause menu cannot find current level");
+			};
+		}
+		else
+		{
+			log::error("Pause menu cannot find right button menu");
+		};
+	};
+
+	void onAvalancheButton(CCObject *sender)
+	{
+		ProjectInfoPopup::create()->setProject(m_fields->m_level)->show();
+	};
+};
+
 // everything to do with the avalanche featured project button pretty much
 class $modify(Menu, MenuLayer)
 {
 	struct Fields
 	{
-		EventListener<web::WebTask> avalWebListener;
+		EventListener<web::WebTask> avalWebListener; // web listener for avalanche featured project
 
-		CCSprite *avalBtnGlow = nullptr;
-		CCSprite *avalBtnMark = nullptr;
+		CCSprite *avalBtnGlow = nullptr; // glow sprite for avalanche featured button
+		CCSprite *avalBtnMark = nullptr; // unread mark sprite for avalanche featured button
 	};
 
 	bool init()

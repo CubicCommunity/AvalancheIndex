@@ -172,6 +172,8 @@ bool ProjectInfoPopup::setup()
 
 ProjectInfoPopup *ProjectInfoPopup::setProject(GJGameLevel *level)
 {
+  setZOrder(10);
+
   m_level = level;
   m_avalProject = Handler::get()->GetProject(m_level->m_levelID.value());
 

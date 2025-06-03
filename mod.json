@@ -131,7 +131,7 @@
 		},
 		"show-proj-info": {
 			"name": "Project Information Button",
-			"description": "Display a button in a project's level page detailing additional information about it.",
+			"description": "Display a button in a project's level information page and pause menu detailing additional information about it.",
 			"type": "bool",
 			"default": true
 		},

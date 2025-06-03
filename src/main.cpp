@@ -1014,13 +1014,19 @@ class $modify(Menu, MenuLayer)
 
 					if (!isChecked)
 					{
-						m_fields->avalBtnGlow->setVisible(true);
-						m_fields->avalBtnMark->setVisible(true);
+						if (m_fields->avalBtnGlow)
+							m_fields->avalBtnGlow->setVisible(true);
+
+						if (m_fields->avalBtnMark)
+							m_fields->avalBtnMark->setVisible(true);
 					}
 					else
 					{
-						m_fields->avalBtnGlow->setVisible(false);
-						m_fields->avalBtnMark->setVisible(false);
+						if (m_fields->avalBtnGlow)
+							m_fields->avalBtnGlow->setVisible(false);
+
+						if (m_fields->avalBtnMark)
+							m_fields->avalBtnMark->setVisible(false);
 					};
 				};
 			}
@@ -1130,15 +1136,15 @@ class $modify(Menu, MenuLayer)
 
 							if ((avalWebResultUnwrapped == avalWebResultSaved) || isChecked)
 							{
-								m_fields->avalBtnGlow->setVisible(false);
-								m_fields->avalBtnMark->setVisible(false);
+								if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(false);
+								if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(false);
 							}
 							else
 							{
 								getThisMod->setSavedValue("checked-aval-project", false);
 
-								m_fields->avalBtnGlow->setVisible(true);
-								m_fields->avalBtnMark->setVisible(true);
+								if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(true);
+								if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(true);
 							};
 
 							getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
@@ -1191,7 +1197,11 @@ class $modify(Menu, MenuLayer)
 		AvalancheFeatured::create()->show();
 
 		getThisMod->setSavedValue("checked-aval-project", true);
-		m_fields->avalBtnGlow->setVisible(false);
-		m_fields->avalBtnMark->setVisible(false);
+
+		if (m_fields->avalBtnGlow)
+			m_fields->avalBtnGlow->setVisible(false);
+
+		if (m_fields->avalBtnMark)
+			m_fields->avalBtnMark->setVisible(false);
 	};
 };

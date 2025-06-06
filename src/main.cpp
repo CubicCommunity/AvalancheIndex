@@ -46,6 +46,7 @@ auto getHandler = Handler::get();
 // if the server wasn't already checked for the new avalanche project :O
 bool noProjectPing = true;
 
+// handles adding avalanche badges to user profiles in the profile page
 class $modify(ProfilePage)
 {
 	// modified vanilla loadPageFromUserInfo function
@@ -76,6 +77,7 @@ class $modify(ProfilePage)
 	};
 };
 
+// handles adding avalanche badges to comments in the comment cell
 class $modify(CommentCell)
 {
 	// modified vanilla loadFromComment function
@@ -151,10 +153,12 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 		auto badge = profile.badge;
 		auto cacheSolo = Handler::badgeStringID[badge];
 
+		// get the badge sprite names
 		auto &badgeSpriteName = Handler::badgeSpriteName;
 		auto &collabSprite = badgeSpriteName.at(Handler::badgeStringID[Profile::Badge::COLLABORATOR]);
 		auto &cubicSprite = badgeSpriteName.at(Handler::badgeStringID[Profile::Badge::CUBIC]);
 
+		// checks if the level is a solo project
 		const auto it = badgeSpriteName.find(cacheSolo);
 		if (it == badgeSpriteName.end())
 		{
@@ -223,6 +227,7 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 	};
 };
 
+// handles the level info layer for Avalanche featured projects
 class $modify(LevelInfo, LevelInfoLayer)
 {
 	// modified vanilla init function
@@ -353,6 +358,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
+	// set solo project decoration for the level info layer
 	void setSoloDisplay(CCSprite *background, bool fame = false)
 	{
 		if (background)
@@ -368,6 +374,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
+	// set team project decoration for the level info layer
 	void setTeamDisplay(CCSprite *background, CCLabelBMFont *levelName)
 	{
 		if ((background) && (levelName))
@@ -391,22 +398,17 @@ class $modify(LevelInfo, LevelInfoLayer)
 					bgThumbnail->setZOrder(background->getZOrder() + 1);
 					bgThumbnail->setID("team_thumbnail"_spr);
 
-					auto ogWidth = bgSprite->getContentWidth();
-					auto ogHeight = bgSprite->getContentHeight();
-
-					auto thumbWidth = bgThumbnail->getContentWidth();
+					auto ogHeight = this->getContentHeight();
 					auto thumbHeight = bgThumbnail->getContentHeight();
 
-					if ((ogWidth <= 0 || thumbWidth <= 0) || (ogHeight <= 0 || thumbHeight <= 0))
+					// checks if the heights are valid before rescaling
+					if (ogHeight <= 0 || thumbHeight <= 0)
 					{
-						log::error("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero width/height");
+						log::error("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero height");
 					}
 					else
 					{
-						float scaleX = ogWidth / thumbWidth;
-						float scaleY = ogHeight / thumbHeight;
-
-						float scaleFactor = std::min(scaleX, scaleY);
+						float scaleFactor = ogHeight / thumbHeight;
 						bgThumbnail->setScale(scaleFactor);
 					};
 
@@ -446,6 +448,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
+	// set event project decoration for the level info layer
 	void setEventDisplay(CCSprite *background, bool fame = false)
 	{
 		if (background)
@@ -461,6 +464,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
+	// set hall of fame decoration for the level info layer
 	void setFame(CCSprite *background)
 	{
 		if (background)
@@ -510,12 +514,14 @@ class $modify(LevelInfo, LevelInfoLayer)
 		};
 	};
 
+	// when player presses the avalanche button
 	void onAvalancheButton(CCObject *sender)
 	{
 		ProjectInfoPopup::create()->setProject(this->m_level)->show();
 	};
 };
 
+// handles the level cell for Avalanche featured projects
 class $modify(Level, LevelCell)
 {
 	// modified vanilla loadFromLevel function
@@ -604,6 +610,7 @@ class $modify(Level, LevelCell)
 		};
 	};
 
+	// set solo project decoration for level cell
 	void setSoloDisplay(CCLayerColor *colorNode, bool fame = false)
 	{
 		if (colorNode)
@@ -634,6 +641,7 @@ class $modify(Level, LevelCell)
 		};
 	};
 
+	// set team project decoration for level cell
 	void setTeamDisplay(CCLayerColor *colorNode, CCLabelBMFont *levelName, bool fame = false)
 	{
 		if ((colorNode) && (levelName))
@@ -672,6 +680,7 @@ class $modify(Level, LevelCell)
 		};
 	};
 
+	// set event project decoration for level cell
 	void setEventDisplay(CCLayerColor *colorNode, bool fame = false)
 	{
 		if (colorNode)
@@ -702,6 +711,7 @@ class $modify(Level, LevelCell)
 		};
 	};
 
+	// set hall of fame decoration for level cell
 	void setFame(CCLayerColor *newColor, ccColor3B glow = {255, 255, 255})
 	{
 		if (newColor)
@@ -750,6 +760,7 @@ class $modify(Pause, PauseLayer)
 		GJGameLevel *m_level = PlayLayer::get()->m_level; // level to show info for
 	};
 
+	// modified vanilla customSetup function
 	void customSetup()
 	{
 		PauseLayer::customSetup();
@@ -809,6 +820,7 @@ class $modify(Pause, PauseLayer)
 		};
 	};
 
+	// when player presses the avalanche button
 	void onAvalancheButton(CCObject *sender)
 	{
 		ProjectInfoPopup::create()->setProject(m_fields->m_level)->show();
@@ -826,6 +838,7 @@ class $modify(Menu, MenuLayer)
 		CCSprite *avalBtnMark = nullptr; // unread mark sprite for avalanche featured button
 	};
 
+	// modified vanilla init function
 	bool init()
 	{
 		if (MenuLayer::init())
@@ -846,7 +859,7 @@ class $modify(Menu, MenuLayer)
 				}
 				else
 				{
-					log::debug("Changelog version found: {}", changelogVer);
+					log::info("Changelog version {} found", changelogVer);
 
 					// check if the changelog was already shown
 					if (changelogVer == ver)
@@ -889,7 +902,7 @@ class $modify(Menu, MenuLayer)
 
 			if (showAvalButton)
 			{
-				// avalanche menu
+				// avalanche button menu
 				auto avalMenu = CCMenu::create();
 				avalMenu->ignoreAnchorPointForPosition(false);
 				avalMenu->setPosition({winSizeX / 2, (winSizeY / 2) - 70.f});
@@ -901,6 +914,7 @@ class $modify(Menu, MenuLayer)
 				avalBtnSprite->ignoreAnchorPointForPosition(false);
 				avalBtnSprite->setScale(0.75f);
 
+				// create the avalanche featured button
 				auto avalBtn = CCMenuItemSpriteExtra::create(
 					avalBtnSprite,
 					this,
@@ -1111,7 +1125,7 @@ class $modify(Menu, MenuLayer)
 	};
 
 	// pings the server to check if a new aval project is available
-	void onCheckForNewAval(CCObject *)
+	void onCheckForNewAval(CCObject *sender)
 	{
 		bool avalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
 

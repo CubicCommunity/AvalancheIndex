@@ -119,7 +119,7 @@
 		},
 		"view-changelog": {
 			"name": "Changelog Alert",
-			"description": "Display a popup with a button to show the changelog when the mod updates.",
+			"description": "Display a pop-up with a button to show the changelog when the mod updates.",
 			"type": "bool",
 			"default": true
 		},
@@ -131,7 +131,7 @@
 		},
 		"show-proj-info": {
 			"name": "Project Information Button",
-			"description": "Display a button in a project's level information page and pause menu detailing additional information about it.",
+			"description": "Display a button in a project's level information page and in-game pause menu that opens a pop-up detailing additional information about it.",
 			"type": "bool",
 			"default": true
 		},
@@ -159,7 +159,7 @@
 			"type": "title"
 		},
 		"comments": {
-			"name": "Comment Text Color",
+			"name": "Comment Text Colors",
 			"description": "Recolor text on team members' comments.",
 			"type": "bool",
 			"default": true

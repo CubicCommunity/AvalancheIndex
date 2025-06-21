@@ -17,7 +17,7 @@ Use the `Handler` class's methods to access methods that fetch saved data on bad
 > To utilize `Handler`'s methods, you **must** initialize the class with **`Handler::get()`** beforehand. Otherwise, crucial non-static methods will not be accessible.
 >
 > ```cpp
-> Handler *getHandler = Handler::get();
+> Handler * getHandler = Handler::get();
 > ```
 >
 > This will return a *pointer* - be sure to use the **arrow operator** (`->`) to access methods.
@@ -27,22 +27,18 @@ Here's some sample code to fetch and handle data from an Avalanche profile.
 ```cpp
 using namespace avalanche;
 
-Handler *getHandler = Handler::get();
+Handler * getHandler = Handler::get();
 
-class $modify(ProfilePage)
-{
-    void loadPageFromUserInfo(GJUserScore *user)
-    {
+class $modify(ProfilePage) {
+    void loadPageFromUserInfo(GJUserScore * user) {
         ProfilePage::loadPageFromUserInfo(user);
 
         Profile avalUser = getHandler->GetProfile(user->m_accountID);
 
-        if (avalUser.badge != Profile::Badge::NONE)
-        {
+        if (avalUser.badge != Profile::Badge::NONE) {
             log::info("{} is an Avalanche member! Hooray!", avalUser.name);
 
-            if (avalUser.badge == Profile::Badge::DIRECTOR)
-            {
+            if (avalUser.badge == Profile::Badge::DIRECTOR) {
                 log::info("Woah! {} is the director of Avalanche!", avalUser.name);
             };
         };
@@ -54,18 +50,15 @@ Here's some sample code to fetch and handle data from an Avalanche project.
 ```cpp
 using namespace avalanche;
 
-Handler *getHandler = Handler::get();
+Handler * getHandler = Handler::get();
 
-class $modify(Level, LevelCell)
-{
-	void loadFromLevel(GJGameLevel *level)
-	{
+class $modify(Level, LevelCell) {
+	void loadFromLevel(GJGameLevel * level) {
 		LevelCell::loadFromLevel(level);
 
 		Project avalLevel = getHandler->GetProject(level->m_levelID.value());
 
-		if (avalLevel.type == Project::Type::TEAM)
-		{
+		if (avalLevel.type == Project::Type::TEAM) {
 			log::info("The level '{}' is an Avalanche project hosted by {}!", avalLevel.name, avalLevel.host);
 		} else if (avalLevel.type == Project::Type::EVENT) {
 			log::info("The level '{}' by {} won an Avalanche event! Yay!", avalLevel.name, avalLevel.host);

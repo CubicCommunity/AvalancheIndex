@@ -37,6 +37,15 @@
 using namespace geode::prelude;
 using namespace avalanche;
 
+/*
+ * Avalanche Index
+ *
+ * This mod simply handles user and level data from Avalanche to make them look official in-game.
+ * All data is remotely fetched.
+ *
+ * You may find more information on Avalanche mod API functions in their original file.
+ */
+
 // its modding time :3
 auto getThisMod = getMod();
 
@@ -56,6 +65,7 @@ class $modify(ProfilePage)
 
 		if (getThisMod->getSettingValue<bool>("badge-profile"))
 		{
+			// gets all badge data
 			getHandler->scanAll();
 
 			// gets a copy of the main layer
@@ -87,6 +97,7 @@ class $modify(CommentCell)
 
 		if (getThisMod->getSettingValue<bool>("badge-comments"))
 		{
+			// checks if the user is a member of avalanche
 			getHandler->scanAll();
 
 			// gets a copy of the main layer
@@ -227,7 +238,7 @@ Project::Type scanForLevelCreator(GJGameLevel *level)
 	};
 };
 
-// handles the level info layer for Avalanche featured projects
+// handles the level info layer for avalanche featured projects
 class $modify(LevelInfo, LevelInfoLayer)
 {
 	// modified vanilla init function
@@ -235,6 +246,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 	{
 		if (LevelInfoLayer::init(level, challenge))
 		{
+			// check display settings
 			bool displaySoloLayers = getThisMod->getSettingValue<bool>("solo-layers");
 			bool displayTeamLayers = getThisMod->getSettingValue<bool>("team-layers");
 			bool displayEventLayers = getThisMod->getSettingValue<bool>("event-layers");
@@ -254,6 +266,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 			Project thisProj = getHandler->GetProject(level->m_levelID.value());
 
+			// if the project is not avalanche, then we don't need to do anything
 			if (thisProj.type == Project::Type::NONE)
 			{
 				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
@@ -294,6 +307,7 @@ class $modify(LevelInfo, LevelInfoLayer)
 
 			auto levelType = scanForLevelCreator(level);
 
+			// check the project type and set decoration accordingly
 			if (levelType == Project::Type::SOLO)
 			{
 				if (displaySoloLayers)
@@ -529,6 +543,7 @@ class $modify(Level, LevelCell)
 	{
 		LevelCell::loadFromLevel(level);
 
+		// check display settings
 		bool displaySoloCells = getThisMod->getSettingValue<bool>("solo-cells");
 		bool displayTeamCells = getThisMod->getSettingValue<bool>("team-cells");
 		bool displayEventCells = getThisMod->getSettingValue<bool>("event-cells");
@@ -545,9 +560,11 @@ class $modify(Level, LevelCell)
 
 		if ((color) && (levelName))
 		{
+			// checks if the level is an avalanche project
 			auto lvl = getHandler->GetProject(level->m_levelID.value());
 			auto levelType = scanForLevelCreator(level);
 
+			// check the project type and set decoration accordingly
 			if (levelType == Project::Type::SOLO)
 			{
 				if (displaySoloCells)
@@ -902,7 +919,6 @@ class $modify(Menu, MenuLayer)
 
 			if (showAvalButton)
 			{
-				// avalanche button menu
 				auto avalMenu = CCMenu::create();
 				avalMenu->ignoreAnchorPointForPosition(false);
 				avalMenu->setPosition({winSizeX / 2, (winSizeY / 2) - 70.f});
@@ -1049,6 +1065,7 @@ class $modify(Menu, MenuLayer)
 				log::error("Avalanche featured project button disabled");
 			};
 
+			// gets all badge data
 			getHandler->scanAll();
 
 			return true;

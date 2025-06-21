@@ -5,21 +5,18 @@
 
 using namespace geode::prelude;
 
-class ParticleHelper
-{
+class ParticleHelper {
 public:
     // public class for avalanche featured button particles
     // have fun playing around with these particles cheeseworks :D
 
     // thank u arcticwoof senpai !!! :]
 
-    static CCParticleSystemQuad *createAvalFeaturedParticles(int maxParticles)
-    {
+    static CCParticleSystemQuad* createAvalFeaturedParticles(int maxParticles) {
         // @geode-ignore(unknown-resource)
         auto dict = CCDictionary::createWithContentsOfFileThreadSafe("dragEffect.plist");
 
-        if (dict)
-        {
+        if (dict) {
             dict->setObject(CCString::create("1"), "emitterType");
             dict->setObject(CCString::create("-1"), "duration");
             dict->setObject(CCString::createWithFormat("%i", maxParticles), "maxParticles");

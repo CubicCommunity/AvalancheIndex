@@ -13,22 +13,21 @@ https://github.com/cdc-sys/level-thumbs-mod
 
 using namespace geode::prelude;
 
-class AvalancheFeatured : public geode::Popup<>
-{
+class AvalancheFeatured : public geode::Popup<> {
 public:
-  static AvalancheFeatured *create();
+  static AvalancheFeatured* create();
   void show() override;
 
 protected:
-  CCMenu *m_overlayMenu;
+  CCMenu* m_overlayMenu;
 
   float m_maxHeight = 220;
-  CCMenuItemSpriteExtra *m_infoBtn;
-  CCClippingNode *m_clippingNode;
+  CCMenuItemSpriteExtra* m_infoBtn;
+  CCClippingNode* m_clippingNode;
 
   bool setup() override;
 
-  void infoPopup(CCObject *);
-  void changelogPopup(CCObject *);
-  void openApplicationPopup(CCObject *sender);
+  void infoPopup(CCObject*);
+  void changelogPopup(CCObject*);
+  void openApplicationPopup(CCObject* sender);
 };

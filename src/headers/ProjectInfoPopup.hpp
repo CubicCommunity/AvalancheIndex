@@ -8,28 +8,27 @@
 using namespace avalanche;
 using namespace geode::prelude;
 
-class ProjectInfoPopup : public geode::Popup<>
-{
+class ProjectInfoPopup : public geode::Popup<> {
 public:
-  static ProjectInfoPopup *create();
+  static ProjectInfoPopup* create();
 
-  ProjectInfoPopup *setProject(GJGameLevel *level);
+  ProjectInfoPopup* setProject(GJGameLevel* level);
 
   void show() override;
 
 protected:
-  GJGameLevel *m_level;
+  GJGameLevel* m_level;
   Project m_avalProject;
   std::string m_avalPublisher = "Avalanche";
 
-  CCMenu *m_overlayMenu;
+  CCMenu* m_overlayMenu;
 
   std::string m_cornerArtType = "rewardCorner_001.png";
 
-  void infoPopup(CCObject *);
-  void onFameInfo(CCObject *);
+  void infoPopup(CCObject*);
+  void onFameInfo(CCObject*);
 
-  void onPlayShowcase(CCObject *);
+  void onPlayShowcase(CCObject*);
 
   bool setup() override;
 };

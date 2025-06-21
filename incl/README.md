@@ -67,9 +67,7 @@ class $modify(Level, LevelCell)
 		if (avalLevel.type == Project::Type::TEAM)
 		{
 			log::info("The level '{}' is an Avalanche project hosted by {}!", avalLevel.name, avalLevel.host);
-		}
-		else if (avalLevel.type == Project::Type::EVENT)
-		{
+		} else if (avalLevel.type == Project::Type::EVENT) {
 			log::info("The level '{}' by {} won an Avalanche event! Yay!", avalLevel.name, avalLevel.host);
 		};
 	};

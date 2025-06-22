@@ -1,8 +1,3 @@
-/*
-partially borrowed from an older version of
-https://github.com/cdc-sys/level-thumbs-mod
-*/
-
 #pragma once
 
 #include <Geode/ui/Popup.hpp>

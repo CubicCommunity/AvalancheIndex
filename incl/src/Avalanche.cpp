@@ -28,17 +28,52 @@ namespace avalanche {
     EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
     EventListener<web::WebTask> levelListReq; // Web request listener for team project data
 
-    std::map<std::string, avalanche::Profile::Badge> avalanche::Profile::profileBadgeEnum{ {"cubic-studios-badge"_spr, avalanche::Profile::Badge::CUBIC}, {"director-badge"_spr, avalanche::Profile::Badge::DIRECTOR}, {"team-manager-badge"_spr, avalanche::Profile::Badge::MANAGER}, {"team-member-badge"_spr, avalanche::Profile::Badge::MEMBER}, {"collaborator-badge"_spr, avalanche::Profile::Badge::COLLABORATOR}, };
+    std::map<std::string, avalanche::Profile::Badge> avalanche::Profile::profileBadgeEnum{
+        {"cubic-studios-badge"_spr, avalanche::Profile::Badge::CUBIC},
+        {"director-badge"_spr, avalanche::Profile::Badge::DIRECTOR},
+        {"team-manager-badge"_spr, avalanche::Profile::Badge::MANAGER},
+        {"team-member-badge"_spr, avalanche::Profile::Badge::MEMBER},
+        {"collaborator-badge"_spr, avalanche::Profile::Badge::COLLABORATOR},
+    };
 
-    std::map<std::string, avalanche::Project::Type> avalanche::Project::projectTypeEnum{ {"solo", avalanche::Project::Type::SOLO}, {"team", avalanche::Project::Type::TEAM}, {"collab", avalanche::Project::Type::COLLAB}, {"event", avalanche::Project::Type::EVENT}, };
+    std::map<std::string, avalanche::Project::Type> avalanche::Project::projectTypeEnum{
+        {"solo", avalanche::Project::Type::SOLO},
+        {"team", avalanche::Project::Type::TEAM},
+        {"collab", avalanche::Project::Type::COLLAB},
+        {"event", avalanche::Project::Type::EVENT},
+    };
 
-    std::map<avalanche::Profile::Badge, std::string> avalanche::Handler::badgeStringID{ {avalanche::Profile::Badge::CUBIC, "cubic-studios-badge"_spr}, {avalanche::Profile::Badge::DIRECTOR, "director-badge"_spr}, {avalanche::Profile::Badge::MANAGER, "team-manager-badge"_spr}, {avalanche::Profile::Badge::MEMBER, "team-member-badge"_spr}, {avalanche::Profile::Badge::COLLABORATOR, "collaborator-badge"_spr}, };
+    std::map<avalanche::Profile::Badge, std::string> avalanche::Handler::badgeStringID{
+        {avalanche::Profile::Badge::CUBIC, "cubic-studios-badge"_spr},
+        {avalanche::Profile::Badge::DIRECTOR, "director-badge"_spr},
+        {avalanche::Profile::Badge::MANAGER, "team-manager-badge"_spr},
+        {avalanche::Profile::Badge::MEMBER, "team-member-badge"_spr},
+        {avalanche::Profile::Badge::COLLABORATOR, "collaborator-badge"_spr},
+    };
 
-    std::map<std::string, std::string> avalanche::Handler::badgeSpriteName{ {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], "cubic-studios.png"_spr}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], "director.png"_spr}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], "team-manager.png"_spr}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], "team-member.png"_spr}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], "collaborator.png"_spr}, };
+    std::map<std::string, std::string> avalanche::Handler::badgeSpriteName{
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], "cubic-studios.png"_spr},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], "director.png"_spr},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], "team-manager.png"_spr},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], "team-member.png"_spr},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], "collaborator.png"_spr},
+    };
 
-    std::map<std::string, ccColor3B> avalanche::Handler::badgeColor{ {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], thisMod->getSettingValue<ccColor3B>("com-cubic")}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], thisMod->getSettingValue<ccColor3B>("com-director")}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], thisMod->getSettingValue<ccColor3B>("com-manager")}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], thisMod->getSettingValue<ccColor3B>("com-member")}, {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], thisMod->getSettingValue<ccColor3B>("com-collaborator")}, };
+    std::map<std::string, ccColor3B> avalanche::Handler::badgeColor{
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], thisMod->getSettingValue<ccColor3B>("com-cubic")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], thisMod->getSettingValue<ccColor3B>("com-director")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], thisMod->getSettingValue<ccColor3B>("com-manager")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], thisMod->getSettingValue<ccColor3B>("com-member")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], thisMod->getSettingValue<ccColor3B>("com-collaborator")},
+    };
 
-    std::map<std::string, std::string> avalanche::Handler::apiToString{ {"cubic-studios", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC]}, {"director", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR]}, {"team-manager", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER]}, {"team-member", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER]}, {"collaborator", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR]}, };
+    std::map<std::string, std::string> avalanche::Handler::apiToString{
+        {"cubic-studios", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC]},
+        {"director", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR]},
+        {"team-manager", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER]},
+        {"team-member", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER]},
+        {"collaborator", avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR]},
+    };
 
     void avalanche::Handler::scanAll() {
         badgeListReq.bind([](web::WebTask::Event* e) {

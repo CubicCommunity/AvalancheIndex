@@ -43,7 +43,7 @@ using namespace avalanche;
  * This mod simply handles user and level data from Avalanche to make them look official in-game.
  * All data is remotely fetched.
  *
- * You may find more information on Avalanche mod API functions in their original file.
+ * You may find more information on the mod's API functions in the "Avalanche.hpp" file.
  */
 
  // its modding time :3
@@ -913,8 +913,7 @@ class $modify(Menu, MenuLayer) {
 							} catch (std::exception& e) {
 								log::error("Error processing Avalanche project code: {}", e.what());
 
-								if (getThisMod->getSettingValue<bool>("err-notifs"))
-									Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
+								if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
 							};
 						} else {
 							log::error("Failed to fetch Avalanche featured project code");

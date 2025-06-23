@@ -1,3 +1,9 @@
+## v1.1.0
+#### Team Projects
+
+- **Added** more information to Team Project information popup
+- **Tweaked** particle system
+
 ### v1.0.1
 ##### Patch
 

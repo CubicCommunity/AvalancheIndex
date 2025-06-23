@@ -229,8 +229,7 @@ void AvalancheFeatured::show() {
   GLubyte opacity = getOpacity();
   m_mainLayer->setScale(0.1f);
 
-  m_mainLayer->runAction(
-    CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
+  m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
 
   if (!m_scene) m_scene = CCDirector::sharedDirector()->getRunningScene();
   if (!m_ZOrder) m_ZOrder = 105;

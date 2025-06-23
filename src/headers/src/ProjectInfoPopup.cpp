@@ -256,15 +256,6 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   m_overlayMenu->addChild(art_topRight);
 
-  auto comingSoon = CCLabelBMFont::create("More coming soon...", "bigFont.fnt");
-  comingSoon->setID("coming-soon-label");
-  comingSoon->ignoreAnchorPointForPosition(false);
-  comingSoon->setAnchorPoint({ 0.5, 0.5 });
-  comingSoon->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() / 2.f });
-  comingSoon->setScale(0.25f);
-
-  m_overlayMenu->addChild(comingSoon);
-
   auto hostLabelTxt = "Published by";
 
   if (m_avalProject.type == Project::Type::TEAM) hostLabelTxt = "Hosted by";
@@ -306,6 +297,17 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_overlayMenu->addChild(playShowcase_label);
   m_overlayMenu->addChild(playShowcase);
 
+  // TODO: remove coming soon text and add more info
+
+  auto comingSoon = CCLabelBMFont::create("More coming soon...", "bigFont.fnt");
+  comingSoon->setID("coming-soon-label");
+  comingSoon->ignoreAnchorPointForPosition(false);
+  comingSoon->setAnchorPoint({ 0.5, 0.5 });
+  comingSoon->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() / 2.f });
+  comingSoon->setScale(0.25f);
+
+  m_overlayMenu->addChild(comingSoon);
+
   return this;
 };
 
@@ -315,8 +317,7 @@ void ProjectInfoPopup::show() {
   GLubyte opacity = getOpacity();
   m_mainLayer->setScale(0.1f);
 
-  m_mainLayer->runAction(
-    CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
+  m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
 
   if (!m_scene) m_scene = CCDirector::sharedDirector()->getRunningScene();
   if (!m_ZOrder) m_ZOrder = 105;

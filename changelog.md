@@ -1,3 +1,8 @@
+### v1.0.1
+##### Patch
+
+- **Updated** Geode compatibility to version `4.6.1`
+
 # v1.0.0
 ### Initial release
 

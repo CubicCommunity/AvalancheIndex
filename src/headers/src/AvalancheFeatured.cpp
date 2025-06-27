@@ -1,11 +1,11 @@
-#include "../Logs.hpp"
+#include "../../Debugger.hpp"
 
 #include "../AvalancheFeatured.hpp"
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/General.hpp>
+#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/LazySprite.hpp>
 #include <Geode/ui/Notification.hpp>
 
@@ -233,7 +233,7 @@ bool AvalancheFeatured::setup() {
     auto verLabelTextStr = verLabelText.str();
 
     auto verLabel = CCLabelBMFont::create(verLabelTextStr.c_str(), "bigFont.fnt");
-    verLabel->setID("version-label"_spr);
+    verLabel->setID("version-label");
     verLabel->ignoreAnchorPointForPosition(false);
     verLabel->setPosition({ m_overlayMenu->getScaledContentWidth() - 5.f, 5.f });
     verLabel->setAnchorPoint({ 1, 0 });

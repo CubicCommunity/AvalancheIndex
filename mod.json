@@ -252,7 +252,7 @@
 		},
 		"dev-debug": {
 			"name": "Debug",
-			"description": "Enable debug logging.",
+			"description": "Enable console debug logging.",
 			"type": "bool",
 			"requires-restart": true,
 			"default": false

@@ -1,4 +1,4 @@
-#include "../Logs.hpp"
+#include "../../Debugger.hpp"
 
 #include "../ProjectInfoPopup.hpp"
 
@@ -7,6 +7,7 @@
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/General.hpp>
+#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/Notification.hpp>
 
 #include <Geode/utils/web.hpp>
@@ -113,6 +114,11 @@ void ProjectInfoPopup::onPlayShowcase(CCObject*) {
     true);
 };
 
+void ProjectInfoPopup::settingsPopup(CCObject*) {
+  AVAL_LOG_INFO("Opening settings popup");
+  openSettingsPopup(getMod());
+};
+
 bool ProjectInfoPopup::setup() {
   setID("project-popup"_spr);
   setTitle("Loading...");
@@ -125,7 +131,7 @@ bool ProjectInfoPopup::setup() {
 
   // for buttons to work
   m_overlayMenu = CCMenu::create();
-  m_overlayMenu->setID("popup-overlay-menu"_spr);
+  m_overlayMenu->setID("popup-overlay-menu");
   m_overlayMenu->ignoreAnchorPointForPosition(false);
   m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
@@ -177,7 +183,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   fameFrame_layout->setGap(5.f);
 
   auto fameFrame = CCMenu::create();
-  fameFrame->setID("fame-frame"_spr);
+  fameFrame->setID("fame-frame");
   fameFrame->ignoreAnchorPointForPosition(false);
   fameFrame->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, m_title->getPositionY() - 20.f });
   fameFrame->setScaledContentSize({ m_mainLayer->getScaledContentWidth() * 0.75f, 12.5f });
@@ -293,11 +299,24 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     playShowcase_sprite,
     this,
     menu_selector(ProjectInfoPopup::onPlayShowcase));
-  playShowcase->setID("play-showcase-button"_spr);
+  playShowcase->setID("play-showcase-button");
   playShowcase->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, 30.f });
 
   m_overlayMenu->addChild(playShowcase_label);
   m_overlayMenu->addChild(playShowcase);
+
+  // geode settings popup button
+  auto settingsBtnSprite = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");
+  settingsBtnSprite->setScale(0.75f);
+
+  auto settingsBtn = CCMenuItemSpriteExtra::create(
+    settingsBtnSprite,
+    this,
+    menu_selector(ProjectInfoPopup::settingsPopup));
+  settingsBtn->setID("settings-button");
+  settingsBtn->setPosition({ 25, 25 });
+
+  m_overlayMenu->addChild(settingsBtn);
 
   // TODO: remove coming soon text and add more info
 

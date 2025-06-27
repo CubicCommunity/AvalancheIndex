@@ -2,14 +2,19 @@
 ##### Tweaks
 
 #### Changes
-- **Added** mod version text label in Avalanche Featured Project popup
+- **Added** mod settings button in Team Project information popup
 - **Tweaked** particle system
 - Partial optimizations
 
 #### Developers
 - **Added** toggle setting `Developer Mode`
 - **Added** toggle setting `Debug`
-- **Added** Avalanche Index Geode mod field in `avalanche` namespace
+- **Added** mod version text label in Avalanche Featured Project popup
+- **Added** Geode mod field `AVAL_MOD` in **`avalanche`** namespace
+
+###### Latest
+---
+###### Older
 
 ### v1.0.1
 ##### Patch

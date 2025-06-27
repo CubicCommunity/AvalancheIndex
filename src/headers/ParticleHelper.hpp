@@ -1,7 +1,7 @@
 #ifndef PARTICLEHELPER_H
 #define PARTICLEHELPER_H
 
-#include "headers/Logs.hpp"
+#include "../Debugger.hpp"
 
 #include <Geode/Geode.hpp>
 

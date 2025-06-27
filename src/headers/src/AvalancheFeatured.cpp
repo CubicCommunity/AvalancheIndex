@@ -208,35 +208,41 @@ bool AvalancheFeatured::setup() {
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
-  // geode changelog popup button
-  auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-  changelogBtnSprite->setScale(0.75f);
+  if (getMod()->getSettingValue<bool>("dev-btns")) {
+    log::info("Dev buttons are enabled");
 
-  auto changelogBtn = CCMenuItemSpriteExtra::create(
-    changelogBtnSprite,
-    this,
-    menu_selector(AvalancheFeatured::changelogPopup));
-  changelogBtn->setID("changelog-button");
-  changelogBtn->setPosition({ 25, 25 });
+    // geode changelog popup button
+    auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
+    changelogBtnSprite->setScale(0.75f);
 
-  m_overlayMenu->addChild(changelogBtn);
+    auto changelogBtn = CCMenuItemSpriteExtra::create(
+      changelogBtnSprite,
+      this,
+      menu_selector(AvalancheFeatured::changelogPopup));
+    changelogBtn->setID("changelog-button");
+    changelogBtn->setPosition({ 25, 25 });
 
-  // mod version text label
-  std::ostringstream verLabelText;
-  verLabelText << getMod()->getName() << " mod " << getMod()->getVersion().toVString(true);
+    m_overlayMenu->addChild(changelogBtn);
 
-  auto verLabelTextStr = verLabelText.str();
+    // mod version text label
+    std::ostringstream verLabelText;
+    verLabelText << getMod()->getName() << " mod " << getMod()->getVersion().toVString(true);
 
-  auto verLabel = CCLabelBMFont::create(verLabelTextStr.c_str(), "bigFont.fnt");
-  verLabel->setID("version-label"_spr);
-  verLabel->ignoreAnchorPointForPosition(false);
-  verLabel->setPosition({ m_overlayMenu->getScaledContentWidth() - 5.f, 5.f });
-  verLabel->setAnchorPoint({ 1, 0 });
-  verLabel->setOpacity(100);
-  verLabel->setScale(0.25f);
-  verLabel->setZOrder(3);
+    auto verLabelTextStr = verLabelText.str();
 
-  m_overlayMenu->addChild(verLabel);
+    auto verLabel = CCLabelBMFont::create(verLabelTextStr.c_str(), "bigFont.fnt");
+    verLabel->setID("version-label"_spr);
+    verLabel->ignoreAnchorPointForPosition(false);
+    verLabel->setPosition({ m_overlayMenu->getScaledContentWidth() - 5.f, 5.f });
+    verLabel->setAnchorPoint({ 1, 0 });
+    verLabel->setOpacity(100);
+    verLabel->setScale(0.25f);
+    verLabel->setZOrder(3);
+
+    m_overlayMenu->addChild(verLabel);
+  } else {
+    log::debug("Dev buttons are disabled");
+  };
 
   return true;
 };

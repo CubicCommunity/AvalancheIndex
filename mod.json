@@ -8,7 +8,7 @@
 	},
 	"id": "cubicstudios.avalancheindex",
 	"name": "Avalanche Index",
-	"version": "1.1.0",
+	"version": "1.0.2",
 	"developers": [
 		"Cheeseworks"
 	],
@@ -237,6 +237,17 @@
 			"type": "bool",
 			"enable-if": "setting:show-aval-featured",
 			"enable-if-description": "The Featured Project button must be enabled.",
+			"default": false
+		},
+		"dev": {
+			"name": "Developers",
+			"description": "Settings for developers.",
+			"type": "title"
+		},
+		"dev-btns": {
+			"name": "Show Mod Info",
+			"description": "Display UI in certain places that shows information about the mod.",
+			"type": "bool",
 			"default": false
 		}
 	},

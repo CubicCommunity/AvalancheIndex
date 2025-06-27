@@ -1,13 +1,12 @@
-## v1.1.0
-#### Team Projects
+### v1.0.2
+##### Tweaks
 
-### Changes
-- **Added** more information to Team Project information popup
+#### Changes
 - **Added** mod version text label in Avalanche Featured Project popup
 - **Tweaked** particle system
 - Partial optimizations
 
-### Developers
+#### Developers
 - **Added** Avalanche Index Geode mod field in `avalanche` namespace
 
 ### v1.0.1

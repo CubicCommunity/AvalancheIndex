@@ -1,3 +1,5 @@
+#include "../Logs.hpp"
+
 #include "../AvalancheFeatured.hpp"
 
 #include <Geode/Geode.hpp>
@@ -29,7 +31,7 @@ AvalancheFeatured* AvalancheFeatured::create() {
 };
 
 void AvalancheFeatured::infoPopup(CCObject*) {
-  log::info("Opening featured info popup");
+  AVAL_LOG_INFO("Opening featured info popup");
   createQuickPopup(
     "Avalanche Featured",
     "This is the latest project <cl>Avalanche</c> is currently working on. If the form is open, you can <cg>apply to join the team</c> to work on this and future projects.",
@@ -38,18 +40,18 @@ void AvalancheFeatured::infoPopup(CCObject*) {
       if (btn2) {
         web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/apply/");
       } else {
-        log::debug("User clicked OK");
+        AVAL_LOG_DEBUG("User clicked OK");
       }; },
     true);
 };
 
 void AvalancheFeatured::changelogPopup(CCObject*) {
-  log::info("Opening changelog popup");
+  AVAL_LOG_INFO("Opening changelog popup");
   openChangelogPopup(getMod());
 };
 
 void AvalancheFeatured::openApplicationPopup(CCObject*) {
-  log::info("Opening team application popup");
+  AVAL_LOG_INFO("Opening team application popup");
   createQuickPopup(
     "Learn More",
     "Would you like to check out the latest <cl>Avalanche</c> project?",
@@ -58,7 +60,7 @@ void AvalancheFeatured::openApplicationPopup(CCObject*) {
       if (btn2) {
         web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
       } else {
-        log::debug("User clicked Cancel");
+        AVAL_LOG_DEBUG("User clicked Cancel");
       }; },
     true);
 };
@@ -193,10 +195,10 @@ bool AvalancheFeatured::setup() {
   projThumb->setLoadCallback([this, projThumb](Result<> res) {
     if (res) {
       // Success: scale and position the sprite
-      log::info("Sprite loaded successfully");
+      AVAL_LOG_INFO("Sprite loaded successfully");
     } else {
       // Failure: set fallback image
-      log::error("Sprite failed to load, setting fallback: {}", res.unwrapErr());
+      AVAL_LOG_ERROR("Sprite failed to load, setting fallback: {}", res.unwrapErr());
       projThumb->initWithSpriteFrameName("unavailable.png"_spr);
     };
 
@@ -208,8 +210,8 @@ bool AvalancheFeatured::setup() {
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
-  if (getMod()->getSettingValue<bool>("dev-btns")) {
-    log::info("Dev buttons are enabled");
+  if (getMod()->getSettingValue<bool>("dev-mode")) {
+    AVAL_LOG_INFO("Dev buttons are enabled");
 
     // geode changelog popup button
     auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
@@ -241,7 +243,7 @@ bool AvalancheFeatured::setup() {
 
     m_overlayMenu->addChild(verLabel);
   } else {
-    log::debug("Dev buttons are disabled");
+    AVAL_LOG_DEBUG("Dev buttons are disabled");
   };
 
   return true;

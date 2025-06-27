@@ -1,6 +1,8 @@
 #ifndef PARTICLEHELPER_H
 #define PARTICLEHELPER_H
 
+#include "headers/Logs.hpp"
+
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
@@ -16,7 +18,7 @@ public:
         auto path = CCFileUtils::sharedFileUtils()->fullPathForFilename("dragEffect.plist", false);
 
         if (path.empty()) {
-            log::error("Could not find dragEffect.plist");
+            AVAL_LOG_ERROR("Could not find dragEffect.plist");
             return nullptr;
         } else {
             if (auto dict = CCDictionary::createWithContentsOfFileThreadSafe(path.c_str())) {
@@ -57,7 +59,7 @@ public:
 
                 return p;
             } else {
-                log::error("Failed to create particle system from dragEffect.plist");
+                AVAL_LOG_ERROR("Failed to create particle system from dragEffect.plist");
                 return nullptr;
             };
         };

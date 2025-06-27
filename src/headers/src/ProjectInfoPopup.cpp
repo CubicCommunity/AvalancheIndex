@@ -1,3 +1,5 @@
+#include "../Logs.hpp"
+
 #include "../ProjectInfoPopup.hpp"
 
 #include "../../incl/Avalanche.hpp"
@@ -63,10 +65,10 @@ void ProjectInfoPopup::infoPopup(CCObject*) {
     "OK", "Watch",
     [this](auto, bool btn2) {
       if (btn2) {
-        log::info("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
         web::openLinkInBrowser(this->m_avalProject.showcase_url);
       } else {
-        log::debug("User clicked OK");
+        AVAL_LOG_DEBUG("User clicked OK");
       }; },
     true);
 };
@@ -83,10 +85,10 @@ void ProjectInfoPopup::onFameInfo(CCObject*) {
     "OK", "Learn More",
     [](auto, bool btn2) {
       if (btn2) {
-        log::info("Opening Hall of Fame link in browser");
+        AVAL_LOG_INFO("Opening Hall of Fame link in browser");
         web::openLinkInBrowser(URL_AVALANCHE);
       } else {
-        log::debug("User clicked OK");
+        AVAL_LOG_DEBUG("User clicked OK");
       }; },
     true);
 };
@@ -103,10 +105,10 @@ void ProjectInfoPopup::onPlayShowcase(CCObject*) {
     "Cancel", "Watch",
     [this](auto, bool btn2) {
       if (btn2) {
-        log::info("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
         web::openLinkInBrowser(this->m_avalProject.showcase_url);
       } else {
-        log::debug("User clicked Cancel");
+        AVAL_LOG_DEBUG("User clicked Cancel");
       }; },
     true);
 };
@@ -143,7 +145,7 @@ bool ProjectInfoPopup::setup() {
 
   m_overlayMenu->addChild(infoBtn);
 
-  log::warn("Project info popup still unfinished, please use ProjectInfoPopup::setProject to finish setting it up before displaying it");
+  AVAL_LOG_WARN("Project info popup still unfinished, please use ProjectInfoPopup::setProject to finish setting it up before displaying it");
 
   return true;
 };
@@ -155,7 +157,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_avalProject = Handler::get()->GetProject(m_level->m_levelID.value());
 
   if (m_avalProject.type == Project::Type::NONE) {
-    log::error("Avalanche project type is NONE");
+    AVAL_LOG_ERROR("Avalanche project type is NONE");
     return this;
   } else if (m_avalProject.type == Project::Type::TEAM) {
     m_avalPublisher = "Avalanche";
@@ -185,7 +187,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_overlayMenu->addChild(fameFrame);
 
   if (m_avalProject.fame) {
-    log::info("Project '{}' is in the Hall of Fame", m_avalProject.name);
+    AVAL_LOG_INFO("Project '{}' is in the Hall of Fame", m_avalProject.name);
 
     m_title->setFntFile("goldFont.fnt");
     m_title->setScale(1.f);
@@ -209,7 +211,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
     fameFrame->updateLayout(true);
   } else {
-    log::debug("Project '{}' is not in the Hall of Fame", m_avalProject.name);
+    AVAL_LOG_DEBUG("Project '{}' is not in the Hall of Fame", m_avalProject.name);
   };
 
   auto art_bottomLeft = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());

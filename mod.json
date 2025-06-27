@@ -244,10 +244,17 @@
 			"description": "Settings for developers.",
 			"type": "title"
 		},
-		"dev-btns": {
-			"name": "Show Mod Info",
+		"dev-mode": {
+			"name": "Developer Mode",
 			"description": "Display UI in certain places that shows information about the mod.",
 			"type": "bool",
+			"default": false
+		},
+		"dev-debug": {
+			"name": "Debug",
+			"description": "Enable debug logging.",
+			"type": "bool",
+			"requires-restart": true,
 			"default": false
 		}
 	},

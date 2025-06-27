@@ -7,6 +7,8 @@
 - Partial optimizations
 
 #### Developers
+- **Added** toggle setting `Developer Mode`
+- **Added** toggle setting `Debug`
 - **Added** Avalanche Index Geode mod field in `avalanche` namespace
 
 ### v1.0.1

@@ -13,8 +13,8 @@
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
 
-using namespace avalanche;
 using namespace geode::prelude;
+using namespace avalanche;
 
 ProjectInfoPopup* ProjectInfoPopup::create() {
   auto ret = new ProjectInfoPopup;

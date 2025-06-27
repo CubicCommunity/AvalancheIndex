@@ -208,6 +208,7 @@ bool AvalancheFeatured::setup() {
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
+  // geode changelog popup button
   auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
   changelogBtnSprite->setScale(0.75f);
 
@@ -219,6 +220,23 @@ bool AvalancheFeatured::setup() {
   changelogBtn->setPosition({ 25, 25 });
 
   m_overlayMenu->addChild(changelogBtn);
+
+  // mod version text label
+  std::ostringstream verLabelText;
+  verLabelText << getMod()->getName() << " mod " << getMod()->getVersion().toVString(true);
+
+  auto verLabelTextStr = verLabelText.str();
+
+  auto verLabel = CCLabelBMFont::create(verLabelTextStr.c_str(), "bigFont.fnt");
+  verLabel->setID("version-label"_spr);
+  verLabel->ignoreAnchorPointForPosition(false);
+  verLabel->setPosition({ m_overlayMenu->getScaledContentWidth() - 5.f, 5.f });
+  verLabel->setAnchorPoint({ 1, 0 });
+  verLabel->setOpacity(100);
+  verLabel->setScale(0.25f);
+  verLabel->setZOrder(3);
+
+  m_overlayMenu->addChild(verLabel);
 
   return true;
 };

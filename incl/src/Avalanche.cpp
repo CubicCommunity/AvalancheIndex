@@ -16,11 +16,11 @@
 
 using namespace geode::prelude;
 
-Mod* thisMod = getMod();
-
 namespace avalanche {
+    Mod* AVAL_MOD = getMod(); // Get the mod instance
+
     int ACC_PUBLISHER = 31079132;
-    auto URL_MOD_ISSUES = thisMod->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE).c_str(); // URL to the mod's issues page on GitHub
+    auto URL_MOD_ISSUES = avalanche::AVAL_MOD->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE).c_str(); // URL to the mod's issues page on GitHub
 
     matjson::Value fetchedBadges = nullptr;
     matjson::Value fetchedLevels = nullptr;
@@ -60,11 +60,11 @@ namespace avalanche {
     };
 
     std::map<std::string, ccColor3B> avalanche::Handler::badgeColor{
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], thisMod->getSettingValue<ccColor3B>("com-cubic")},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], thisMod->getSettingValue<ccColor3B>("com-director")},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], thisMod->getSettingValue<ccColor3B>("com-manager")},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], thisMod->getSettingValue<ccColor3B>("com-member")},
-        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], thisMod->getSettingValue<ccColor3B>("com-collaborator")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::CUBIC], AVAL_MOD->getSettingValue<ccColor3B>("com-cubic")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::DIRECTOR], AVAL_MOD->getSettingValue<ccColor3B>("com-director")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MANAGER], AVAL_MOD->getSettingValue<ccColor3B>("com-manager")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::MEMBER], AVAL_MOD->getSettingValue<ccColor3B>("com-member")},
+        {avalanche::Handler::badgeStringID[avalanche::Profile::Badge::COLLABORATOR], AVAL_MOD->getSettingValue<ccColor3B>("com-collaborator")},
     };
 
     std::map<std::string, std::string> avalanche::Handler::apiToString{
@@ -89,24 +89,24 @@ namespace avalanche {
                                     log::error("Key for profile of ID '{}' is invalid", (std::string)key);
                                 } else {
                                     std::string cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
-                                    thisMod->setSavedValue(cacheKey, value);
+                                    AVAL_MOD->setSavedValue(cacheKey, value);
                                 };
                             };
 
-                            if (thisMod->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
+                            if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
                         };
                     } else {
                         log::error("Already fetched remote data for badges");
                     };
                 } else {
                     log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-                    if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
+                    if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
                 };
             } else if (web::WebProgress* p = e->getProgress()) {
                 log::debug("badge id progress: {}", (float)p->downloadProgress().value_or(0.f));
             } else if (e->isCancelled()) {
                 log::error("Badge web request failed");
-                if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
+                if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badge", NotificationIcon::Error, 2.5f)->show();
             }; });
 
             auto badgeReq = web::WebRequest(); // send the web request
@@ -128,11 +128,11 @@ namespace avalanche {
                                         log::error("Key for project of ID '{}' is invalid", (std::string)key);
                                     } else {
                                         std::string cacheKey = fmt::format("cache-level-p{}", (std::string)key);
-                                        thisMod->setSavedValue(cacheKey, value);
+                                        AVAL_MOD->setSavedValue(cacheKey, value);
                                     };
                                 };
 
-                                if (thisMod->getSettingValue<bool>("web-once"))
+                                if (AVAL_MOD->getSettingValue<bool>("web-once"))
                                     fetchedLevels = jsonRes;
                             };
                         } else {
@@ -140,13 +140,13 @@ namespace avalanche {
                         };
                     } else {
                         log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-                        if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
+                        if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
                     };
                 } else if (web::WebProgress* p = e->getProgress()) {
                     log::debug("level id progress: {}", (float)p->downloadProgress().value_or(0.f));
                 } else if (e->isCancelled()) {
                     log::error("Badge web request failed");
-                    if (thisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch level", NotificationIcon::Error, 2.5f)->show();
+                    if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch level", NotificationIcon::Error, 2.5f)->show();
                 }; });
 
                 auto levelReq = web::WebRequest(); // send the web request
@@ -159,7 +159,7 @@ namespace avalanche {
         if (id > 0) {
             std::string cacheKey = fmt::format("cache-badge-p{}", (int)id);
 
-            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
+            matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
             auto lBadge = avalanche::Profile::profileBadgeEnum.find(avalanche::Handler::apiToString[cacheStd["badge"].asString().unwrapOr(und)]);
 
@@ -180,7 +180,7 @@ namespace avalanche {
         if (id > 0) {
             std::string cacheKey = fmt::format("cache-level-p{}", (int)id);
 
-            matjson::Value cacheStd = thisMod->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
+            matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 
             auto lType = avalanche::Project::projectTypeEnum.find(cacheStd["type"].asString().unwrapOr(und));
 

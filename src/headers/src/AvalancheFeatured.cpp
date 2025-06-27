@@ -1,9 +1,11 @@
+#include "../../Debugger.hpp"
+
 #include "../AvalancheFeatured.hpp"
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/General.hpp>
+#include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/LazySprite.hpp>
 #include <Geode/ui/Notification.hpp>
 
@@ -29,7 +31,7 @@ AvalancheFeatured* AvalancheFeatured::create() {
 };
 
 void AvalancheFeatured::infoPopup(CCObject*) {
-  log::info("Opening featured info popup");
+  AVAL_LOG_INFO("Opening featured info popup");
   createQuickPopup(
     "Avalanche Featured",
     "This is the latest project <cl>Avalanche</c> is currently working on. If the form is open, you can <cg>apply to join the team</c> to work on this and future projects.",
@@ -38,18 +40,18 @@ void AvalancheFeatured::infoPopup(CCObject*) {
       if (btn2) {
         web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/apply/");
       } else {
-        log::debug("User clicked OK");
+        AVAL_LOG_DEBUG("User clicked OK");
       }; },
     true);
 };
 
 void AvalancheFeatured::changelogPopup(CCObject*) {
-  log::info("Opening changelog popup");
+  AVAL_LOG_INFO("Opening changelog popup");
   openChangelogPopup(getMod());
 };
 
 void AvalancheFeatured::openApplicationPopup(CCObject*) {
-  log::info("Opening team application popup");
+  AVAL_LOG_INFO("Opening team application popup");
   createQuickPopup(
     "Learn More",
     "Would you like to check out the latest <cl>Avalanche</c> project?",
@@ -58,7 +60,7 @@ void AvalancheFeatured::openApplicationPopup(CCObject*) {
       if (btn2) {
         web::openLinkInBrowser("https://gh.cubicstudios.xyz/WebLPS/aval-project/");
       } else {
-        log::debug("User clicked Cancel");
+        AVAL_LOG_DEBUG("User clicked Cancel");
       }; },
     true);
 };
@@ -193,10 +195,10 @@ bool AvalancheFeatured::setup() {
   projThumb->setLoadCallback([this, projThumb](Result<> res) {
     if (res) {
       // Success: scale and position the sprite
-      log::info("Sprite loaded successfully");
+      AVAL_LOG_INFO("Sprite loaded successfully");
     } else {
       // Failure: set fallback image
-      log::error("Sprite failed to load, setting fallback: {}", res.unwrapErr());
+      AVAL_LOG_ERROR("Sprite failed to load, setting fallback: {}", res.unwrapErr());
       projThumb->initWithSpriteFrameName("unavailable.png"_spr);
     };
 
@@ -208,17 +210,41 @@ bool AvalancheFeatured::setup() {
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
-  auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-  changelogBtnSprite->setScale(0.75f);
+  if (getMod()->getSettingValue<bool>("dev-mode")) {
+    AVAL_LOG_INFO("Dev buttons are enabled");
 
-  auto changelogBtn = CCMenuItemSpriteExtra::create(
-    changelogBtnSprite,
-    this,
-    menu_selector(AvalancheFeatured::changelogPopup));
-  changelogBtn->setID("changelog-button");
-  changelogBtn->setPosition({ 25, 25 });
+    // geode changelog popup button
+    auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
+    changelogBtnSprite->setScale(0.75f);
 
-  m_overlayMenu->addChild(changelogBtn);
+    auto changelogBtn = CCMenuItemSpriteExtra::create(
+      changelogBtnSprite,
+      this,
+      menu_selector(AvalancheFeatured::changelogPopup));
+    changelogBtn->setID("changelog-button");
+    changelogBtn->setPosition({ 25, 25 });
+
+    m_overlayMenu->addChild(changelogBtn);
+
+    // mod version text label
+    std::ostringstream verLabelText;
+    verLabelText << getMod()->getName() << " mod " << getMod()->getVersion().toVString(true);
+
+    auto verLabelTextStr = verLabelText.str();
+
+    auto verLabel = CCLabelBMFont::create(verLabelTextStr.c_str(), "bigFont.fnt");
+    verLabel->setID("version-label");
+    verLabel->ignoreAnchorPointForPosition(false);
+    verLabel->setPosition({ m_overlayMenu->getScaledContentWidth() - 5.f, 5.f });
+    verLabel->setAnchorPoint({ 1, 0 });
+    verLabel->setOpacity(100);
+    verLabel->setScale(0.25f);
+    verLabel->setZOrder(3);
+
+    m_overlayMenu->addChild(verLabel);
+  } else {
+    AVAL_LOG_DEBUG("Dev buttons are disabled");
+  };
 
   return true;
 };
@@ -229,8 +255,7 @@ void AvalancheFeatured::show() {
   GLubyte opacity = getOpacity();
   m_mainLayer->setScale(0.1f);
 
-  m_mainLayer->runAction(
-    CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
+  m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
 
   if (!m_scene) m_scene = CCDirector::sharedDirector()->getRunningScene();
   if (!m_ZOrder) m_ZOrder = 105;

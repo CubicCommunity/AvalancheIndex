@@ -26,6 +26,8 @@ protected:
   std::string m_cornerArtType = "rewardCorner_001.png";
 
   void infoPopup(CCObject*);
+  void settingsPopup(CCObject*);
+
   void onFameInfo(CCObject*);
 
   void onPlayShowcase(CCObject*);

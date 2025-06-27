@@ -1,3 +1,5 @@
+#include "./Debugger.hpp"
+
 #include "../incl/Avalanche.hpp"
 
 #include "./headers/ParticleHelper.hpp"
@@ -16,7 +18,6 @@
 #include <Geode/ui/Notification.hpp>
 
 #include <Geode/utils/web.hpp>
-#include <Geode/utils/terminate.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
@@ -46,10 +47,7 @@ using namespace avalanche;
  * You may find more information on the mod's API functions in the "Avalanche.hpp" file.
  */
 
- // its modding time :3
-auto getThisMod = getMod();
-
-// avalanche data handler
+ // avalanche data handler
 auto getHandler = Handler::get();
 
 // if the server wasn't already checked for the new avalanche project :O
@@ -61,7 +59,7 @@ class $modify(ProfilePage) {
 	void loadPageFromUserInfo(GJUserScore * user) {
 		ProfilePage::loadPageFromUserInfo(user);
 
-		if (getThisMod->getSettingValue<bool>("badge-profile")) {
+		if (AVAL_MOD->getSettingValue<bool>("badge-profile")) {
 			// gets all badge data
 			getHandler->scanAll();
 
@@ -75,9 +73,9 @@ class $modify(ProfilePage) {
 			Profile plr = getHandler->GetProfile(user->m_accountID);
 			getHandler->createBadge(this, plr, cell_menu, fakeText, fakeFont, 0.875f);
 
-			log::debug("Viewing profile of ID {}", (int)user->m_accountID);
+			AVAL_LOG_DEBUG("Viewing profile of ID {}", (int)user->m_accountID);
 		} else {
-			log::debug("Profile badge disabled");
+			AVAL_LOG_DEBUG("Profile badge disabled");
 		};
 	};
 };
@@ -88,7 +86,7 @@ class $modify(CommentCell) {
 	void loadFromComment(GJComment * comment) {
 		CommentCell::loadFromComment(comment);
 
-		if (getThisMod->getSettingValue<bool>("badge-comments")) {
+		if (AVAL_MOD->getSettingValue<bool>("badge-comments")) {
 			// checks if the user is a member of avalanche
 			getHandler->scanAll();
 
@@ -100,22 +98,22 @@ class $modify(CommentCell) {
 			auto commentFont = dynamic_cast<CCLabelBMFont*>(m_mainLayer->getChildByID("comment-text-label")); // smol comment
 
 			// checks if commenter published level
-			log::debug("Checking comment on level of ID {}...", (int)comment->m_levelID);
+			AVAL_LOG_DEBUG("Checking comment on level of ID {}...", (int)comment->m_levelID);
 
-			if (getThisMod->getSettingValue<bool>("comments")) {
+			if (AVAL_MOD->getSettingValue<bool>("comments")) {
 				if (comment->m_hasLevelID) {
-					log::debug("Comment listed on account page with level linked");
+					AVAL_LOG_DEBUG("Comment listed on account page with level linked");
 				} else if (auto thisLevel = GameLevelManager::get()->getSavedLevel(comment->m_levelID)) {
 					if (comment->m_userID == thisLevel->m_userID.value()) {
-						log::info("Commenter {} is level publisher", comment->m_userName);
+						AVAL_LOG_INFO("Commenter {} is level publisher", comment->m_userName);
 
 						commentText = nullptr;
 						commentFont = nullptr;
 					} else {
-						log::debug("Commenter {} is not level publisher", comment->m_userName);
+						AVAL_LOG_DEBUG("Commenter {} is not level publisher", comment->m_userName);
 					};
 				} else {
-					log::debug("Comment not published under any level");
+					AVAL_LOG_DEBUG("Comment not published under any level");
 				};
 			} else {
 				commentText = nullptr;
@@ -124,9 +122,9 @@ class $modify(CommentCell) {
 			Profile plr = getHandler->GetProfile(comment->m_accountID);
 			getHandler->createBadge(this, plr, cell_menu, commentText, commentFont, 0.55f);
 
-			log::debug("Viewing comment profile of ID {}", (int)comment->m_accountID);
+			AVAL_LOG_DEBUG("Viewing comment profile of ID {}", (int)comment->m_accountID);
 		} else {
-			log::debug("Comment badge disabled");
+			AVAL_LOG_DEBUG("Comment badge disabled");
 		};
 	};
 };
@@ -149,7 +147,7 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 		// checks if the level is a solo project
 		const auto it = badgeSpriteName.find(cacheSolo);
 		if (it == badgeSpriteName.end()) {
-			log::error("Key '{}' not found in badgeSpriteName!", cacheSolo);
+			AVAL_LOG_ERROR("Key '{}' not found in badgeSpriteName!", cacheSolo);
 
 			return Project::Type::NONE;
 		} else {
@@ -161,31 +159,31 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 
 			// must be public
 			if (notPublic) {
-				log::error("Level {} is unlisted", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is unlisted", (int)level->m_levelID.value());
 
 				return Project::Type::NONE;
 			} else {
-				log::debug("Level {} is publicly listed!", (int)level->m_levelID.value());
+				AVAL_LOG_DEBUG("Level {} is publicly listed!", (int)level->m_levelID.value());
 
 				// checks if owned by publisher account
 				if (level->m_accountID.value() == ACC_PUBLISHER) {
-					log::debug("Level {} is Avalanche team project", (int)level->m_levelID.value());
+					AVAL_LOG_DEBUG("Level {} is Avalanche team project", (int)level->m_levelID.value());
 
 					return Project::Type::TEAM;
 				} else {
 					// checks if level is published by a team member
 					if (notSolo) {
-						log::error("Level {} not associated with Avalanche", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Level {} not associated with Avalanche", (int)level->m_levelID.value());
 
 						return Project::Type::NONE;
 					} else {
 						// checks if level is rated
 						if (level->m_stars.value() >= 1) {
-							log::debug("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
+							AVAL_LOG_DEBUG("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
 
 							return Project::Type::SOLO;
 						} else {
-							log::error("Level {} is unrated", (int)level->m_levelID.value());
+							AVAL_LOG_ERROR("Level {} is unrated", (int)level->m_levelID.value());
 
 							return Project::Type::NONE;
 						};
@@ -204,9 +202,9 @@ class $modify(LevelInfo, LevelInfoLayer) {
 	bool init(GJGameLevel * level, bool challenge) {
 		if (LevelInfoLayer::init(level, challenge)) {
 			// check display settings
-			bool displaySoloLayers = getThisMod->getSettingValue<bool>("solo-layers");
-			bool displayTeamLayers = getThisMod->getSettingValue<bool>("team-layers");
-			bool displayEventLayers = getThisMod->getSettingValue<bool>("event-layers");
+			bool displaySoloLayers = AVAL_MOD->getSettingValue<bool>("solo-layers");
+			bool displayTeamLayers = AVAL_MOD->getSettingValue<bool>("team-layers");
+			bool displayEventLayers = AVAL_MOD->getSettingValue<bool>("event-layers");
 
 			// get main bg color layer
 			auto bg = this->getChildByID("background");
@@ -217,7 +215,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			auto levelName = dynamic_cast<CCLabelBMFont*>(nameText);
 
 			// whether or not display for classics only
-			bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
+			bool onlyClassic = AVAL_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
 			CCMenu* leftMenu = typeinfo_cast<CCMenu*>(this->getChildByID("left-side-menu"));
 
@@ -225,9 +223,9 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			// if the project is not avalanche, then we don't need to do anything
 			if (thisProj.type == Project::Type::NONE) {
-				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			} else {
-				auto showProjectInfo = getThisMod->getSettingValue<bool>("show-proj-info");
+				auto showProjectInfo = AVAL_MOD->getSettingValue<bool>("show-proj-info");
 
 				if (showProjectInfo) {
 					CCSprite* avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
@@ -252,7 +250,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 					leftMenu->addChild(avalBtn);
 					leftMenu->updateLayout();
 				} else {
-					log::warn("Project info button not shown, setting up level info layer");
+					AVAL_LOG_WARN("Project info button not shown, setting up level info layer");
 				};
 			};
 
@@ -262,33 +260,33 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			if (levelType == Project::Type::SOLO) {
 				if (displaySoloLayers) {
 					if (onlyClassic) {
-						log::error("Solo level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Solo level {} is platformer", (int)level->m_levelID.value());
 					} else {
 						LevelInfo::setSoloDisplay(background, thisProj.fame);
 					};
 				} else {
-					log::warn("Solo layers not displayed, setting up level info layer");
+					AVAL_LOG_WARN("Solo layers not displayed, setting up level info layer");
 				};
 			} else if (levelType == Project::Type::TEAM) {
 				if (displayTeamLayers) {
 					if (level->isPlatformer()) {
-						log::error("Team level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is platformer", (int)level->m_levelID.value());
 					} else if (level->m_unlisted) {
-						log::error("Team level {} is unlisted", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is unlisted", (int)level->m_levelID.value());
 					} else {
 						LevelInfo::setTeamDisplay(background, levelName);
 					};
 				} else {
-					log::warn("Team layers not displayed, setting up level info layer");
+					AVAL_LOG_WARN("Team layers not displayed, setting up level info layer");
 				};
 			} else if (levelType == Project::Type::EVENT) {
 				if (displayEventLayers) {
 					LevelInfo::setEventDisplay(background, thisProj.fame);
 				} else {
-					log::warn("Event layers not displayed, setting up level info layer");
+					AVAL_LOG_WARN("Event layers not displayed, setting up level info layer");
 				};
 			} else {
-				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			};
 
 			return true;
@@ -304,7 +302,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			if (fame) LevelInfo::setFame(background);
 		} else {
-			log::error("Cannot set solo display with missing background");
+			AVAL_LOG_ERROR("Cannot set solo display with missing background");
 		};
 	};
 
@@ -333,7 +331,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 					// checks if the heights are valid before rescaling
 					if (ogHeight <= 0 || thumbHeight <= 0) {
-						log::error("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero height");
+						AVAL_LOG_ERROR("Invalid dimensions for scaling: bgSprite or bgThumbnail has zero height");
 					} else {
 						float scaleFactor = ogHeight / thumbHeight;
 						bgThumbnail->setScale(scaleFactor);
@@ -341,12 +339,12 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 					this->addChild(bgThumbnail);
 				} else {
-					log::error("Failed to load sprite: project-bg.png");
+					AVAL_LOG_ERROR("Failed to load sprite: project-bg.png");
 				};
 
 				this->addChild(bgSprite);
 			} else {
-				log::error("Failed to load sprite: game_bg_19_001.png");
+				AVAL_LOG_ERROR("Failed to load sprite: game_bg_19_001.png");
 			};
 
 			background->setColor({ 66, 94, 255 });
@@ -356,13 +354,13 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			levelName->setFntFile("gjFont59.fnt");
 
 			if (levelNameOgWidth <= 0) {
-				log::error("Invalid level name dimensions: Original width is zero");
+				AVAL_LOG_ERROR("Invalid level name dimensions: Original width is zero");
 			} else {
 				auto scaleDownBy = levelNameOgWidth / levelName->getScaledContentWidth();
 				levelName->setScale(levelName->getScale() * scaleDownBy);
 			};
 		} else {
-			log::error("Failed to set team display: background or level name is null");
+			AVAL_LOG_ERROR("Failed to set team display: background or level name is null");
 		};
 	};
 
@@ -373,14 +371,14 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			if (fame) LevelInfo::setFame(background);
 		} else {
-			log::error("Cannot set event display with missing background");
+			AVAL_LOG_ERROR("Cannot set event display with missing background");
 		};
 	};
 
 	// set hall of fame decoration for the level info layer
 	void setFame(CCSprite * background) {
 		if (background) {
-			bool showFame = getThisMod->getSettingValue<bool>("show-fame");
+			bool showFame = AVAL_MOD->getSettingValue<bool>("show-fame");
 
 			if (showFame) {
 				if (auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr)) {
@@ -395,7 +393,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 					auto scaledWidth = bgThumbnail->getContentWidth();
 
 					if (ogWidth <= 0 || scaledWidth <= 0) {
-						log::error("Invalid dimensions for scaling: this or bgThumbnail has zero width");
+						AVAL_LOG_ERROR("Invalid dimensions for scaling: this or bgThumbnail has zero width");
 					} else {
 						float scaleFactor = ogWidth / scaledWidth;
 						bgThumbnail->setScale(scaleFactor);
@@ -405,13 +403,13 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 					this->addChild(bgThumbnail);
 				} else {
-					log::error("Failed to load sprite: fame-bg.png");
+					AVAL_LOG_ERROR("Failed to load sprite: fame-bg.png");
 				};
 			} else {
-				log::error("Display of hall of fame effect disabled");
+				AVAL_LOG_ERROR("Display of hall of fame effect disabled");
 			};
 		} else {
-			log::error("Cannot set hall of fame display with missing background");
+			AVAL_LOG_ERROR("Cannot set hall of fame display with missing background");
 		};
 	};
 
@@ -428,9 +426,9 @@ class $modify(Level, LevelCell) {
 		LevelCell::loadFromLevel(level);
 
 		// check display settings
-		bool displaySoloCells = getThisMod->getSettingValue<bool>("solo-cells");
-		bool displayTeamCells = getThisMod->getSettingValue<bool>("team-cells");
-		bool displayEventCells = getThisMod->getSettingValue<bool>("event-cells");
+		bool displaySoloCells = AVAL_MOD->getSettingValue<bool>("solo-cells");
+		bool displayTeamCells = AVAL_MOD->getSettingValue<bool>("team-cells");
+		bool displayEventCells = AVAL_MOD->getSettingValue<bool>("event-cells");
 
 		// get main bg color layer
 		auto color = this->getChildByType<CCLayerColor>(0);
@@ -440,7 +438,7 @@ class $modify(Level, LevelCell) {
 		auto levelName = as<CCLabelBMFont*>(nameText);
 
 		// whether or not display for classics only
-		bool onlyClassic = getThisMod->getSettingValue<bool>("classic-only") && level->isPlatformer();
+		bool onlyClassic = AVAL_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
 		if ((color) && (levelName)) {
 			// checks if the level is an avalanche project
@@ -451,36 +449,36 @@ class $modify(Level, LevelCell) {
 			if (levelType == Project::Type::SOLO) {
 				if (displaySoloCells) {
 					if (onlyClassic) {
-						log::error("Solo level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Solo level {} is platformer", (int)level->m_levelID.value());
 					} else {
 						Level::setSoloDisplay(color, lvl.fame);
 					};
 				} else {
-					log::warn("Solo cells not displayed, setting up level cell");
+					AVAL_LOG_WARN("Solo cells not displayed, setting up level cell");
 				};
 			} else if (levelType == Project::Type::TEAM) {
 				if (displayTeamCells) {
 					if (level->isPlatformer()) {
-						log::error("Team level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is platformer", (int)level->m_levelID.value());
 					} else if (level->m_unlisted) {
-						log::error("Team level {} is unlisted", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is unlisted", (int)level->m_levelID.value());
 					} else {
 						Level::setTeamDisplay(color, levelName, lvl.fame);
 					};
 				} else {
-					log::warn("Team cells not displayed, setting up level cell");
+					AVAL_LOG_WARN("Team cells not displayed, setting up level cell");
 				};
 			} else if (levelType == Project::Type::EVENT) {
 				if (displayEventCells) {
 					Level::setEventDisplay(color, lvl.fame);
 				} else {
-					log::warn("Event cells not displayed, setting up level cell");
+					AVAL_LOG_WARN("Event cells not displayed, setting up level cell");
 				};
 			} else {
-				log::error("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			};
 		} else {
-			log::error("ccColor3B not found!");
+			AVAL_LOG_ERROR("ccColor3B not found!");
 		};
 	};
 
@@ -500,10 +498,10 @@ class $modify(Level, LevelCell) {
 
 				if (fame) Level::setFame(newColor, { 255, 255, 255 });
 			} else {
-				log::error("Failed to create solo display color layer");
+				AVAL_LOG_ERROR("Failed to create solo display color layer");
 			};
 		} else {
-			log::error("Cannot set solo display with missing color node");
+			AVAL_LOG_ERROR("Cannot set solo display with missing color node");
 		};
 	};
 
@@ -531,10 +529,10 @@ class $modify(Level, LevelCell) {
 
 				if (fame) Level::setFame(newColor, { 255, 244, 95 });
 			} else {
-				log::error("Failed to create team display color layer");
+				AVAL_LOG_ERROR("Failed to create team display color layer");
 			};
 		} else {
-			log::error("Failed to set team display: color node or level name is null");
+			AVAL_LOG_ERROR("Failed to set team display: color node or level name is null");
 		};
 	};
 
@@ -554,17 +552,17 @@ class $modify(Level, LevelCell) {
 
 				if (fame) Level::setFame(newColor, { 85, 249, 255 });
 			} else {
-				log::error("Failed to create event display color layer");
+				AVAL_LOG_ERROR("Failed to create event display color layer");
 			};
 		} else {
-			log::error("Cannot set event display with missing color node");
+			AVAL_LOG_ERROR("Cannot set event display with missing color node");
 		};
 	};
 
 	// set hall of fame decoration for level cell
 	void setFame(CCLayerColor * newColor, ccColor3B glow = { 255, 255, 255 }) {
 		if (newColor) {
-			bool showFame = getThisMod->getSettingValue<bool>("show-fame");
+			bool showFame = AVAL_MOD->getSettingValue<bool>("show-fame");
 
 			if (showFame) {
 				if (auto fameGlow = CCSprite::create("fame-glow.png"_spr)) {
@@ -581,13 +579,13 @@ class $modify(Level, LevelCell) {
 
 					this->addChild(fameGlow);
 				} else {
-					log::error("Failed to load sprite: fame-glow.png");
+					AVAL_LOG_ERROR("Failed to load sprite: fame-glow.png");
 				};
 			} else {
-				log::error("Display of famed effect disabled");
+				AVAL_LOG_ERROR("Display of famed effect disabled");
 			};
 		} else {
-			log::error("Cannot set hall of fame display with missing color node or glow color");
+			AVAL_LOG_ERROR("Cannot set hall of fame display with missing color node or glow color");
 		};
 	};
 };
@@ -607,9 +605,9 @@ class $modify(Pause, PauseLayer) {
 				Project thisProj = getHandler->GetProject(m_fields->m_level->m_levelID.value());
 
 				if (thisProj.type == Project::Type::NONE) {
-					log::error("Level {} is not an Avalanche project", (int)m_fields->m_level->m_levelID.value());
+					AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)m_fields->m_level->m_levelID.value());
 				} else {
-					auto showProjectInfo = getThisMod->getSettingValue<bool>("show-proj-info");
+					auto showProjectInfo = AVAL_MOD->getSettingValue<bool>("show-proj-info");
 
 					if (showProjectInfo) {
 						CCSprite* avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
@@ -634,14 +632,14 @@ class $modify(Pause, PauseLayer) {
 						rightMenu->addChild(avalBtn);
 						rightMenu->updateLayout();
 					} else {
-						log::warn("Project info button not shown, setting up pause menu");
+						AVAL_LOG_WARN("Project info button not shown, setting up pause menu");
 					};
 				};
 			} else {
-				log::error("Pause menu cannot find current level");
+				AVAL_LOG_ERROR("Pause menu cannot find current level");
 			};
 		} else {
-			log::error("Pause menu cannot find right button menu");
+			AVAL_LOG_ERROR("Pause menu cannot find right button menu");
 		};
 	};
 
@@ -663,23 +661,23 @@ class $modify(Menu, MenuLayer) {
 	// modified vanilla init function
 	bool init() {
 		if (MenuLayer::init()) {
-			std::string ver = getThisMod->getVersion().toVString();
-			log::debug("Loaded mod version {}", ver);
+			std::string ver = AVAL_MOD->getVersion().toVString();
+			AVAL_LOG_DEBUG("Loaded mod version {}", ver);
 
-			bool viewChangelog = getThisMod->getSettingValue<bool>("view-changelog");
+			bool viewChangelog = AVAL_MOD->getSettingValue<bool>("view-changelog");
 
 			if (viewChangelog) {
-				std::string changelogVer = getThisMod->getSavedValue<std::string>("changelog-ver");
+				std::string changelogVer = AVAL_MOD->getSavedValue<std::string>("changelog-ver");
 
 				if (changelogVer.empty()) {
-					log::debug("No changelog version found, setting to {}", ver);
-					changelogVer = getThisMod->setSavedValue<std::string>("changelog-ver", ver);
+					AVAL_LOG_DEBUG("No changelog version found, setting to {}", ver);
+					changelogVer = AVAL_MOD->setSavedValue<std::string>("changelog-ver", ver);
 				} else {
-					log::info("Changelog version {} found", changelogVer);
+					AVAL_LOG_INFO("Changelog version {} found", changelogVer);
 
 					// check if the changelog was already shown
 					if (changelogVer == ver) {
-						log::debug("Changelog already shown for version {}", ver);
+						AVAL_LOG_DEBUG("Changelog already shown for version {}", ver);
 					} else {
 						createQuickPopup(
 							"Avalanche Index Updated",
@@ -687,24 +685,24 @@ class $modify(Menu, MenuLayer) {
 							"Cancel", "OK",
 							[](auto, bool btn2) {
 								if (btn2) {
-									openChangelogPopup(getThisMod);
+									openChangelogPopup(AVAL_MOD);
 								} else {
-									log::debug("User clicked Cancel");
+									AVAL_LOG_DEBUG("User clicked Cancel");
 								}; },
 							true);
 
-						getThisMod->setSavedValue<std::string>("changelog-ver", ver);
-						getThisMod->setSavedValue<bool>("checked-aval-project", false);
+						AVAL_MOD->setSavedValue<std::string>("changelog-ver", ver);
+						AVAL_MOD->setSavedValue<bool>("checked-aval-project", false);
 					};
 				};
 			} else {
-				log::debug("Changelog alert disabled");
+				AVAL_LOG_DEBUG("Changelog alert disabled");
 			};
 
 			auto winSizeX = this->getScaledContentWidth();
 			auto winSizeY = this->getScaledContentHeight();
 
-			bool showAvalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
+			bool showAvalButton = AVAL_MOD->getSettingValue<bool>("show-aval-featured");
 
 			if (showAvalButton) {
 				auto avalMenu = CCMenu::create();
@@ -731,7 +729,7 @@ class $modify(Menu, MenuLayer) {
 
 				// featured ring
 				if (m_fields->avalBtnGlow) {
-					log::error("Avalanche featured button glow sprite already initialized");
+					AVAL_LOG_ERROR("Avalanche featured button glow sprite already initialized");
 				} else {
 					m_fields->avalBtnGlow = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
 
@@ -745,7 +743,7 @@ class $modify(Menu, MenuLayer) {
 
 					if (auto created = avalBtn->getChildByID("featuredRing"_spr)) {
 						auto markID = created->getID().c_str();
-						log::error("Avalanche featured button glow sprite already exists: {}", markID);
+						AVAL_LOG_ERROR("Avalanche featured button glow sprite already exists: {}", markID);
 					} else {
 						avalBtn->addChild(m_fields->avalBtnGlow);
 					};
@@ -753,7 +751,7 @@ class $modify(Menu, MenuLayer) {
 
 				// unread mark
 				if (m_fields->avalBtnMark) {
-					log::error("Avalanche featured button mark sprite already initialized");
+					AVAL_LOG_ERROR("Avalanche featured button mark sprite already initialized");
 				} else {
 					m_fields->avalBtnMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
 					m_fields->avalBtnMark->setID("notifMark"_spr);
@@ -765,7 +763,7 @@ class $modify(Menu, MenuLayer) {
 
 					if (auto created = avalBtn->getChildByID("notifMark"_spr)) {
 						auto markID = created->getID().c_str();
-						log::error("Avalanche featured button mark sprite already exists: {}", markID);
+						AVAL_LOG_ERROR("Avalanche featured button mark sprite already exists: {}", markID);
 					} else {
 						avalBtn->addChild(m_fields->avalBtnMark);
 					};
@@ -788,13 +786,13 @@ class $modify(Menu, MenuLayer) {
 
 						avalMenu->addChild(avalBtnParticles);
 					} else {
-						log::error("Failed to create Avalanche featured button particles");
+						AVAL_LOG_ERROR("Failed to create Avalanche featured button particles");
 					};
 				} catch (std::exception& e) {
-					log::error("Failed to create Avalanche featured button particles: {}", e.what());
+					AVAL_LOG_ERROR("Failed to create Avalanche featured button particles: {}", e.what());
 				};
 
-				bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+				bool alwaysCheck = AVAL_MOD->getSettingValue<bool>("check-aval");
 
 				CCObject* fakeObj = nullptr;
 
@@ -805,7 +803,7 @@ class $modify(Menu, MenuLayer) {
 
 					noProjectPing = false;
 				} else {
-					bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
+					bool isChecked = AVAL_MOD->getSavedValue<bool>("checked-aval-project");
 
 					if (!isChecked) {
 						if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(true);
@@ -816,7 +814,7 @@ class $modify(Menu, MenuLayer) {
 					};
 				};
 			} else {
-				log::error("Avalanche featured project button disabled");
+				AVAL_LOG_ERROR("Avalanche featured project button disabled");
 			};
 
 			// gets all badge data
@@ -873,18 +871,18 @@ class $modify(Menu, MenuLayer) {
 
 	// checks for aval project updates
 	void quickCheck(CCObject * sender) {
-		bool alwaysCheck = getThisMod->getSettingValue<bool>("check-aval");
+		bool alwaysCheck = AVAL_MOD->getSettingValue<bool>("check-aval");
 
 		if (alwaysCheck) {
 			Menu::onCheckForNewAval(sender);
 		} else {
-			log::debug("Avalanche project check skipped");
+			AVAL_LOG_DEBUG("Avalanche project check skipped");
 		};
 	};
 
 	// pings the server to check if a new aval project is available
 	void onCheckForNewAval(CCObject * sender) {
-		bool avalButton = getThisMod->getSettingValue<bool>("show-aval-featured");
+		bool avalButton = AVAL_MOD->getSettingValue<bool>("show-aval-featured");
 
 		if (avalButton) {
 			m_fields->avalWebListener.bind([this](web::WebTask::Event* e) {
@@ -893,48 +891,48 @@ class $modify(Menu, MenuLayer) {
 						if (avalReqRes->string().isOk()) {
 							try {
 								std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
-								std::string avalWebResultSaved = getThisMod->getSavedValue<std::string>("aval-project-code");
+								std::string avalWebResultSaved = AVAL_MOD->getSavedValue<std::string>("aval-project-code");
 
-								bool isChecked = getThisMod->getSavedValue<bool>("checked-aval-project");
+								bool isChecked = AVAL_MOD->getSavedValue<bool>("checked-aval-project");
 
-								log::debug("Project code '{}' fetched remotely", avalWebResultUnwrapped);
+								AVAL_LOG_DEBUG("Project code '{}' fetched remotely", avalWebResultUnwrapped);
 
 								if ((avalWebResultUnwrapped == avalWebResultSaved) || isChecked) {
 									if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(false);
 									if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(false);
 								} else {
-									getThisMod->setSavedValue("checked-aval-project", false);
+									AVAL_MOD->setSavedValue("checked-aval-project", false);
 
 									if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(true);
 									if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(true);
 								};
 
-								getThisMod->setSavedValue("aval-project-code", avalWebResultUnwrapped);
+								AVAL_MOD->setSavedValue("aval-project-code", avalWebResultUnwrapped);
 							} catch (std::exception& e) {
-								log::error("Error processing Avalanche project code: {}", e.what());
+								AVAL_LOG_ERROR("Error processing Avalanche project code: {}", e.what());
 
-								if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
+								if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
 							};
 						} else {
-							log::error("Failed to fetch Avalanche featured project code");
+							AVAL_LOG_ERROR("Failed to fetch Avalanche featured project code");
 						};
 					} else {
-						log::error("Unable to check server for new Avalanche featured project");
+						AVAL_LOG_ERROR("Unable to check server for new Avalanche featured project");
 
-						if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+						if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
 					};
 				} else if (web::WebProgress* p = e->getProgress()) {
-					log::debug("Avalanche project code progress: {}", (float)p->downloadProgress().value_or(0.f));
+					AVAL_LOG_DEBUG("Avalanche project code progress: {}", (float)p->downloadProgress().value_or(0.f));
 				} else if (e->isCancelled()) {
-					log::debug("Unable to check server for new Avalanche featured project");
+					AVAL_LOG_DEBUG("Unable to check server for new Avalanche featured project");
 
-					if (getThisMod->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+					if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
 				}; });
 
 				auto avalReq = web::WebRequest();
 				m_fields->avalWebListener.setFilter(avalReq.get("https://gh.cubicstudios.xyz/WebLPS/aval-project/code.txt"));
 		} else {
-			log::error("Avalanche featured project button disabled");
+			AVAL_LOG_ERROR("Avalanche featured project button disabled");
 		};
 	};
 
@@ -942,7 +940,7 @@ class $modify(Menu, MenuLayer) {
 	void onAvalFeaturedButton(CCObject*) {
 		AvalancheFeatured::create()->show();
 
-		getThisMod->setSavedValue("checked-aval-project", true);
+		AVAL_MOD->setSavedValue("checked-aval-project", true);
 
 		if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(false);
 		if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(false);

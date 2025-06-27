@@ -16,6 +16,8 @@
 using namespace geode::prelude;
 
 namespace avalanche { // Avalanche Index mod namespace
+    extern Mod* AVAL_MOD; // Get the mod instance
+
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 
     constexpr const char* URL_CUBIC = "https://www.cubicstudios.xyz/";           // URL to Cubic Studios's official website

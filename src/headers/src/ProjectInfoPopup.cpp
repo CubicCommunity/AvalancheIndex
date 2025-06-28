@@ -133,11 +133,11 @@ bool ProjectInfoPopup::setup() {
 
   // for buttons to work
   m_overlayMenu = CCMenu::create();
-  m_overlayMenu->setID("popup-overlay-menu");
+  m_overlayMenu->setID("overlay-menu");
   m_overlayMenu->ignoreAnchorPointForPosition(false);
   m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
-  m_overlayMenu->setZOrder(1);
+  m_overlayMenu->setZOrder(10);
 
   m_mainLayer->addChild(m_overlayMenu);
 
@@ -233,11 +233,12 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   // set border
   auto border = CCScale9Sprite::create("GJ_square07.png");
+  border->setID("border");
   border->setContentSize(bgSize);
   border->ignoreAnchorPointForPosition(false);
   border->setAnchorPoint({ 0.5f, 0.5f });
   border->setPosition(bgCenter);
-  border->setZOrder(3);
+  border->setZOrder(0);
 
   // create mask
   auto mask = CCLayerColor::create({ 255, 255, 255 });
@@ -248,6 +249,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   // add clipping node
   m_clippingNode = CCClippingNode::create();
+  m_clippingNode->setID("clipping-node");
   m_clippingNode->setContentSize(bgSize);
   m_clippingNode->ignoreAnchorPointForPosition(false);
   m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });

@@ -83,6 +83,7 @@ bool AvalancheFeatured::setup() {
   m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
   m_overlayMenu->setZOrder(10);
+
   m_mainLayer->addChild(m_overlayMenu);
 
   // featured header sprite
@@ -161,6 +162,7 @@ bool AvalancheFeatured::setup() {
 
   // set border
   auto border = CCScale9Sprite::create("GJ_square07.png");
+  border->setID("border");
   border->setContentSize(bgSize);
   border->ignoreAnchorPointForPosition(false);
   border->setAnchorPoint({ 0.5f, 0.5f });
@@ -176,6 +178,7 @@ bool AvalancheFeatured::setup() {
 
   // add clipping node
   m_clippingNode = CCClippingNode::create();
+  m_clippingNode->setID("clipping-node");
   m_clippingNode->setContentSize(bgSize);
   m_clippingNode->ignoreAnchorPointForPosition(false);
   m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });

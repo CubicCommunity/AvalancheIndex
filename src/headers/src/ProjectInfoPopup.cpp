@@ -144,7 +144,6 @@ bool ProjectInfoPopup::setup() {
   // info button
   auto infoBtnSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
   infoBtnSprite->setScale(0.75f);
-  infoBtnSprite->setZOrder(1);
 
   auto infoBtn = CCMenuItemSpriteExtra::create(
     infoBtnSprite,
@@ -152,6 +151,7 @@ bool ProjectInfoPopup::setup() {
     menu_selector(ProjectInfoPopup::infoPopup));
   infoBtn->setID("info-button");
   infoBtn->setPosition({ m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f });
+  infoBtn->setZOrder(126);
 
   m_overlayMenu->addChild(infoBtn);
 

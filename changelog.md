@@ -1,8 +1,9 @@
 ### v1.1.1
-##### Patch
+##### Patches
 
 #### Changes
 - **Updated** Geode compatibility to version `4.6.2`
+- **Added** variations to publisher label in Team Project information pop-up
 - **Added** mod *Badges API* as recommended dependency
 - **Fixed** URL strings on iOS
 

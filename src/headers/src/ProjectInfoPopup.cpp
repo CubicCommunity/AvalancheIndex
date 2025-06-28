@@ -304,7 +304,27 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   auto hostLabelTxt = "Published by";
 
-  if (m_avalProject.type == Project::Type::TEAM) hostLabelTxt = "Hosted by";
+  switch (m_avalProject.type) {
+  case Project::Type::TEAM:
+    hostLabelTxt = "Lead by";
+    break;
+
+  case Project::Type::COLLAB:
+    hostLabelTxt = "Hosted by";
+    break;
+
+  case Project::Type::EVENT:
+    hostLabelTxt = "Published by";
+    break;
+
+  case Project::Type::SOLO:
+    hostLabelTxt = "Created by";
+    break;
+
+  default:
+    hostLabelTxt = "Published by";
+    break;
+  };
 
   auto hostName_label = CCLabelBMFont::create(hostLabelTxt, "bigFont.fnt");
   hostName_label->setID("host-name-label");

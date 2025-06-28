@@ -80,7 +80,7 @@ bool AvalancheFeatured::setup() {
   m_overlayMenu = CCMenu::create();
   m_overlayMenu->setID("overlay-menu");
   m_overlayMenu->ignoreAnchorPointForPosition(false);
-  m_overlayMenu->setPosition({ widthCS / 2, heightCS / 2 });
+  m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
   m_overlayMenu->setZOrder(10);
   m_mainLayer->addChild(m_overlayMenu);
@@ -154,28 +154,39 @@ bool AvalancheFeatured::setup() {
   m_overlayMenu->addChild(art_topRight);
 
   // for popup
+  m_bgSprite->setZOrder(-1);
 
-  CCScale9Sprite* border = CCScale9Sprite::create("GJ_square07.png");
-  border->setContentSize(m_bgSprite->getContentSize());
-  border->setPosition(m_bgSprite->getPosition());
+  auto bgSize = m_bgSprite->getContentSize();
+  auto bgCenter = CCPoint(bgSize.width / 2.f, bgSize.height / 2.f);
+
+  // set border
+  auto border = CCScale9Sprite::create("GJ_square07.png");
+  border->setContentSize(bgSize);
+  border->ignoreAnchorPointForPosition(false);
+  border->setAnchorPoint({ 0.5f, 0.5f });
+  border->setPosition(bgCenter);
   border->setZOrder(3);
 
-  CCLayerColor* mask = CCLayerColor::create({ 255, 255, 255 });
-  mask->setContentSize({ 500.f, 281.f });
-  mask->setPosition({ m_bgSprite->getContentSize().width / 2 - 391 / 2, m_bgSprite->getContentSize().height / 2 - 220 / 2 });
+  // create mask
+  auto mask = CCLayerColor::create({ 255, 255, 255 });
+  mask->setContentSize(bgSize);
+  mask->ignoreAnchorPointForPosition(false);
+  mask->setAnchorPoint({ 0.5f, 0.5f });
+  mask->setPosition(bgCenter);
 
-  m_bgSprite->setColor({ 50, 50, 50 });
-
+  // add clipping node
   m_clippingNode = CCClippingNode::create();
-  m_clippingNode->setContentSize(m_bgSprite->getContentSize());
+  m_clippingNode->setContentSize(bgSize);
+  m_clippingNode->ignoreAnchorPointForPosition(false);
+  m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });
+  m_clippingNode->setPosition(bgCenter);
   m_clippingNode->setStencil(mask);
-  m_clippingNode->setZOrder(1);
+  m_clippingNode->setZOrder(0);
 
   m_mainLayer->addChild(border);
   m_mainLayer->addChild(m_clippingNode);
 
-  // links to project vid
-
+  // links to project video
   ButtonSprite* infoSprite = ButtonSprite::create("View");
   m_infoBtn = CCMenuItemSpriteExtra::create(
     infoSprite,
@@ -202,10 +213,10 @@ bool AvalancheFeatured::setup() {
       projThumb->initWithSpriteFrameName("unavailable.png"_spr);
     };
 
-    float scale = m_maxHeight / projThumb->getContentSize().height;
+    float scale = m_maxHeight / projThumb->getScaledContentHeight();
 
     projThumb->setScale(scale);
-    projThumb->setUserObject("scale", CCFloat::create(scale)); });
+    projThumb->setUserObject("scale"_spr, CCFloat::create(scale)); });
 
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);

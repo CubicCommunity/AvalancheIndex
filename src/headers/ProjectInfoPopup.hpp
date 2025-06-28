@@ -17,13 +17,16 @@ public:
   void show() override;
 
 protected:
-  GJGameLevel* m_level;
-  Project m_avalProject;
   std::string m_avalPublisher = "Avalanche";
+  std::string m_cornerArtType = "rewardCorner_001.png";
+
+  Project m_avalProject;
+
+  GJGameLevel* m_level;
 
   CCMenu* m_overlayMenu;
 
-  std::string m_cornerArtType = "rewardCorner_001.png";
+  CCClippingNode* m_clippingNode;
 
   void infoPopup(CCObject*);
   void settingsPopup(CCObject*);

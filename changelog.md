@@ -1,3 +1,13 @@
+## 1.1.0
+#### Team Project information
+
+#### Changes
+- **Added** project thumbnail to Team Project information popup
+
+###### Latest
+---
+###### Older
+
 ### v1.0.2
 ##### Tweaks
 
@@ -11,10 +21,6 @@
 - **Added** toggle setting `Debug`
 - **Added** mod version text label in Avalanche Featured Project popup
 - **Added** Geode mod field `AVAL_MOD` in **`avalanche`** namespace
-
-###### Latest
----
-###### Older
 
 ### v1.0.1
 ##### Patch

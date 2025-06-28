@@ -2,6 +2,8 @@
 
 #include "../AvalancheFeatured.hpp"
 
+#include <sstream>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/General.hpp>

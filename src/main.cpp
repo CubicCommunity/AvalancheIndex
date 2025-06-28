@@ -7,7 +7,6 @@
 
 #include "./headers/ProjectInfoPopup.hpp"
 
-#include <ostream>
 #include <string>
 #include <chrono>
 #include <map>

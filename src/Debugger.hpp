@@ -1,5 +1,5 @@
 #pragma once
-#include "../../incl/Avalanche.hpp" // declares AVAL_MOD
+#include "../../incl/Avalanche.hpp"
 
 using namespace avalanche;
 

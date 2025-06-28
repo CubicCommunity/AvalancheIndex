@@ -216,7 +216,7 @@ bool AvalancheFeatured::setup() {
     float scale = m_maxHeight / projThumb->getScaledContentHeight();
 
     projThumb->setScale(scale);
-    projThumb->setUserObject("scale"_spr, CCFloat::create(scale)); });
+                             });
 
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);

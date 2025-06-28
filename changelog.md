@@ -1,8 +1,10 @@
 ## 1.1.0
-#### Team Project information
+#### Team Project pop-up
 
 #### Changes
-- **Added** project thumbnail to Team Project information popup
+- **Added** video showcase thumbnail to background of Team Project information popup
+- **Fixed** node visual re-scaling on pop-ups
+- **Added** toggle setting `Project Information Pop-up Thumbnail`
 
 ###### Latest
 ---

@@ -376,11 +376,9 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         projThumb->setScale(scale);
         projThumb->setAnchorPoint({ 0, 0 });
         projThumb->ignoreAnchorPointForPosition(false);
-        projThumb->setColor({ 75, 75, 75 });
+        projThumb->setColor({ 125, 125, 125 });
         projThumb->setPosition({ 0, 0 });
         projThumb->setOpacity(125);
-
-        projThumb->setUserObject("scale-proj"_spr, CCFloat::create(scale));
       } else {
         AVAL_LOG_ERROR("{}", res.unwrapErr());
         projThumb->removeMeAndCleanup();

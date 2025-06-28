@@ -116,7 +116,7 @@ bool AvalancheFeatured::setup() {
   art_bottomLeft->setScale(1.250);
   art_bottomLeft->setFlipX(false);
   art_bottomLeft->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
+  art_bottomLeft->setZOrder(1);
 
   m_overlayMenu->addChild(art_bottomLeft);
 
@@ -127,7 +127,7 @@ bool AvalancheFeatured::setup() {
   art_bottomRight->setScale(1.250);
   art_bottomRight->setFlipX(true);
   art_bottomRight->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
+  art_bottomLeft->setZOrder(1);
 
   m_overlayMenu->addChild(art_bottomRight);
 
@@ -138,7 +138,7 @@ bool AvalancheFeatured::setup() {
   art_topLeft->setScale(1.250);
   art_topLeft->setFlipX(false);
   art_topLeft->setFlipY(true);
-  art_topLeft->setZOrder(-1);
+  art_topLeft->setZOrder(1);
 
   m_overlayMenu->addChild(art_topLeft);
 
@@ -149,7 +149,7 @@ bool AvalancheFeatured::setup() {
   art_topRight->setScale(1.250);
   art_topRight->setFlipX(true);
   art_topRight->setFlipY(true);
-  art_topRight->setZOrder(-1);
+  art_topRight->setZOrder(1);
 
   m_overlayMenu->addChild(art_topRight);
 
@@ -165,7 +165,7 @@ bool AvalancheFeatured::setup() {
   border->ignoreAnchorPointForPosition(false);
   border->setAnchorPoint({ 0.5f, 0.5f });
   border->setPosition(bgCenter);
-  border->setZOrder(3);
+  border->setZOrder(0);
 
   // create mask
   auto mask = CCLayerColor::create({ 255, 255, 255 });

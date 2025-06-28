@@ -1,3 +1,15 @@
+### v1.1.1
+##### Patch
+
+#### Changes
+- **Updated** Geode compatibility to version `4.6.2`
+- **Added** mod *Badges API* as recommended dependency
+- **Fixed** URL strings on iOS
+
+###### Latest
+---
+###### Older
+
 ## 1.1.0
 #### Team Project pop-up
 
@@ -5,10 +17,6 @@
 - **Added** video showcase thumbnail to background of Team Project information popup
 - **Fixed** node visual re-scaling on pop-ups
 - **Added** toggle setting `Project Information Pop-up Thumbnail`
-
-###### Latest
----
-###### Older
 
 ### v1.0.2
 ##### Tweaks

@@ -20,10 +20,10 @@ namespace avalanche {
     Mod* AVAL_MOD = getMod(); // Get the mod instance
 
     int ACC_PUBLISHER = 31079132;
-    auto URL_MOD_ISSUES = avalanche::AVAL_MOD->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE).c_str(); // URL to the mod's issues page on GitHub
+    std::string URL_MOD_ISSUES = avalanche::AVAL_MOD->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE); // URL to the mod's issues page on its GitHub repository
 
-    matjson::Value fetchedBadges = nullptr;
-    matjson::Value fetchedLevels = nullptr;
+    matjson::Value fetchedBadges = nullptr; // Cached profile data
+    matjson::Value fetchedLevels = nullptr; // Cached project data
 
     EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
     EventListener<web::WebTask> levelListReq; // Web request listener for team project data

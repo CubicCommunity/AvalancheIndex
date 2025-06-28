@@ -226,7 +226,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   };
 
   // for popup
-  m_bgSprite->setZOrder(-1);
+  m_bgSprite->setZOrder(-2);
 
   auto bgSize = m_bgSprite->getContentSize();
   auto bgCenter = CCPoint(bgSize.width / 2.f, bgSize.height / 2.f);
@@ -255,7 +255,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });
   m_clippingNode->setPosition(bgCenter);
   m_clippingNode->setStencil(mask);
-  m_clippingNode->setZOrder(0);
+  m_clippingNode->setZOrder(-1);
 
   m_mainLayer->addChild(border);
   m_mainLayer->addChild(m_clippingNode);

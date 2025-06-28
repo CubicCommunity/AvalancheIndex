@@ -83,6 +83,7 @@ bool AvalancheFeatured::setup() {
   m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
   m_overlayMenu->setZOrder(10);
+
   m_mainLayer->addChild(m_overlayMenu);
 
   // featured header sprite
@@ -116,7 +117,7 @@ bool AvalancheFeatured::setup() {
   art_bottomLeft->setScale(1.250);
   art_bottomLeft->setFlipX(false);
   art_bottomLeft->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
+  art_bottomLeft->setZOrder(0);
 
   m_overlayMenu->addChild(art_bottomLeft);
 
@@ -127,7 +128,7 @@ bool AvalancheFeatured::setup() {
   art_bottomRight->setScale(1.250);
   art_bottomRight->setFlipX(true);
   art_bottomRight->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
+  art_bottomLeft->setZOrder(0);
 
   m_overlayMenu->addChild(art_bottomRight);
 
@@ -138,7 +139,7 @@ bool AvalancheFeatured::setup() {
   art_topLeft->setScale(1.250);
   art_topLeft->setFlipX(false);
   art_topLeft->setFlipY(true);
-  art_topLeft->setZOrder(-1);
+  art_topLeft->setZOrder(0);
 
   m_overlayMenu->addChild(art_topLeft);
 
@@ -149,23 +150,24 @@ bool AvalancheFeatured::setup() {
   art_topRight->setScale(1.250);
   art_topRight->setFlipX(true);
   art_topRight->setFlipY(true);
-  art_topRight->setZOrder(-1);
+  art_topRight->setZOrder(0);
 
   m_overlayMenu->addChild(art_topRight);
 
   // for popup
-  m_bgSprite->setZOrder(-1);
+  m_bgSprite->setZOrder(-2);
 
   auto bgSize = m_bgSprite->getContentSize();
   auto bgCenter = CCPoint(bgSize.width / 2.f, bgSize.height / 2.f);
 
   // set border
   auto border = CCScale9Sprite::create("GJ_square07.png");
+  border->setID("border");
   border->setContentSize(bgSize);
   border->ignoreAnchorPointForPosition(false);
   border->setAnchorPoint({ 0.5f, 0.5f });
   border->setPosition(bgCenter);
-  border->setZOrder(3);
+  border->setZOrder(1);
 
   // create mask
   auto mask = CCLayerColor::create({ 255, 255, 255 });
@@ -176,6 +178,7 @@ bool AvalancheFeatured::setup() {
 
   // add clipping node
   m_clippingNode = CCClippingNode::create();
+  m_clippingNode->setID("clipping-node");
   m_clippingNode->setContentSize(bgSize);
   m_clippingNode->ignoreAnchorPointForPosition(false);
   m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });

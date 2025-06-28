@@ -133,11 +133,11 @@ bool ProjectInfoPopup::setup() {
 
   // for buttons to work
   m_overlayMenu = CCMenu::create();
-  m_overlayMenu->setID("popup-overlay-menu");
+  m_overlayMenu->setID("overlay-menu");
   m_overlayMenu->ignoreAnchorPointForPosition(false);
   m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
-  m_overlayMenu->setZOrder(1);
+  m_overlayMenu->setZOrder(10);
 
   m_mainLayer->addChild(m_overlayMenu);
 
@@ -226,18 +226,19 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   };
 
   // for popup
-  m_bgSprite->setZOrder(-1);
+  m_bgSprite->setZOrder(-2);
 
   auto bgSize = m_bgSprite->getContentSize();
   auto bgCenter = CCPoint(bgSize.width / 2.f, bgSize.height / 2.f);
 
   // set border
   auto border = CCScale9Sprite::create("GJ_square07.png");
+  border->setID("border");
   border->setContentSize(bgSize);
   border->ignoreAnchorPointForPosition(false);
   border->setAnchorPoint({ 0.5f, 0.5f });
   border->setPosition(bgCenter);
-  border->setZOrder(3);
+  border->setZOrder(0);
 
   // create mask
   auto mask = CCLayerColor::create({ 255, 255, 255 });
@@ -248,12 +249,13 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   // add clipping node
   m_clippingNode = CCClippingNode::create();
+  m_clippingNode->setID("clipping-node");
   m_clippingNode->setContentSize(bgSize);
   m_clippingNode->ignoreAnchorPointForPosition(false);
   m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });
   m_clippingNode->setPosition(bgCenter);
   m_clippingNode->setStencil(mask);
-  m_clippingNode->setZOrder(0);
+  m_clippingNode->setZOrder(-1);
 
   m_mainLayer->addChild(border);
   m_mainLayer->addChild(m_clippingNode);
@@ -265,7 +267,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_bottomLeft->setScale(1.250);
   art_bottomLeft->setFlipX(false);
   art_bottomLeft->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
+  art_bottomLeft->setZOrder(0);
 
   m_overlayMenu->addChild(art_bottomLeft);
 
@@ -276,7 +278,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_bottomRight->setScale(1.250);
   art_bottomRight->setFlipX(true);
   art_bottomRight->setFlipY(false);
-  art_bottomLeft->setZOrder(-1);
+  art_bottomLeft->setZOrder(0);
 
   m_overlayMenu->addChild(art_bottomRight);
 
@@ -287,7 +289,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_topLeft->setScale(1.250);
   art_topLeft->setFlipX(false);
   art_topLeft->setFlipY(true);
-  art_topLeft->setZOrder(-1);
+  art_topLeft->setZOrder(0);
 
   m_overlayMenu->addChild(art_topLeft);
 
@@ -298,13 +300,33 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_topRight->setScale(1.250);
   art_topRight->setFlipX(true);
   art_topRight->setFlipY(true);
-  art_topRight->setZOrder(-1);
+  art_topRight->setZOrder(0);
 
   m_overlayMenu->addChild(art_topRight);
 
   auto hostLabelTxt = "Published by";
 
-  if (m_avalProject.type == Project::Type::TEAM) hostLabelTxt = "Hosted by";
+  switch (m_avalProject.type) {
+  case Project::Type::TEAM:
+    hostLabelTxt = "Lead by";
+    break;
+
+  case Project::Type::COLLAB:
+    hostLabelTxt = "Hosted by";
+    break;
+
+  case Project::Type::EVENT:
+    hostLabelTxt = "Published by";
+    break;
+
+  case Project::Type::SOLO:
+    hostLabelTxt = "Created by";
+    break;
+
+  default:
+    hostLabelTxt = "Published by";
+    break;
+  };
 
   auto hostName_label = CCLabelBMFont::create(hostLabelTxt, "bigFont.fnt");
   hostName_label->setID("host-name-label");

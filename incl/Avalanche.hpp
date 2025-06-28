@@ -62,7 +62,7 @@ namespace avalanche { // Avalanche Index mod namespace
 
         std::string name;         // Official name of the level
         std::string host;         // Team member that hosted the level
-        std::string showcase_url; // Video URL of the full showcase of the level
+        std::string showcase_url; // Tiny YouTube video URL of the full showcase of the level
         Type type;                // Type of project the level is featured as
         bool fame;                // If the level will be highlighted on lists
 

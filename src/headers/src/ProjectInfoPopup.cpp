@@ -4,6 +4,8 @@
 
 #include "../../incl/Avalanche.hpp"
 
+#include <fmt/core.h>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/General.hpp>
@@ -135,6 +137,7 @@ bool ProjectInfoPopup::setup() {
   m_overlayMenu->ignoreAnchorPointForPosition(false);
   m_overlayMenu->setPosition({ widthCS / 2.f, heightCS / 2.f });
   m_overlayMenu->setScaledContentSize(m_mainLayer->getScaledContentSize());
+  m_overlayMenu->setZOrder(1);
 
   m_mainLayer->addChild(m_overlayMenu);
 
@@ -172,6 +175,8 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   };
 
   setTitle(m_avalProject.name);
+
+  // hall of fame deco
 
   auto fameFrame_layout = AxisLayout::create(Axis::Row);
   fameFrame_layout->setCrossAxisLineAlignment(AxisAlignment::Center);
@@ -219,6 +224,39 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   } else {
     AVAL_LOG_DEBUG("Project '{}' is not in the Hall of Fame", m_avalProject.name);
   };
+
+  // for popup
+  m_bgSprite->setZOrder(-1);
+
+  auto bgSize = m_bgSprite->getContentSize();
+  auto bgCenter = CCPoint(bgSize.width / 2.f, bgSize.height / 2.f);
+
+  // set border
+  auto border = CCScale9Sprite::create("GJ_square07.png");
+  border->setContentSize(bgSize);
+  border->ignoreAnchorPointForPosition(false);
+  border->setAnchorPoint({ 0.5f, 0.5f });
+  border->setPosition(bgCenter);
+  border->setZOrder(3);
+
+  // create mask
+  auto mask = CCLayerColor::create({ 255, 255, 255 });
+  mask->setContentSize(bgSize);
+  mask->ignoreAnchorPointForPosition(false);
+  mask->setAnchorPoint({ 0.5f, 0.5f });
+  mask->setPosition(bgCenter);
+
+  // add clipping node
+  m_clippingNode = CCClippingNode::create();
+  m_clippingNode->setContentSize(bgSize);
+  m_clippingNode->ignoreAnchorPointForPosition(false);
+  m_clippingNode->setAnchorPoint({ 0.5f, 0.5f });
+  m_clippingNode->setPosition(bgCenter);
+  m_clippingNode->setStencil(mask);
+  m_clippingNode->setZOrder(0);
+
+  m_mainLayer->addChild(border);
+  m_mainLayer->addChild(m_clippingNode);
 
   auto art_bottomLeft = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
   art_bottomLeft->setID("bottom-left-corner");
@@ -272,14 +310,14 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   hostName_label->setID("host-name-label");
   hostName_label->ignoreAnchorPointForPosition(false);
   hostName_label->setAnchorPoint({ 0, 0.5 });
-  hostName_label->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 50.f });
+  hostName_label->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 75.f });
   hostName_label->setScale(0.25f);
 
   auto hostName = CCLabelBMFont::create(m_avalProject.host.c_str(), "goldFont.fnt");
   hostName->setID("host-name");
   hostName->ignoreAnchorPointForPosition(false);
   hostName->setAnchorPoint({ 0, 0.5 });
-  hostName->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 35.f });
+  hostName->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 60.f });
   hostName->setScale(0.75f);
 
   m_overlayMenu->addChild(hostName_label);
@@ -305,6 +343,54 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_overlayMenu->addChild(playShowcase_label);
   m_overlayMenu->addChild(playShowcase);
 
+  // project thumbnail
+  if (AVAL_MOD->getSettingValue<bool>("show-proj-thumb")) {
+    AVAL_LOG_DEBUG("Adding project thumbnail to project info popup");
+
+    // create thumbnail sprite
+    auto projThumb = LazySprite::create(m_overlayMenu->getScaledContentSize(), true);
+    projThumb->setID("thumbnail");
+    projThumb->setAnchorPoint({ 0.5, 0.5 });
+    projThumb->ignoreAnchorPointForPosition(false);
+    projThumb->setPosition({ m_clippingNode->getScaledContentWidth() / 2, m_clippingNode->getScaledContentHeight() / 2 });
+
+    // extract video id from url
+    std::string videoId = m_avalProject.showcase_url;
+
+    std::string prefix = "https://youtu.be/";
+
+    if (videoId.find(prefix) == 0) videoId = videoId.substr(prefix.length());
+
+    // format url
+    auto projThumbURL = fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);
+
+    AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
+
+    projThumb->setLoadCallback([this, projThumb, bgSize](Result<> res) {
+      if (res.isOk()) {
+        AVAL_LOG_INFO("Sprite loaded successfully");
+
+        // scale to fit inside bg size
+        float scale = bgSize.height / projThumb->getContentHeight();
+
+        projThumb->setScale(scale);
+        projThumb->setAnchorPoint({ 0, 0 });
+        projThumb->ignoreAnchorPointForPosition(false);
+        projThumb->setColor({ 125, 125, 125 });
+        projThumb->setPosition({ 0, 0 });
+        projThumb->setOpacity(125);
+      } else {
+        AVAL_LOG_ERROR("{}", res.unwrapErr());
+        projThumb->removeMeAndCleanup();
+      };
+                               });
+
+    projThumb->loadFromUrl(projThumbURL, LazySprite::Format::kFmtUnKnown, false);
+    if (projThumb) m_clippingNode->addChild(projThumb);
+  } else {
+    AVAL_LOG_DEBUG("Project thumbnail setting is disabled, not adding thumbnail to project info popup");
+  };
+
   // geode settings popup button
   auto settingsBtnSprite = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");
   settingsBtnSprite->setScale(0.75f);
@@ -318,16 +404,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   m_overlayMenu->addChild(settingsBtn);
 
-  // TODO: remove coming soon text and add more info
-
-  auto comingSoon = CCLabelBMFont::create("More coming soon...", "bigFont.fnt");
-  comingSoon->setID("coming-soon-label");
-  comingSoon->ignoreAnchorPointForPosition(false);
-  comingSoon->setAnchorPoint({ 0.5, 0.5 });
-  comingSoon->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, m_mainLayer->getScaledContentHeight() / 2.f });
-  comingSoon->setScale(0.25f);
-
-  m_overlayMenu->addChild(comingSoon);
+  // TODO: add more info
 
   return this;
 };

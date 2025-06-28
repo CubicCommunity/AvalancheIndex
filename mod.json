@@ -1,5 +1,5 @@
 {
-	"geode": "4.6.1",
+	"geode": "4.6.2",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,7 +8,7 @@
 	},
 	"id": "cubicstudios.avalancheindex",
 	"name": "Avalanche Index",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"developers": [
 		"Cheeseworks"
 	],
@@ -23,7 +23,7 @@
 		"community": "https://www.dsc.gg/cubic"
 	},
 	"dependencies": {
-		"geode.node-ids": ">=1.20.0"
+		"geode.node-ids": ">=1.21.0"
 	},
 	"api": {
 		"include": [
@@ -117,22 +117,24 @@
 			"description": "UI-related configuration.",
 			"type": "title"
 		},
-		"view-changelog": {
-			"name": "Changelog Alert",
-			"description": "Display a pop-up with a button to show the changelog when the mod updates.",
-			"type": "bool",
-			"default": true
-		},
 		"show-aval-featured": {
-			"name": "Featured Project Button",
+			"name": "Featured Project Pop-up",
 			"description": "Display a button in the main menu that shows the featured <cl>Avalanche</c> <cy>team project</c>.",
 			"type": "bool",
 			"default": true
 		},
 		"show-proj-info": {
-			"name": "Project Information Button",
+			"name": "Project Information Pop-up",
 			"description": "Display a button in a project's level information page and in-game pause menu that opens a pop-up detailing additional information about it.",
 			"type": "bool",
+			"default": true
+		},
+		"show-proj-thumb": {
+			"name": "Project Information Pop-up Thumbnail",
+			"description": "Display a thumbnail for the <cl>Avalanche</c> <cy>team project</c> in the information popup.",
+			"type": "bool",
+			"enable-if": "show-proj-info",
+			"enable-if-description": "The Project Information pop-up must be enabled.",
 			"default": true
 		},
 		"show-fame": {
@@ -150,6 +152,12 @@
 		"err-notifs": {
 			"name": "Web Error Notifications",
 			"description": "Display a notification when the badge web request fails.",
+			"type": "bool",
+			"default": true
+		},
+		"view-changelog": {
+			"name": "Changelog Alert",
+			"description": "Display a pop-up with a button to show the changelog when the mod updates.",
 			"type": "bool",
 			"default": true
 		},
@@ -236,7 +244,7 @@
 			"description": "Ping the server more often to check for a new featured <cl>Avalanche</c> <cy>team project</c>. <cr>This will still depend on user input and is not live.</c>",
 			"type": "bool",
 			"enable-if": "setting:show-aval-featured",
-			"enable-if-description": "The Featured Project button must be enabled.",
+			"enable-if-description": "The Featured Project pop-up must be enabled.",
 			"default": false
 		},
 		"dev": {

@@ -14,11 +14,12 @@ public:
   void show() override;
 
 protected:
+  float m_maxHeight = 220;
+
   CCMenu* m_overlayMenu;
 
-  float m_maxHeight = 220;
-  CCMenuItemSpriteExtra* m_infoBtn;
   CCClippingNode* m_clippingNode;
+  CCMenuItemSpriteExtra* m_infoBtn;
 
   bool setup() override;
 

@@ -1,3 +1,15 @@
+## 1.1.0
+#### Team Project pop-up
+
+#### Changes
+- **Added** video showcase thumbnail to background of Team Project information popup
+- **Fixed** node visual re-scaling on pop-ups
+- **Added** toggle setting `Project Information Pop-up Thumbnail`
+
+###### Latest
+---
+###### Older
+
 ### v1.0.2
 ##### Tweaks
 
@@ -11,10 +23,6 @@
 - **Added** toggle setting `Debug`
 - **Added** mod version text label in Avalanche Featured Project popup
 - **Added** Geode mod field `AVAL_MOD` in **`avalanche`** namespace
-
-###### Latest
----
-###### Older
 
 ### v1.0.1
 ##### Patch

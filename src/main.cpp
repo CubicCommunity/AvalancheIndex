@@ -58,7 +58,7 @@ class $modify(ProfilePage) {
 	void loadPageFromUserInfo(GJUserScore * user) {
 		ProfilePage::loadPageFromUserInfo(user);
 
-		if (AVAL_MOD->getSettingValue<bool>("badge-profile")) {
+		if (AVAL_GEODE_MOD->getSettingValue<bool>("badge-profile")) {
 			// gets all badge data
 			getHandler->scanAll();
 
@@ -85,7 +85,7 @@ class $modify(CommentCell) {
 	void loadFromComment(GJComment * comment) {
 		CommentCell::loadFromComment(comment);
 
-		if (AVAL_MOD->getSettingValue<bool>("badge-comments")) {
+		if (AVAL_GEODE_MOD->getSettingValue<bool>("badge-comments")) {
 			// checks if the user is a member of avalanche
 			getHandler->scanAll();
 
@@ -99,7 +99,7 @@ class $modify(CommentCell) {
 			// checks if commenter published level
 			AVAL_LOG_DEBUG("Checking comment on level of ID {}...", (int)comment->m_levelID);
 
-			if (AVAL_MOD->getSettingValue<bool>("comments")) {
+			if (AVAL_GEODE_MOD->getSettingValue<bool>("comments")) {
 				if (comment->m_hasLevelID) {
 					AVAL_LOG_DEBUG("Comment listed on account page with level linked");
 				} else if (auto thisLevel = GameLevelManager::get()->getSavedLevel(comment->m_levelID)) {
@@ -201,10 +201,10 @@ class $modify(LevelInfo, LevelInfoLayer) {
 	bool init(GJGameLevel * level, bool challenge) {
 		if (LevelInfoLayer::init(level, challenge)) {
 			// check display settings
-			bool displaySoloLayers = AVAL_MOD->getSettingValue<bool>("solo-layers");
-			bool displayTeamLayers = AVAL_MOD->getSettingValue<bool>("team-layers");
-			bool displayEventLayers = AVAL_MOD->getSettingValue<bool>("event-layers");
-			bool displayCollabLayers = AVAL_MOD->getSettingValue<bool>("collab-layers");
+			bool displaySoloLayers = AVAL_GEODE_MOD->getSettingValue<bool>("solo-layers");
+			bool displayTeamLayers = AVAL_GEODE_MOD->getSettingValue<bool>("team-layers");
+			bool displayEventLayers = AVAL_GEODE_MOD->getSettingValue<bool>("event-layers");
+			bool displayCollabLayers = AVAL_GEODE_MOD->getSettingValue<bool>("collab-layers");
 
 			// get main bg color layer
 			auto bg = this->getChildByID("background");
@@ -215,7 +215,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			auto levelName = dynamic_cast<CCLabelBMFont*>(nameText);
 
 			// whether or not display for classics only
-			bool onlyClassic = AVAL_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
+			bool onlyClassic = AVAL_GEODE_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
 			CCMenu* leftMenu = typeinfo_cast<CCMenu*>(this->getChildByID("left-side-menu"));
 
@@ -225,7 +225,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			if (thisProj.type == Project::Type::NONE) {
 				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			} else {
-				auto showProjectInfo = AVAL_MOD->getSettingValue<bool>("show-proj-info");
+				auto showProjectInfo = AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-info");
 
 				if (showProjectInfo) {
 					CCSprite* avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
@@ -395,7 +395,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 	// set hall of fame decoration for the level info layer
 	void setFame(CCSprite * background) {
 		if (background) {
-			bool showFame = AVAL_MOD->getSettingValue<bool>("show-fame");
+			bool showFame = AVAL_GEODE_MOD->getSettingValue<bool>("show-fame");
 
 			if (showFame) {
 				if (auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr)) {
@@ -443,10 +443,10 @@ class $modify(Level, LevelCell) {
 		LevelCell::loadFromLevel(level);
 
 		// check display settings
-		bool displaySoloCells = AVAL_MOD->getSettingValue<bool>("solo-cells");
-		bool displayTeamCells = AVAL_MOD->getSettingValue<bool>("team-cells");
-		bool displayEventCells = AVAL_MOD->getSettingValue<bool>("event-cells");
-		bool displayCollabCells = AVAL_MOD->getSettingValue<bool>("collab-cells");
+		bool displaySoloCells = AVAL_GEODE_MOD->getSettingValue<bool>("solo-cells");
+		bool displayTeamCells = AVAL_GEODE_MOD->getSettingValue<bool>("team-cells");
+		bool displayEventCells = AVAL_GEODE_MOD->getSettingValue<bool>("event-cells");
+		bool displayCollabCells = AVAL_GEODE_MOD->getSettingValue<bool>("collab-cells");
 
 		// get main bg color layer
 		auto color = this->getChildByType<CCLayerColor>(0);
@@ -456,7 +456,7 @@ class $modify(Level, LevelCell) {
 		auto levelName = as<CCLabelBMFont*>(nameText);
 
 		// whether or not display for classics only
-		bool onlyClassic = AVAL_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
+		bool onlyClassic = AVAL_GEODE_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
 		if ((color) && (levelName)) {
 			// checks if the level is an avalanche project
@@ -609,7 +609,7 @@ class $modify(Level, LevelCell) {
 	// set hall of fame decoration for level cell
 	void setFame(CCLayerColor * newColor, ccColor3B glow = { 255, 255, 255 }) {
 		if (newColor) {
-			bool showFame = AVAL_MOD->getSettingValue<bool>("show-fame");
+			bool showFame = AVAL_GEODE_MOD->getSettingValue<bool>("show-fame");
 
 			if (showFame) {
 				if (auto fameGlow = CCSprite::create("fame-glow.png"_spr)) {
@@ -654,7 +654,7 @@ class $modify(Pause, PauseLayer) {
 				if (thisProj.type == Project::Type::NONE) {
 					AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)m_fields->m_level->m_levelID.value());
 				} else {
-					auto showProjectInfo = AVAL_MOD->getSettingValue<bool>("show-proj-info");
+					auto showProjectInfo = AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-info");
 
 					if (showProjectInfo) {
 						CCSprite* avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
@@ -708,17 +708,17 @@ class $modify(Menu, MenuLayer) {
 	// modified vanilla init function
 	bool init() {
 		if (MenuLayer::init()) {
-			std::string ver = AVAL_MOD->getVersion().toVString();
+			std::string ver = AVAL_GEODE_MOD->getVersion().toVString();
 			AVAL_LOG_DEBUG("Loaded mod version {}", ver);
 
-			bool viewChangelog = AVAL_MOD->getSettingValue<bool>("view-changelog");
+			bool viewChangelog = AVAL_GEODE_MOD->getSettingValue<bool>("view-changelog");
 
 			if (viewChangelog) {
-				std::string changelogVer = AVAL_MOD->getSavedValue<std::string>("changelog-ver");
+				std::string changelogVer = AVAL_GEODE_MOD->getSavedValue<std::string>("changelog-ver");
 
 				if (changelogVer.empty()) {
 					AVAL_LOG_DEBUG("No changelog version found, setting to {}", ver);
-					changelogVer = AVAL_MOD->setSavedValue<std::string>("changelog-ver", ver);
+					changelogVer = AVAL_GEODE_MOD->setSavedValue<std::string>("changelog-ver", ver);
 				} else {
 					AVAL_LOG_INFO("Changelog version {} found", changelogVer);
 
@@ -732,14 +732,14 @@ class $modify(Menu, MenuLayer) {
 							"Cancel", "OK",
 							[](auto, bool btn2) {
 								if (btn2) {
-									openChangelogPopup(AVAL_MOD);
+									openChangelogPopup(AVAL_GEODE_MOD);
 								} else {
 									AVAL_LOG_DEBUG("User clicked Cancel");
 								}; },
 							true);
 
-						AVAL_MOD->setSavedValue<std::string>("changelog-ver", ver);
-						AVAL_MOD->setSavedValue<bool>("checked-aval-project", false);
+						AVAL_GEODE_MOD->setSavedValue<std::string>("changelog-ver", ver);
+						AVAL_GEODE_MOD->setSavedValue<bool>("checked-aval-project", false);
 					};
 				};
 			} else {
@@ -749,7 +749,7 @@ class $modify(Menu, MenuLayer) {
 			auto winSizeX = this->getScaledContentWidth();
 			auto winSizeY = this->getScaledContentHeight();
 
-			bool showAvalButton = AVAL_MOD->getSettingValue<bool>("show-aval-featured");
+			bool showAvalButton = AVAL_GEODE_MOD->getSettingValue<bool>("show-aval-featured");
 
 			if (showAvalButton) {
 				auto avalMenu = CCMenu::create();
@@ -839,7 +839,7 @@ class $modify(Menu, MenuLayer) {
 					AVAL_LOG_ERROR("Failed to create Avalanche featured button particles: {}", e.what());
 				};
 
-				bool alwaysCheck = AVAL_MOD->getSettingValue<bool>("check-aval");
+				bool alwaysCheck = AVAL_GEODE_MOD->getSettingValue<bool>("check-aval");
 
 				CCObject* fakeObj = nullptr;
 
@@ -850,7 +850,7 @@ class $modify(Menu, MenuLayer) {
 
 					noProjectPing = false;
 				} else {
-					bool isChecked = AVAL_MOD->getSavedValue<bool>("checked-aval-project");
+					bool isChecked = AVAL_GEODE_MOD->getSavedValue<bool>("checked-aval-project");
 
 					if (!isChecked) {
 						if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(true);
@@ -918,7 +918,7 @@ class $modify(Menu, MenuLayer) {
 
 	// checks for aval project updates
 	void quickCheck(CCObject * sender) {
-		bool alwaysCheck = AVAL_MOD->getSettingValue<bool>("check-aval");
+		bool alwaysCheck = AVAL_GEODE_MOD->getSettingValue<bool>("check-aval");
 
 		if (alwaysCheck) {
 			Menu::onCheckForNewAval(sender);
@@ -929,7 +929,7 @@ class $modify(Menu, MenuLayer) {
 
 	// pings the server to check if a new aval project is available
 	void onCheckForNewAval(CCObject * sender) {
-		bool avalButton = AVAL_MOD->getSettingValue<bool>("show-aval-featured");
+		bool avalButton = AVAL_GEODE_MOD->getSettingValue<bool>("show-aval-featured");
 
 		if (avalButton) {
 			m_fields->avalWebListener.bind([this](web::WebTask::Event* e) {
@@ -938,9 +938,9 @@ class $modify(Menu, MenuLayer) {
 						if (avalReqRes->string().isOk()) {
 							try {
 								std::string avalWebResultUnwrapped = avalReqRes->string().unwrapOr("Uh oh!");
-								std::string avalWebResultSaved = AVAL_MOD->getSavedValue<std::string>("aval-project-code");
+								std::string avalWebResultSaved = AVAL_GEODE_MOD->getSavedValue<std::string>("aval-project-code");
 
-								bool isChecked = AVAL_MOD->getSavedValue<bool>("checked-aval-project");
+								bool isChecked = AVAL_GEODE_MOD->getSavedValue<bool>("checked-aval-project");
 
 								AVAL_LOG_DEBUG("Project code '{}' fetched remotely", avalWebResultUnwrapped);
 
@@ -948,17 +948,17 @@ class $modify(Menu, MenuLayer) {
 									if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(false);
 									if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(false);
 								} else {
-									AVAL_MOD->setSavedValue("checked-aval-project", false);
+									AVAL_GEODE_MOD->setSavedValue("checked-aval-project", false);
 
 									if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(true);
 									if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(true);
 								};
 
-								AVAL_MOD->setSavedValue("aval-project-code", avalWebResultUnwrapped);
+								AVAL_GEODE_MOD->setSavedValue("aval-project-code", avalWebResultUnwrapped);
 							} catch (std::exception& e) {
 								AVAL_LOG_ERROR("Error processing Avalanche project code: {}", e.what());
 
-								if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
+								if (AVAL_GEODE_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Error processing Avalanche project code", NotificationIcon::Error, 2.5f)->show();
 							};
 						} else {
 							AVAL_LOG_ERROR("Failed to fetch Avalanche featured project code");
@@ -966,14 +966,14 @@ class $modify(Menu, MenuLayer) {
 					} else {
 						AVAL_LOG_ERROR("Unable to check server for new Avalanche featured project");
 
-						if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+						if (AVAL_GEODE_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
 					};
 				} else if (web::WebProgress* p = e->getProgress()) {
 					AVAL_LOG_DEBUG("Avalanche project code progress: {}", (float)p->downloadProgress().value_or(0.f));
 				} else if (e->isCancelled()) {
 					AVAL_LOG_DEBUG("Unable to check server for new Avalanche featured project");
 
-					if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
+					if (AVAL_GEODE_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch featured project", NotificationIcon::Error, 2.5f)->show();
 				}; });
 
 				auto avalReq = web::WebRequest();
@@ -987,7 +987,7 @@ class $modify(Menu, MenuLayer) {
 	void onAvalFeaturedButton(CCObject*) {
 		AvalancheFeatured::create()->show();
 
-		AVAL_MOD->setSavedValue("checked-aval-project", true);
+		AVAL_GEODE_MOD->setSavedValue("checked-aval-project", true);
 
 		if (m_fields->avalBtnGlow) m_fields->avalBtnGlow->setVisible(false);
 		if (m_fields->avalBtnMark) m_fields->avalBtnMark->setVisible(false);

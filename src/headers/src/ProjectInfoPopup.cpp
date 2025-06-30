@@ -367,7 +367,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_overlayMenu->addChild(playShowcase);
 
   // project thumbnail
-  if (AVAL_MOD->getSettingValue<bool>("show-proj-thumb")) {
+  if (AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-thumb")) {
     AVAL_LOG_DEBUG("Adding project thumbnail to project info popup");
 
     // create thumbnail sprite

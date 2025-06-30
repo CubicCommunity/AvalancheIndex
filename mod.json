@@ -127,7 +127,7 @@
 		},
 		"collab-layers": {
 			"name": "Collaboration Level Pages",
-			"description": "Customize level pages for <co>levels that won in team events</c>.",
+			"description": "Customize level pages for <co>collaboration projects</c>.",
 			"type": "bool",
 			"default": true
 		},

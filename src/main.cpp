@@ -204,6 +204,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			bool displaySoloLayers = AVAL_MOD->getSettingValue<bool>("solo-layers");
 			bool displayTeamLayers = AVAL_MOD->getSettingValue<bool>("team-layers");
 			bool displayEventLayers = AVAL_MOD->getSettingValue<bool>("event-layers");
+			bool displayCollabLayers = AVAL_MOD->getSettingValue<bool>("collab-layers");
 
 			// get main bg color layer
 			auto bg = this->getChildByID("background");
@@ -284,6 +285,12 @@ class $modify(LevelInfo, LevelInfoLayer) {
 				} else {
 					AVAL_LOG_WARN("Event layers not displayed, setting up level info layer");
 				};
+			} else if (levelType == Project::Type::COLLAB) {
+				if (displayCollabLayers) {
+					LevelInfo::setCollabDisplay(background, thisProj.fame);
+				} else {
+					AVAL_LOG_WARN("Collaboration layers not displayed, setting up level info layer");
+				};
 			} else {
 				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			};
@@ -302,6 +309,17 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			if (fame) LevelInfo::setFame(background);
 		} else {
 			AVAL_LOG_ERROR("Cannot set solo display with missing background");
+		};
+	};
+
+	// set collaboration project decoration for the level info layer
+	void setCollabDisplay(CCSprite * background, bool fame = false) {
+		if (background) {
+			background->setColor({ 148, 154, 189 });
+
+			if (fame) LevelInfo::setFame(background);
+		} else {
+			AVAL_LOG_ERROR("Cannot set collaboration display with missing background");
 		};
 	};
 
@@ -428,6 +446,7 @@ class $modify(Level, LevelCell) {
 		bool displaySoloCells = AVAL_MOD->getSettingValue<bool>("solo-cells");
 		bool displayTeamCells = AVAL_MOD->getSettingValue<bool>("team-cells");
 		bool displayEventCells = AVAL_MOD->getSettingValue<bool>("event-cells");
+		bool displayCollabCells = AVAL_MOD->getSettingValue<bool>("collab-cells");
 
 		// get main bg color layer
 		auto color = this->getChildByType<CCLayerColor>(0);
@@ -473,6 +492,12 @@ class $modify(Level, LevelCell) {
 				} else {
 					AVAL_LOG_WARN("Event cells not displayed, setting up level cell");
 				};
+			} else if (levelType == Project::Type::COLLAB) {
+				if (displayCollabCells) {
+					Level::setCollabDisplay(color, lvl.fame);
+				} else {
+					AVAL_LOG_WARN("Collaboration cells not displayed, setting up level cell");
+				};
 			} else {
 				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
 			};
@@ -501,6 +526,29 @@ class $modify(Level, LevelCell) {
 			};
 		} else {
 			AVAL_LOG_ERROR("Cannot set solo display with missing color node");
+		};
+	};
+
+	// set collaboration project decoration for level cell
+	void setCollabDisplay(CCLayerColor * colorNode, bool fame = false) {
+		if (colorNode) {
+			if (auto newColor = CCLayerColor::create({ 148, 154, 189, 255 })) {
+				newColor->setScaledContentSize(colorNode->getScaledContentSize());
+				newColor->setAnchorPoint(colorNode->getAnchorPoint());
+				newColor->setPosition(colorNode->getPosition());
+				newColor->setZOrder(colorNode->getZOrder() - 2);
+				newColor->setScale(colorNode->getScale());
+				newColor->setID("collab_color"_spr);
+
+				colorNode->removeMeAndCleanup();
+				this->addChild(newColor);
+
+				if (fame) Level::setFame(newColor, { 255, 255, 255 });
+			} else {
+				AVAL_LOG_ERROR("Failed to create collaboration display color layer");
+			};
+		} else {
+			AVAL_LOG_ERROR("Cannot set collaboration display with missing color node");
 		};
 	};
 

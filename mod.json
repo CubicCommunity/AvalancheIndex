@@ -119,6 +119,18 @@
 			"type": "bool",
 			"default": true
 		},
+		"collab-cells": {
+			"name": "Collaboration Level Cells",
+			"description": "Highlight level cells for <co>collaboration projects</c>.",
+			"type": "bool",
+			"default": true
+		},
+		"collab-layers": {
+			"name": "Collaboration Level Pages",
+			"description": "Customize level pages for <co>levels that won in team events</c>.",
+			"type": "bool",
+			"default": true
+		},
 		"ui": {
 			"name": "Interface",
 			"description": "UI-related configuration.",

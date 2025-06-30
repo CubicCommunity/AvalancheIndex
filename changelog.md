@@ -3,6 +3,8 @@
 
 #### Changes
 - **Fixed** information button's Z order in Team Project information
+- **Added** toggle setting `Collaboration Level Cells`
+- **Added** toggle setting `Collaboration Level Pages`
 - Minor tweaks
 
 ###### Latest

@@ -1,9 +1,11 @@
 #pragma once
-#include "../../incl/Avalanche.hpp" // declares AVAL_MOD
+#include "../../incl/Avalanche.hpp"
 
 using namespace avalanche;
 
-#define AVAL_LOG_ENABLED (AVAL_MOD && AVAL_MOD->getSettingValue<bool>("dev-debug"))
+#define AVAL_GEODE_MOD AVAL_MOD
+
+#define AVAL_LOG_ENABLED (AVAL_GEODE_MOD && AVAL_GEODE_MOD->getSettingValue<bool>("dev-debug"))
 
 #define AVAL_LOG_DEBUG(...) do { if (AVAL_LOG_ENABLED) log::debug(__VA_ARGS__); } while(0)
 #define AVAL_LOG_INFO(...) do { if (AVAL_LOG_ENABLED) log::info(__VA_ARGS__); } while(0)

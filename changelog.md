@@ -1,3 +1,16 @@
+### v1.1.2
+##### Patches
+
+#### Changes
+- **Fixed** information button's Z order in Team Project information
+- **Added** toggle setting `Collaboration Level Cells`
+- **Added** toggle setting `Collaboration Level Pages`
+- Minor tweaks
+
+###### Latest
+---
+###### Older
+
 ### v1.1.1
 ##### Patches
 
@@ -7,10 +20,6 @@
 - **Added** mod *Badges API* as recommended dependency
 - **Tweaked** border display on pop-ups
 - **Fixed** URL strings on iOS
-
-###### Latest
----
-###### Older
 
 ## 1.1.0
 #### Team Project pop-up

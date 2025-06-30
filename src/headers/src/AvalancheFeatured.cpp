@@ -2,6 +2,8 @@
 
 #include "../AvalancheFeatured.hpp"
 
+#include <sstream>
+
 #include <Geode/Geode.hpp>
 
 #include <Geode/ui/General.hpp>
@@ -47,7 +49,7 @@ void AvalancheFeatured::infoPopup(CCObject*) {
 
 void AvalancheFeatured::changelogPopup(CCObject*) {
   AVAL_LOG_INFO("Opening changelog popup");
-  openChangelogPopup(getMod());
+  openChangelogPopup(AVAL_GEODE_MOD);
 };
 
 void AvalancheFeatured::openApplicationPopup(CCObject*) {
@@ -195,7 +197,7 @@ bool AvalancheFeatured::setup() {
     infoSprite,
     this,
     menu_selector(AvalancheFeatured::openApplicationPopup));
-  m_infoBtn->setPosition({ widthCS / 2, 6 });
+  m_infoBtn->setPosition({ widthCS / 2.f, 5.f });
   m_infoBtn->setVisible(true);
   m_infoBtn->setZOrder(3);
 
@@ -204,7 +206,7 @@ bool AvalancheFeatured::setup() {
   // featured project thumbnail
   auto projThumb = LazySprite::create(m_overlayMenu->getScaledContentSize(), true);
   projThumb->setID("thumbnail");
-  projThumb->setPosition({ m_mainLayer->getContentWidth() / 2, m_mainLayer->getContentHeight() / 2 });
+  projThumb->setPosition({ m_mainLayer->getContentWidth() / 2.f, m_mainLayer->getContentHeight() / 2.f });
 
   projThumb->setLoadCallback([this, projThumb](Result<> res) {
     if (res) {
@@ -224,7 +226,7 @@ bool AvalancheFeatured::setup() {
   projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
-  if (getMod()->getSettingValue<bool>("dev-mode")) {
+  if (AVAL_GEODE_MOD->getSettingValue<bool>("dev-mode")) {
     AVAL_LOG_INFO("Dev buttons are enabled");
 
     // geode changelog popup button
@@ -236,13 +238,13 @@ bool AvalancheFeatured::setup() {
       this,
       menu_selector(AvalancheFeatured::changelogPopup));
     changelogBtn->setID("changelog-button");
-    changelogBtn->setPosition({ 25, 25 });
+    changelogBtn->setPosition({ 25.f, 25.f });
 
     m_overlayMenu->addChild(changelogBtn);
 
     // mod version text label
     std::ostringstream verLabelText;
-    verLabelText << getMod()->getName() << " mod " << getMod()->getVersion().toVString(true);
+    verLabelText << AVAL_GEODE_MOD->getName() << " mod " << AVAL_GEODE_MOD->getVersion().toVString(true);
 
     auto verLabelTextStr = verLabelText.str();
 

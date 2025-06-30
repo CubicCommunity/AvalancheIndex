@@ -4,16 +4,16 @@
 
 #include "../../incl/Avalanche.hpp"
 
+#include <sstream>
+
 #include <fmt/core.h>
 
 #include <Geode/Geode.hpp>
 
-#include <Geode/ui/General.hpp>
 #include <Geode/ui/GeodeUI.hpp>
 #include <Geode/ui/Notification.hpp>
 
 #include <Geode/utils/web.hpp>
-#include <Geode/utils/cocos.hpp>
 
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
@@ -151,6 +151,7 @@ bool ProjectInfoPopup::setup() {
     menu_selector(ProjectInfoPopup::infoPopup));
   infoBtn->setID("info-button");
   infoBtn->setPosition({ m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f });
+  infoBtn->setZOrder(126);
 
   m_overlayMenu->addChild(infoBtn);
 
@@ -332,14 +333,14 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   hostName_label->setID("host-name-label");
   hostName_label->ignoreAnchorPointForPosition(false);
   hostName_label->setAnchorPoint({ 0, 0.5 });
-  hostName_label->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 75.f });
+  hostName_label->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 70.f });
   hostName_label->setScale(0.25f);
 
   auto hostName = CCLabelBMFont::create(m_avalProject.host.c_str(), "goldFont.fnt");
   hostName->setID("host-name");
   hostName->ignoreAnchorPointForPosition(false);
   hostName->setAnchorPoint({ 0, 0.5 });
-  hostName->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 60.f });
+  hostName->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 55.f });
   hostName->setScale(0.75f);
 
   m_overlayMenu->addChild(hostName_label);
@@ -366,7 +367,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   m_overlayMenu->addChild(playShowcase);
 
   // project thumbnail
-  if (AVAL_MOD->getSettingValue<bool>("show-proj-thumb")) {
+  if (AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-thumb")) {
     AVAL_LOG_DEBUG("Adding project thumbnail to project info popup");
 
     // create thumbnail sprite

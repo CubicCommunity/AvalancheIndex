@@ -29,6 +29,7 @@ namespace avalanche { // Avalanche Index mod namespace
     constexpr const char* und = "undefined";
     constexpr const char* err = "404: Not Found";
 
+    // Profile class
     class Profile {
     public:
         enum class Badge {
@@ -45,9 +46,13 @@ namespace avalanche { // Avalanche Index mod namespace
         std::string name; // Official pseudonym of the member
         Badge badge;      // ID of the member's badge
 
-        Profile(std::string n = "Name", Badge b = Badge::NONE) : name(n), badge(b) {};
+        Profile(
+            std::string n = "Name",
+            Badge b = Badge::NONE
+        ) : name(n), badge(b) {};
     };
 
+    // Avalanche project class
     class Project {
     public:
         enum class Type {
@@ -58,6 +63,15 @@ namespace avalanche { // Avalanche Index mod namespace
             EVENT,  // A project that resulted from a public or private event hosted by Avalanche
         };
 
+        // Link to the main team project
+        class LinkToMain {
+        public:
+            bool enabled; // If the link is enabled
+            std::string name; // Name of the linked team project
+            std::string url;  // URL of the showcase of the team project
+            int level_id; // ID of the in-game level for the linked project
+        };
+
         static std::map<std::string, Type> projectTypeEnum; // Convert a string to a Type enum
 
         std::string name;         // Official name of the level
@@ -66,7 +80,16 @@ namespace avalanche { // Avalanche Index mod namespace
         Type type;                // Type of project the level is featured as
         bool fame;                // If the level will be highlighted on lists
 
-        Project(std::string n = "Name", std::string h = "Host", std::string su = URL_AVALANCHE, Type t = Type::NONE, bool f = false) : name(n), host(h), showcase_url(su), type(t), fame(f) {};
+        LinkToMain link_to_main; // Optional link to the main team project
+
+        Project(
+            std::string n = "Name",
+            std::string h = "Host",
+            std::string su = URL_AVALANCHE,
+            Type t = Type::NONE,
+            bool f = false,
+            LinkToMain ltm = LinkToMain()
+        ) : name(n), host(h), showcase_url(su), type(t), fame(f), link_to_main(ltm) {};
     };
 
     class Handler {

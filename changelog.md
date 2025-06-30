@@ -1,3 +1,13 @@
+### v1.1.3
+##### Patches
+
+#### Changes
+- **Fixed** thumbnail error for Team levels in Team Project information pop-up
+
+###### Latest
+---
+###### Older
+
 ### v1.1.2
 ##### Patches
 
@@ -6,10 +16,6 @@
 - **Added** toggle setting `Collaboration Level Cells`
 - **Added** toggle setting `Collaboration Level Pages`
 - Minor tweaks
-
-###### Latest
----
-###### Older
 
 ### v1.1.1
 ##### Patches

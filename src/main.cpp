@@ -1,8 +1,8 @@
 #include "./Debugger.hpp"
+#include "./ParticleHelper.hpp"
 
 #include "../incl/Avalanche.hpp"
 
-#include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
 
 #include "./headers/ProjectInfoPopup.hpp"

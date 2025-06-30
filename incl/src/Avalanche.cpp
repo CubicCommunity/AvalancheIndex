@@ -190,12 +190,26 @@ namespace avalanche {
             auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
             auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
-            avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame);
+            auto c_link = cacheStd["link_to_main"];
+            avalanche::Project::LinkToMain ltm;
+            if (c_link.isObject()) {
+                ltm.enabled = c_link["enabled"].asBool().unwrapOr(false);
+                ltm.name = c_link["name"].asString().unwrapOr(und);
+                ltm.url = c_link["url"].asString().unwrapOr(und);
+                ltm.level_id = c_link["level_id"].asInt().unwrapOr(0);
+            } else {
+                ltm.enabled = false;
+                ltm.name = und;
+                ltm.url = und;
+                ltm.level_id = 0;
+            };
+
+            avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame, ltm);
             return res;
         } else {
             log::error("Project ID is invalid");
 
-            avalanche::Project res("Name", "Host", URL_AVALANCHE, avalanche::Project::Type::NONE, false);
+            avalanche::Project res("Name", "Host", URL_AVALANCHE, avalanche::Project::Type::NONE, false, avalanche::Project::LinkToMain());
             return res;
         };
     };

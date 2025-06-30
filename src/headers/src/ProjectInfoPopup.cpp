@@ -378,11 +378,31 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     projThumb->setPosition({ m_clippingNode->getScaledContentWidth() / 2, m_clippingNode->getScaledContentHeight() / 2 });
 
     // extract video id from url
-    std::string videoId = m_avalProject.showcase_url;
+    std::string videoId = "coCcCJYLVRk";
+    size_t idSize = 11; // default length for yt video ids
 
-    std::string prefix = "https://youtu.be/";
+    // list of possible yt url prefixes
+    const std::pair<std::string, size_t> prefixes[] = {
+        {"https://youtu.be/", idSize},
+        {"https://www.youtube.com/watch?v=", idSize},
+        {"https://www.youtube.com/embed/", idSize},
+        {"https://www.youtube.com/v/", idSize},
+        {"https://youtube.com/watch?v=", idSize},
+        {"https://youtube.com/embed/", idSize},
+        {"https://youtube.com/v/", idSize}
+    };
 
-    if (videoId.find(prefix) == 0) videoId = videoId.substr(prefix.length());
+    for (const auto& [prefix, idLen] : prefixes) {
+      auto url = m_avalProject.showcase_url;
+
+      if (url.find(prefix) == 0) {
+        AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
+        videoId = url.substr(prefix.length(), idLen);
+        break;
+      } else {
+        AVAL_LOG_DEBUG("Skipped URL format '{}'", url);
+      };
+    };
 
     // format url
     auto projThumbURL = fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);

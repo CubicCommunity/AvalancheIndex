@@ -413,7 +413,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
           AVAL_LOG_DEBUG("Custom thumbnail loaded, keeping position to center");
         };
       } else {
-        AVAL_LOG_ERROR("{}", res.unwrapErr());
+        AVAL_LOG_ERROR("Failed to get project thumbnail, {}", res.unwrapErr());
         projThumb->removeMeAndCleanup();
       };
                                });

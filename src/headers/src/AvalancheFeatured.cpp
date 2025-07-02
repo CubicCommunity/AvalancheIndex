@@ -209,7 +209,7 @@ bool AvalancheFeatured::setup() {
   projThumb->setPosition({ m_mainLayer->getContentWidth() / 2.f, m_mainLayer->getContentHeight() / 2.f });
 
   projThumb->setLoadCallback([this, projThumb](Result<> res) {
-    if (res) {
+    if (res.isOk()) {
       // Success: scale and position the sprite
       AVAL_LOG_INFO("Sprite loaded successfully");
     } else {

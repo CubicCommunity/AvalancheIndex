@@ -223,7 +223,7 @@ bool AvalancheFeatured::setup() {
     projThumb->setScale(scale);
                              });
 
-  projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
+  projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/featured/thumbnail", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
   if (AVAL_GEODE_MOD->getSettingValue<bool>("dev-mode")) {

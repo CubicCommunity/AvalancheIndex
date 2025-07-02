@@ -977,7 +977,7 @@ class $modify(Menu, MenuLayer) {
 				}; });
 
 				auto avalReq = web::WebRequest();
-				m_fields->avalWebListener.setFilter(avalReq.get("https://gh.cubicstudios.xyz/WebLPS/aval-project/code.txt"));
+				m_fields->avalWebListener.setFilter(avalReq.get("https://api.cubicstudios.xyz/avalanche/v1/featured/code"));
 		} else {
 			AVAL_LOG_ERROR("Avalanche featured project button disabled");
 		};

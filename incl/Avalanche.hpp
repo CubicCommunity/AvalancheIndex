@@ -23,8 +23,8 @@ namespace avalanche { // Avalanche Index mod namespace
     constexpr const char* URL_CUBIC = "https://www.cubicstudios.xyz/"; // URL to Cubic Studios's official website
     constexpr const char* URL_AVALANCHE = "https://avalanche.cubicstudios.xyz/"; // URL to Avalanche's official website
 
-    constexpr const char* URL_API_BADGES = "https://gh.cubicstudios.xyz/WebLPS/data/avalProfiles.json"; // URL to remote JSON file containing all data on profiles
-    constexpr const char* URL_API_LEVELS = "https://gh.cubicstudios.xyz/WebLPS/data/avalProjects.json"; // URL to remote JSON file containing all data on projects
+    constexpr const char* URL_API_BADGES = "https://api.cubicstudios.xyz/avalanche/v1/profiles"; // URL to remote JSON file containing all data on profiles
+    constexpr const char* URL_API_LEVELS = "https://api.cubicstudios.xyz/avalanche/v1/projects"; // URL to remote JSON file containing all data on projects
 
     constexpr const char* und = "undefined";
     constexpr const char* err = "404: Not Found";

@@ -1,10 +1,14 @@
-### v1.1.3
-##### Patches
+## v1.2.0
+#### Team Project pop-up
 
 #### Changes
 - **Updated** Geode compatibility to version `4.6.3`
+- **Added** promotional container for parent Team Project, if any, in information pop-up for independent levels
 - **Fixed** thumbnail error for Team levels in Team Project information pop-up
 - Team Projects may now show a customized thumbnail on the Team Project information pop-up
+
+#### Developers
+- **Updated** URLs to use Cubic Studios API endpoints for all web requests
 
 ###### Latest
 ---

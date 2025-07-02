@@ -4,6 +4,7 @@
 
 #include "../../incl/Avalanche.hpp"
 
+#include <iomanip>
 #include <sstream>
 
 #include <fmt/core.h>
@@ -21,35 +22,21 @@
 using namespace geode::prelude;
 using namespace avalanche;
 
-std::string findYouTubeID(std::string const& url, Project const& avalProject) {
-  std::string videoId = "coCcCJYLVRk"; // extract from url
-  constexpr size_t idSize = 11; // default length for yt video ids
+Handler* avalHandler = Handler::get();
 
-  // list of possible yt url prefixes
-  const std::pair<std::string, size_t> prefixes[] = {
-    {"https://youtu.be/", idSize},
-    {"https://www.youtube.com/watch?v=", idSize},
-    {"https://www.youtube.com/embed/", idSize},
-    {"https://www.youtube.com/v/", idSize},
-    {"https://youtube.com/watch?v=", idSize},
-    {"https://youtube.com/embed/", idSize},
-    {"https://youtube.com/v/", idSize}
-  };
-
-  for (const auto& [prefix, idLen] : prefixes) {
-    auto url = avalProject.showcase;
-
-    if (url.find(prefix) == 0) {
-      AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
-      videoId = url.substr(prefix.length(), idLen);
-      break;
+inline std::string url_encode(const std::string& value) {
+  std::ostringstream escaped;
+  escaped.fill('0');
+  escaped << std::hex;
+  for (char c : value) {
+    if (isalnum(static_cast<unsigned char>(c)) || c == '-' || c == '_' || c == '.' || c == '~') {
+      escaped << c;
     } else {
-      AVAL_LOG_DEBUG("Skipped URL format '{}'", url);
-    };
-  };
-
-  return videoId;
-};
+      escaped << '%' << std::setw(2) << int((unsigned char)c);
+    }
+  }
+  return escaped.str();
+}
 
 ProjectInfoPopup* ProjectInfoPopup::create() {
   auto ret = new ProjectInfoPopup;
@@ -194,7 +181,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   setZOrder(10);
 
   m_level = level;
-  m_avalProject = Handler::get()->GetProject(m_level->m_levelID.value());
+  m_avalProject = avalHandler->GetProject(m_level->m_levelID.value());
 
   if (m_avalProject.type == Project::Type::NONE) {
     AVAL_LOG_ERROR("Avalanche project type is NONE");
@@ -417,8 +404,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       isCustomThumbnail = true;
     };
 
-    std::string videoId = isCustomThumbnail ? "" : findYouTubeID(m_avalProject.showcase, m_avalProject); // extracted video id from showcase url
-    std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId); // custom thumbnail or formatted yt url
+    std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", (int)m_level->m_levelID.value()); // custom thumbnail or default
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
 
@@ -454,7 +440,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   if (m_avalProject.link_to_main.enabled) {
     AVAL_LOG_DEBUG("Project '{}' has a link to the main project", m_avalProject.name);
-    auto linkedProj = Handler::get()->GetProject(m_avalProject.link_to_main.level_id);
+    auto linkedProj = avalHandler->GetProject(m_avalProject.link_to_main.level_id);
 
     if (linkedProj.type == Project::Type::NONE) {
       AVAL_LOG_ERROR("Failed to get linked project with ID {}", m_avalProject.link_to_main.level_id);
@@ -567,18 +553,18 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       linkedProjThumb->setLoadCallback([linkedProjThumb, linkedProjClippingNode](Result<> res) {
         if (res.isOk()) {
           AVAL_LOG_INFO("Linked project thumbnail loaded successfully");
+
+          linkedProjThumb->setScale(1.f);
+          linkedProjThumb->setScale(linkedProjClippingNode->getScaledContentHeight() / linkedProjThumb->getScaledContentHeight());
+
+          linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
+          linkedProjThumb->ignoreAnchorPointForPosition(false);
+          linkedProjThumb->setColor({ 250, 250, 250 });
+          linkedProjThumb->setOpacity(250);
         } else {
           AVAL_LOG_ERROR("Failed to load linked project thumbnail: {}", res.unwrapErr());
-          linkedProjThumb->initWithSpriteFrameName("unavailable.png"_spr);
+          linkedProjThumb->removeMeAndCleanup();
         };
-
-        linkedProjThumb->setScale(1.f);
-        linkedProjThumb->setScale(linkedProjClippingNode->getScaledContentHeight() / linkedProjThumb->getScaledContentHeight());
-
-        linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
-        linkedProjThumb->ignoreAnchorPointForPosition(false);
-        linkedProjThumb->setColor({ 250, 250, 250 });
-        linkedProjThumb->setOpacity(250);
                                        });
 
       bool isCustomThumbnail = false; // whether the thumbnail is custom
@@ -592,12 +578,12 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         isCustomThumbnail = true;
       };
 
-      std::string linkedVideoId = isCustomThumbnail ? "" : findYouTubeID(linkedProj.showcase, m_avalProject); // extracted video id from showcase url
-      std::string linkedProjThumbURL = isCustomThumbnail ? linkedProj.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)linkedVideoId); // custom thumbnail or formatted yt url
+      std::string encodedShowcaseUrl = url_encode(linkedProj.showcase); // encode the showcase url for use in the thumbnail url
+      std::string linkedProjThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", (int)m_avalProject.link_to_main.level_id); // custom thumbnail or default
 
       AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", linkedProjThumbURL);
       linkedProjThumb->loadFromUrl(linkedProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
-      linkedProjClippingNode->addChild(linkedProjThumb);
+      if (linkedProjThumb) linkedProjClippingNode->addChild(linkedProjThumb);
 
       // set border
       auto linkedProjBorder = CCScale9Sprite::create("GJ_square07.png");

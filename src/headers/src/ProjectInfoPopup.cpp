@@ -21,6 +21,36 @@
 using namespace geode::prelude;
 using namespace avalanche;
 
+std::string findYouTubeID(std::string const& url, Project const& avalProject) {
+  std::string videoId = "coCcCJYLVRk"; // extract from url
+  constexpr size_t idSize = 11; // default length for yt video ids
+
+  // list of possible yt url prefixes
+  const std::pair<std::string, size_t> prefixes[] = {
+    {"https://youtu.be/", idSize},
+    {"https://www.youtube.com/watch?v=", idSize},
+    {"https://www.youtube.com/embed/", idSize},
+    {"https://www.youtube.com/v/", idSize},
+    {"https://youtube.com/watch?v=", idSize},
+    {"https://youtube.com/embed/", idSize},
+    {"https://youtube.com/v/", idSize}
+  };
+
+  for (const auto& [prefix, idLen] : prefixes) {
+    auto url = avalProject.showcase;
+
+    if (url.find(prefix) == 0) {
+      AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
+      videoId = url.substr(prefix.length(), idLen);
+      break;
+    } else {
+      AVAL_LOG_DEBUG("Skipped URL format '{}'", url);
+    };
+  };
+
+  return videoId;
+};
+
 ProjectInfoPopup* ProjectInfoPopup::create() {
   auto ret = new ProjectInfoPopup;
   if (ret->initAnchored(440, 290)) {
@@ -78,7 +108,7 @@ void ProjectInfoPopup::infoPopup(CCObject*) {
 
 void ProjectInfoPopup::onFameInfo(CCObject*) {
   std::ostringstream body;
-  body << "This level, '<cg>" << m_avalProject.name << "</c>', is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.";
+  body << "'<cg>" << m_avalProject.name << "</c>' by '<cy>" << m_avalPublisher << "</c>' is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.";
 
   std::string resultBody = body.str();
 
@@ -265,7 +295,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_bottomLeft->setID("bottom-left-corner");
   art_bottomLeft->setAnchorPoint({ 0, 0 });
   art_bottomLeft->setPosition({ 0, 0 });
-  art_bottomLeft->setScale(1.250);
+  art_bottomLeft->setScale(1.250f);
   art_bottomLeft->setFlipX(false);
   art_bottomLeft->setFlipY(false);
   art_bottomLeft->setZOrder(0);
@@ -276,7 +306,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_bottomRight->setID("bottom-right-corner");
   art_bottomRight->setAnchorPoint({ 1, 0 });
   art_bottomRight->setPosition({ m_overlayMenu->getScaledContentWidth(), 0 });
-  art_bottomRight->setScale(1.250);
+  art_bottomRight->setScale(1.250f);
   art_bottomRight->setFlipX(true);
   art_bottomRight->setFlipY(false);
   art_bottomLeft->setZOrder(0);
@@ -287,7 +317,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_topLeft->setID("top-left-corner");
   art_topLeft->setAnchorPoint({ 0, 1 });
   art_topLeft->setPosition({ 0, m_overlayMenu->getScaledContentHeight() });
-  art_topLeft->setScale(1.250);
+  art_topLeft->setScale(1.250f);
   art_topLeft->setFlipX(false);
   art_topLeft->setFlipY(true);
   art_topLeft->setZOrder(0);
@@ -298,7 +328,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   art_topRight->setID("top-right-corner");
   art_topRight->setAnchorPoint({ 1, 1 });
   art_topRight->setPosition({ m_overlayMenu->getScaledContentWidth(), m_overlayMenu->getScaledContentHeight() });
-  art_topRight->setScale(1.250);
+  art_topRight->setScale(1.250f);
   art_topRight->setFlipX(true);
   art_topRight->setFlipY(true);
   art_topRight->setZOrder(0);
@@ -377,42 +407,18 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     projThumb->ignoreAnchorPointForPosition(false);
     projThumb->setPosition({ m_clippingNode->getScaledContentWidth() / 2, m_clippingNode->getScaledContentHeight() / 2 });
 
-    // extract video id from url
-    std::string videoId = "coCcCJYLVRk";
-    size_t idSize = 11; // default length for yt video ids
-
-    bool isCustomThumbnail = false;
+    bool isCustomThumbnail = false; // whether the thumbnail is a custom one or not
 
     if (m_avalProject.thumbnail.empty()) {
-      // list of possible yt url prefixes
-      const std::pair<std::string, size_t> prefixes[] = {
-        {"https://youtu.be/", idSize},
-        {"https://www.youtube.com/watch?v=", idSize},
-        {"https://www.youtube.com/embed/", idSize},
-        {"https://www.youtube.com/v/", idSize},
-        {"https://youtube.com/watch?v=", idSize},
-        {"https://youtube.com/embed/", idSize},
-        {"https://youtube.com/v/", idSize}
-      };
-
-      for (const auto& [prefix, idLen] : prefixes) {
-        auto url = m_avalProject.showcase;
-
-        if (url.find(prefix) == 0) {
-          AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
-          videoId = url.substr(prefix.length(), idLen);
-          break;
-        } else {
-          AVAL_LOG_DEBUG("Skipped URL format '{}'", url);
-        };
-      };
+      AVAL_LOG_INFO("Using default thumbnail for project '{}'", m_avalProject.name);
+      isCustomThumbnail = false;
     } else {
-      AVAL_LOG_INFO("Using custom thumbnail URL: {}", m_avalProject.thumbnail);
+      AVAL_LOG_INFO("Using custom thumbnail URL {}", m_avalProject.thumbnail);
       isCustomThumbnail = true;
     };
 
-    // custom thumbnail or formatted yt url
-    std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);
+    std::string videoId = isCustomThumbnail ? nullptr : findYouTubeID(m_avalProject.showcase, m_avalProject); // extracted video id from showcase url
+    std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId); // custom thumbnail or formatted yt url
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
 
@@ -424,11 +430,16 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         float scale = bgSize.height / projThumb->getContentHeight();
 
         projThumb->setScale(scale);
-        projThumb->setAnchorPoint({ 0, 0 });
         projThumb->ignoreAnchorPointForPosition(false);
         projThumb->setColor({ 125, 125, 125 });
-        projThumb->setPosition({ 0, 0 });
         projThumb->setOpacity(125);
+
+        if (m_avalProject.thumbnail.empty()) {
+          projThumb->setPosition({ 0, 0 });
+          projThumb->setAnchorPoint({ 0, 0 });
+        } else {
+          AVAL_LOG_DEBUG("Custom thumbnail loaded, keeping position to center");
+        };
       } else {
         AVAL_LOG_ERROR("{}", res.unwrapErr());
         projThumb->removeMeAndCleanup();
@@ -439,6 +450,182 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     if (projThumb) m_clippingNode->addChild(projThumb);
   } else {
     AVAL_LOG_DEBUG("Project thumbnail setting is disabled, not adding thumbnail to project info popup");
+  };
+
+  if (m_avalProject.link_to_main.enabled) {
+    AVAL_LOG_DEBUG("Project '{}' has a link to the main project", m_avalProject.name);
+    auto linkedProj = Handler::get()->GetProject(m_avalProject.link_to_main.level_id);
+
+    if (linkedProj.type == Project::Type::NONE) {
+      AVAL_LOG_ERROR("Failed to get linked project with ID {}", m_avalProject.link_to_main.level_id);
+    } else {
+      AVAL_LOG_INFO("Adding link to main project '{}'", linkedProj.name);
+
+      // create linked project button
+      AVAL_LOG_DEBUG("Creating linked project button");
+      auto linkedProjMenu = CCMenu::create();
+      linkedProjMenu->setID("linked-project-menu");
+      linkedProjMenu->setAnchorPoint({ 1, 1 });
+      linkedProjMenu->ignoreAnchorPointForPosition(false);
+      linkedProjMenu->setPosition({ m_mainLayer->getScaledContentWidth() - 25.f, m_mainLayer->getScaledContentHeight() - 50.f });
+      linkedProjMenu->setScaledContentSize({ 150.f, 81.f });
+
+      m_clippingNode->addChild(linkedProjMenu);
+
+      // create clipping node for linked project
+      AVAL_LOG_DEBUG("Creating clipping node for linked project");
+      auto linkedProjClippingNode = CCClippingNode::create();
+      linkedProjClippingNode->setID("clipping-node");
+      linkedProjClippingNode->setContentSize(linkedProjMenu->getScaledContentSize());
+      linkedProjClippingNode->ignoreAnchorPointForPosition(false);
+      linkedProjClippingNode->setAnchorPoint({ 0.5f, 0.5f });
+      linkedProjClippingNode->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() / 2.f });
+      linkedProjClippingNode->setStencil(CCLayerColor::create({ 255, 255, 255 }, linkedProjMenu->getScaledContentWidth(), linkedProjMenu->getScaledContentHeight()));;
+      linkedProjClippingNode->setZOrder(-1);
+
+      linkedProjMenu->addChild(linkedProjClippingNode);
+
+      auto linkedProjClippingNodeBg = CCScale9Sprite::create("GJ_square01.png");
+      linkedProjClippingNodeBg->setID("background");
+      linkedProjClippingNodeBg->setContentSize(linkedProjClippingNode->getContentSize());
+      linkedProjClippingNodeBg->setPosition(linkedProjClippingNode->getPosition());
+      linkedProjClippingNodeBg->setAnchorPoint(linkedProjClippingNode->getAnchorPoint());
+      linkedProjClippingNodeBg->setZOrder(-1);
+
+      linkedProjClippingNode->addChild(linkedProjClippingNodeBg);
+
+      auto art_bottomLeft_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      art_bottomLeft_linkedProj->setID("bottom-left-corner");
+      art_bottomLeft_linkedProj->setAnchorPoint({ 0, 0 });
+      art_bottomLeft_linkedProj->setPosition({ 0, 0 });
+      art_bottomLeft_linkedProj->setScale(0.5f);
+      art_bottomLeft_linkedProj->setFlipX(false);
+      art_bottomLeft_linkedProj->setFlipY(false);
+      art_bottomLeft_linkedProj->setZOrder(3);
+
+      linkedProjClippingNode->addChild(art_bottomLeft_linkedProj);
+
+      auto art_bottomRight_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      art_bottomRight_linkedProj->setID("bottom-right-corner");
+      art_bottomRight_linkedProj->setAnchorPoint({ 1, 0 });
+      art_bottomRight_linkedProj->setPosition({ linkedProjClippingNode->getScaledContentWidth(), 0 });
+      art_bottomRight_linkedProj->setScale(0.5f);
+      art_bottomRight_linkedProj->setFlipX(true);
+      art_bottomRight_linkedProj->setFlipY(false);
+      art_bottomRight_linkedProj->setZOrder(3);
+
+      linkedProjClippingNode->addChild(art_bottomRight_linkedProj);
+
+      auto art_topLeft_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      art_topLeft_linkedProj->setID("top-left-corner");
+      art_topLeft_linkedProj->setAnchorPoint({ 0, 1 });
+      art_topLeft_linkedProj->setPosition({ 0, linkedProjClippingNode->getScaledContentHeight() });
+      art_topLeft_linkedProj->setScale(0.5f);
+      art_topLeft_linkedProj->setFlipX(false);
+      art_topLeft_linkedProj->setFlipY(true);
+      art_topLeft_linkedProj->setZOrder(3);
+
+      linkedProjClippingNode->addChild(art_topLeft_linkedProj);
+
+      auto art_topRight_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      art_topRight_linkedProj->setID("top-right-corner");
+      art_topRight_linkedProj->setAnchorPoint({ 1, 1 });
+      art_topRight_linkedProj->setPosition({ linkedProjClippingNode->getScaledContentWidth(), linkedProjClippingNode->getScaledContentHeight() });
+      art_topRight_linkedProj->setScale(0.5f);
+      art_topRight_linkedProj->setFlipX(true);
+      art_topRight_linkedProj->setFlipY(true);
+      art_topRight_linkedProj->setZOrder(3);
+
+      linkedProjClippingNode->addChild(art_topRight_linkedProj);
+
+      // create thumbnail lazy sprite for linked project
+      AVAL_LOG_DEBUG("Creating thumbnail lazy sprite for linked project '{}'", linkedProj.name);
+      LazySprite* linkedProjThumb = LazySprite::create(linkedProjMenu->getScaledContentSize(), true);
+      linkedProjThumb->setID("thumbnail");
+      linkedProjThumb->setAnchorPoint({ 0.5, 0.5 });
+      linkedProjThumb->ignoreAnchorPointForPosition(false);
+      linkedProjThumb->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() / 2.f });
+
+      linkedProjThumb->setLoadCallback([linkedProjThumb, linkedProjClippingNode](Result<> res) {
+        if (res.isOk()) {
+          AVAL_LOG_INFO("Linked project thumbnail loaded successfully");
+        } else {
+          AVAL_LOG_ERROR("Failed to load linked project thumbnail: {}", res.unwrapErr());
+          linkedProjThumb->initWithSpriteFrameName("unavailable.png"_spr);
+        };
+
+        linkedProjThumb->setScale(linkedProjClippingNode->getScaledContentHeight() / linkedProjThumb->getScaledContentHeight());
+        linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
+        linkedProjThumb->ignoreAnchorPointForPosition(false);
+        linkedProjThumb->setColor({ 250, 250, 250 });
+        linkedProjThumb->setOpacity(250);
+                                       });
+
+      bool isCustomThumbnail = false; // whether the thumbnail is a custom one or not
+
+      // check if linked project has a custom thumbnail
+      if (linkedProj.thumbnail.empty()) {
+        AVAL_LOG_INFO("Using default thumbnail for project '{}'", linkedProj.name);
+        isCustomThumbnail = false;
+      } else {
+        AVAL_LOG_INFO("Using custom thumbnail URL {}", linkedProj.thumbnail);
+        isCustomThumbnail = true;
+      };
+
+      std::string linkedVideoId = findYouTubeID(linkedProj.showcase, m_avalProject); // extracted video id from showcase url
+      std::string linkedProjThumbURL = isCustomThumbnail ? linkedProj.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)linkedVideoId); // custom thumbnail or formatted yt url
+
+      AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", linkedProjThumbURL);
+      linkedProjThumb->loadFromUrl(linkedProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
+      linkedProjClippingNode->addChild(linkedProjThumb);
+
+      // set border
+      auto linkedProjBorder = CCScale9Sprite::create("GJ_square07.png");
+      linkedProjBorder->setID("border");
+      linkedProjBorder->setPosition(linkedProjClippingNode->getPosition());
+      linkedProjBorder->setContentSize(linkedProjClippingNode->getScaledContentSize());
+      linkedProjBorder->ignoreAnchorPointForPosition(false);
+      linkedProjBorder->setAnchorPoint({ 0.5f, 0.5f });
+      linkedProjBorder->setZOrder(2);
+
+      // add border to clipping node
+      linkedProjClippingNode->addChild(linkedProjBorder);
+
+      // create sprite for linked project showcase button
+      auto linkedProjShowcase_sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
+      linkedProjShowcase_sprite->setScale(0.375f);
+
+      // create button to play linked project showcase
+      AVAL_LOG_DEBUG("Creating button to play linked project showcase");
+      auto linkedProjShowcase = CCMenuItemSpriteExtra::create(
+        linkedProjShowcase_sprite,
+        this,
+        menu_selector(ProjectInfoPopup::onPlayShowcase));
+      linkedProjShowcase->setID("button");
+      linkedProjShowcase->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, 25.f });
+
+      linkedProjMenu->addChild(linkedProjShowcase);
+
+      // create label for linked project showcase
+      AVAL_LOG_DEBUG("Creating label for linked project showcase");
+      auto linkedProjLabel = CCLabelBMFont::create("Play Now!", "bigFont.fnt");
+      linkedProjLabel->setID("label");
+      linkedProjLabel->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 10.f });
+      linkedProjLabel->setScale(0.25f);
+
+      linkedProjMenu->addChild(linkedProjLabel);
+
+      // create name text label for linked project name
+      AVAL_LOG_DEBUG("Creating label for linked project name");
+      auto linkedProjName = CCLabelBMFont::create(linkedProj.name.c_str(), "goldFont.fnt");
+      linkedProjName->setID("name");
+      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjShowcase->getPositionY() + 37.5f });
+      linkedProjName->setScale(0.625f);
+
+      linkedProjMenu->addChild(linkedProjName);
+    };
+  } else {
+    AVAL_LOG_DEBUG("Project '{}' does not have a link to the main project", m_avalProject.name);
   };
 
   // geode settings popup button

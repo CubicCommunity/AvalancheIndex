@@ -187,11 +187,13 @@ namespace avalanche {
             auto c_name = cacheStd["name"].asString().unwrapOr(und);
             auto c_host = cacheStd["host"].asString().unwrapOr(und);
             auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
+            auto c_custom_thumbnail = cacheStd["custom_thumbnail"].asString().unwrapOr("");
             auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
             auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
             auto c_link = cacheStd["link_to_main"];
             avalanche::Project::LinkToMain ltm;
+
             if (c_link.isObject()) {
                 ltm.enabled = c_link["enabled"].asBool().unwrapOr(false);
                 ltm.name = c_link["name"].asString().unwrapOr(und);
@@ -204,12 +206,12 @@ namespace avalanche {
                 ltm.level_id = 0;
             };
 
-            avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame, ltm);
+            avalanche::Project res(c_name, c_host, c_showcase, c_custom_thumbnail, c_type, c_fame, ltm);
             return res;
         } else {
             log::error("Project ID is invalid");
 
-            avalanche::Project res("Name", "Host", URL_AVALANCHE, avalanche::Project::Type::NONE, false, avalanche::Project::LinkToMain());
+            avalanche::Project res("Name", "Host", URL_AVALANCHE, "", avalanche::Project::Type::NONE, false, avalanche::Project::LinkToMain());
             return res;
         };
     };

@@ -381,8 +381,11 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     std::string videoId = "coCcCJYLVRk";
     size_t idSize = 11; // default length for yt video ids
 
-    // list of possible yt url prefixes
-    const std::pair<std::string, size_t> prefixes[] = {
+    bool isCustomThumbnail = false;
+
+    if (m_avalProject.custom_thumbnail.empty()) {
+      // list of possible yt url prefixes
+      const std::pair<std::string, size_t> prefixes[] = {
         {"https://youtu.be/", idSize},
         {"https://www.youtube.com/watch?v=", idSize},
         {"https://www.youtube.com/embed/", idSize},
@@ -390,22 +393,26 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         {"https://youtube.com/watch?v=", idSize},
         {"https://youtube.com/embed/", idSize},
         {"https://youtube.com/v/", idSize}
-    };
-
-    for (const auto& [prefix, idLen] : prefixes) {
-      auto url = m_avalProject.showcase_url;
-
-      if (url.find(prefix) == 0) {
-        AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
-        videoId = url.substr(prefix.length(), idLen);
-        break;
-      } else {
-        AVAL_LOG_DEBUG("Skipped URL format '{}'", url);
       };
+
+      for (const auto& [prefix, idLen] : prefixes) {
+        auto url = m_avalProject.showcase_url;
+
+        if (url.find(prefix) == 0) {
+          AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
+          videoId = url.substr(prefix.length(), idLen);
+          break;
+        } else {
+          AVAL_LOG_DEBUG("Skipped URL format '{}'", url);
+        };
+      };
+    } else {
+      AVAL_LOG_INFO("Using custom thumbnail URL: {}", m_avalProject.custom_thumbnail);
+      isCustomThumbnail = true;
     };
 
-    // format url
-    auto projThumbURL = fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);
+    // custom thumbnail or formatted yt url
+    std::string projThumbURL = isCustomThumbnail ? m_avalProject.custom_thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
 

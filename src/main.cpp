@@ -399,7 +399,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			if (showFame) {
 				if (auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr)) {
-					bgThumbnail->setOpacity(75);
+					bgThumbnail->setOpacity(125);
 					bgThumbnail->setAnchorPoint({ 0.5, 0 });
 					bgThumbnail->ignoreAnchorPointForPosition(false);
 					bgThumbnail->setPosition({ this->getContentWidth() / 2, 0 });

@@ -362,15 +362,15 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   auto hostName_label = CCLabelBMFont::create(hostLabelTxt, "bigFont.fnt");
   hostName_label->setID("host-name-label");
   hostName_label->ignoreAnchorPointForPosition(false);
-  hostName_label->setAnchorPoint({ 0, 0.5 });
-  hostName_label->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 70.f });
+  hostName_label->setAnchorPoint({ 0, 1 });
+  hostName_label->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 50.f });
   hostName_label->setScale(0.25f);
 
   auto hostName = CCLabelBMFont::create(m_avalProject.host.c_str(), "goldFont.fnt");
   hostName->setID("host-name");
   hostName->ignoreAnchorPointForPosition(false);
-  hostName->setAnchorPoint({ 0, 0.5 });
-  hostName->setPosition({ 10.f, (m_mainLayer->getScaledContentHeight() / 2.f) + 55.f });
+  hostName->setAnchorPoint({ 0, 1 });
+  hostName->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 70.f });
   hostName->setScale(0.75f);
 
   m_overlayMenu->addChild(hostName_label);
@@ -417,7 +417,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       isCustomThumbnail = true;
     };
 
-    std::string videoId = isCustomThumbnail ? nullptr : findYouTubeID(m_avalProject.showcase, m_avalProject); // extracted video id from showcase url
+    std::string videoId = isCustomThumbnail ? "" : findYouTubeID(m_avalProject.showcase, m_avalProject); // extracted video id from showcase url
     std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId); // custom thumbnail or formatted yt url
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
@@ -472,6 +472,20 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       m_clippingNode->addChild(linkedProjMenu);
 
+      // info button
+      auto linkedProjInfoBtnSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
+      linkedProjInfoBtnSprite->setScale(0.375f);
+
+      auto linkedProjInfoBtn = CCMenuItemSpriteExtra::create(
+        linkedProjInfoBtnSprite,
+        this,
+        menu_selector(ProjectInfoPopup::infoPopup));
+      linkedProjInfoBtn->setID("info-button");
+      linkedProjInfoBtn->setPosition({ linkedProjMenu->getScaledContentWidth() - 5.f, linkedProjMenu->getScaledContentHeight() - 5.f });
+      linkedProjInfoBtn->setZOrder(126);
+
+      linkedProjMenu->addChild(linkedProjInfoBtn);
+
       // create clipping node for linked project
       AVAL_LOG_DEBUG("Creating clipping node for linked project");
       auto linkedProjClippingNode = CCClippingNode::create();
@@ -480,7 +494,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       linkedProjClippingNode->ignoreAnchorPointForPosition(false);
       linkedProjClippingNode->setAnchorPoint({ 0.5f, 0.5f });
       linkedProjClippingNode->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() / 2.f });
-      linkedProjClippingNode->setStencil(CCLayerColor::create({ 255, 255, 255 }, linkedProjMenu->getScaledContentWidth(), linkedProjMenu->getScaledContentHeight()));;
+      linkedProjClippingNode->setStencil(CCLayerColor::create({ 250, 250, 250 }, linkedProjMenu->getScaledContentWidth(), linkedProjMenu->getScaledContentHeight()));;
       linkedProjClippingNode->setZOrder(-1);
 
       linkedProjMenu->addChild(linkedProjClippingNode);
@@ -572,7 +586,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         isCustomThumbnail = true;
       };
 
-      std::string linkedVideoId = findYouTubeID(linkedProj.showcase, m_avalProject); // extracted video id from showcase url
+      std::string linkedVideoId = isCustomThumbnail ? "" : findYouTubeID(linkedProj.showcase, m_avalProject); // extracted video id from showcase url
       std::string linkedProjThumbURL = isCustomThumbnail ? linkedProj.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)linkedVideoId); // custom thumbnail or formatted yt url
 
       AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", linkedProjThumbURL);
@@ -619,7 +633,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       AVAL_LOG_DEBUG("Creating label for linked project name");
       auto linkedProjName = CCLabelBMFont::create(linkedProj.name.c_str(), "goldFont.fnt");
       linkedProjName->setID("name");
-      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjShowcase->getPositionY() + 37.5f });
+      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjShowcase->getScaledContentHeight() - 15.f });
       linkedProjName->setScale(0.625f);
 
       linkedProjMenu->addChild(linkedProjName);

@@ -394,20 +394,6 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     projThumb->ignoreAnchorPointForPosition(false);
     projThumb->setPosition({ m_clippingNode->getScaledContentWidth() / 2, m_clippingNode->getScaledContentHeight() / 2 });
 
-    bool isCustomThumbnail = false; // whether the thumbnail is custom
-
-    if (m_avalProject.thumbnail.empty()) {
-      AVAL_LOG_INFO("Using default thumbnail for project '{}'", m_avalProject.name);
-      isCustomThumbnail = false;
-    } else {
-      AVAL_LOG_INFO("Using custom thumbnail URL {}", m_avalProject.thumbnail);
-      isCustomThumbnail = true;
-    };
-
-    std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", (int)m_level->m_levelID.value()); // custom thumbnail or default
-
-    AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
-
     projThumb->setLoadCallback([this, projThumb, bgSize](Result<> res) {
       if (res.isOk()) {
         AVAL_LOG_INFO("Sprite loaded successfully");
@@ -432,6 +418,9 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       };
                                });
 
+    std::string projThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", (int)m_level->m_levelID.value()); // custom thumbnail
+
+    AVAL_LOG_DEBUG("Getting thumbnail at {}...", (std::string)projThumbURL);
     projThumb->loadFromUrl(projThumbURL, LazySprite::Format::kFmtUnKnown, false);
     if (projThumb) m_clippingNode->addChild(projThumb);
   } else {
@@ -542,48 +531,41 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       linkedProjClippingNode->addChild(art_topRight_linkedProj);
 
       // create thumbnail lazy sprite for linked project
-      AVAL_LOG_DEBUG("Creating thumbnail lazy sprite for linked project '{}'", linkedProj.name);
-      LazySprite* linkedProjThumb = LazySprite::create(linkedProjMenu->getScaledContentSize(), true);
-      linkedProjThumb->setID("thumbnail");
-      linkedProjThumb->setAnchorPoint({ 0.5, 0.5 });
-      linkedProjThumb->ignoreAnchorPointForPosition(false);
-      linkedProjThumb->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() / 2.f });
-      linkedProjThumb->setScale(0.5f);
+      if (AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-thumb")) {
+        AVAL_LOG_DEBUG("Creating thumbnail lazy sprite for linked project '{}'", linkedProj.name);
+        LazySprite* linkedProjThumb = LazySprite::create(linkedProjMenu->getScaledContentSize(), true);
+        linkedProjThumb->setID("thumbnail");
+        linkedProjThumb->setAnchorPoint({ 0.5, 0.5 });
+        linkedProjThumb->ignoreAnchorPointForPosition(false);
+        linkedProjThumb->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() / 2.f });
+        linkedProjThumb->setScale(0.5f);
 
-      linkedProjThumb->setLoadCallback([linkedProjThumb, linkedProjClippingNode](Result<> res) {
-        if (res.isOk()) {
-          AVAL_LOG_INFO("Linked project thumbnail loaded successfully");
+        linkedProjThumb->setLoadCallback([linkedProjThumb, linkedProjClippingNode](Result<> res) {
+          if (res.isOk()) {
+            AVAL_LOG_INFO("Linked project thumbnail loaded successfully");
 
-          linkedProjThumb->setScale(1.f);
-          linkedProjThumb->setScale(linkedProjClippingNode->getScaledContentHeight() / linkedProjThumb->getScaledContentHeight());
+            linkedProjThumb->setScale(1.f);
+            linkedProjThumb->setScale(linkedProjClippingNode->getScaledContentHeight() / linkedProjThumb->getScaledContentHeight());
 
-          linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
-          linkedProjThumb->ignoreAnchorPointForPosition(false);
-          linkedProjThumb->setColor({ 250, 250, 250 });
-          linkedProjThumb->setOpacity(250);
-        } else {
-          AVAL_LOG_ERROR("Failed to load linked project thumbnail: {}", res.unwrapErr());
-          linkedProjThumb->removeMeAndCleanup();
-        };
-                                       });
+            linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
+            linkedProjThumb->ignoreAnchorPointForPosition(false);
+            linkedProjThumb->setColor({ 250, 250, 250 });
+            linkedProjThumb->setOpacity(250);
+          } else {
+            AVAL_LOG_ERROR("Failed to load linked project thumbnail: {}", res.unwrapErr());
+            linkedProjThumb->removeMeAndCleanup();
+          };
+                                         });
 
-      bool isCustomThumbnail = false; // whether the thumbnail is custom
+        std::string encodedShowcaseUrl = url_encode(linkedProj.showcase); // encode the showcase url for use in the thumbnail url
+        std::string linkedProjThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/yt-thumbnails?url={}", (std::string)encodedShowcaseUrl); // custom thumbnail
 
-      // check if linked project has a custom thumbnail
-      if (linkedProj.thumbnail.empty()) {
-        AVAL_LOG_INFO("Using default thumbnail for project '{}'", linkedProj.name);
-        isCustomThumbnail = false;
+        AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", (std::string)linkedProjThumbURL);
+        linkedProjThumb->loadFromUrl(linkedProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
+        if (linkedProjThumb) linkedProjClippingNode->addChild(linkedProjThumb);
       } else {
-        AVAL_LOG_INFO("Using custom thumbnail URL {}", linkedProj.thumbnail);
-        isCustomThumbnail = true;
+        AVAL_LOG_DEBUG("Linked project thumbnail setting is disabled, not adding thumbnail to linked project container");
       };
-
-      std::string encodedShowcaseUrl = url_encode(linkedProj.showcase); // encode the showcase url for use in the thumbnail url
-      std::string linkedProjThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", (int)m_avalProject.link_to_main.level_id); // custom thumbnail or default
-
-      AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", linkedProjThumbURL);
-      linkedProjThumb->loadFromUrl(linkedProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
-      if (linkedProjThumb) linkedProjClippingNode->addChild(linkedProjThumb);
 
       // set border
       auto linkedProjBorder = CCScale9Sprite::create("GJ_square07.png");

@@ -68,8 +68,8 @@ void ProjectInfoPopup::infoPopup(CCObject*) {
     "OK", "Watch",
     [this](auto, bool btn2) {
       if (btn2) {
-        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
-        web::openLinkInBrowser(this->m_avalProject.showcase_url);
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase);
+        web::openLinkInBrowser(this->m_avalProject.showcase);
       } else {
         AVAL_LOG_DEBUG("User clicked OK");
       }; },
@@ -108,8 +108,8 @@ void ProjectInfoPopup::onPlayShowcase(CCObject*) {
     "Cancel", "Watch",
     [this](auto, bool btn2) {
       if (btn2) {
-        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase_url);
-        web::openLinkInBrowser(this->m_avalProject.showcase_url);
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase);
+        web::openLinkInBrowser(this->m_avalProject.showcase);
       } else {
         AVAL_LOG_DEBUG("User clicked Cancel");
       }; },
@@ -383,7 +383,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
     bool isCustomThumbnail = false;
 
-    if (m_avalProject.custom_thumbnail.empty()) {
+    if (m_avalProject.thumbnail.empty()) {
       // list of possible yt url prefixes
       const std::pair<std::string, size_t> prefixes[] = {
         {"https://youtu.be/", idSize},
@@ -396,7 +396,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       };
 
       for (const auto& [prefix, idLen] : prefixes) {
-        auto url = m_avalProject.showcase_url;
+        auto url = m_avalProject.showcase;
 
         if (url.find(prefix) == 0) {
           AVAL_LOG_INFO("Found YouTube URL prefix '{}'", prefix);
@@ -407,12 +407,12 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         };
       };
     } else {
-      AVAL_LOG_INFO("Using custom thumbnail URL: {}", m_avalProject.custom_thumbnail);
+      AVAL_LOG_INFO("Using custom thumbnail URL: {}", m_avalProject.thumbnail);
       isCustomThumbnail = true;
     };
 
     // custom thumbnail or formatted yt url
-    std::string projThumbURL = isCustomThumbnail ? m_avalProject.custom_thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);
+    std::string projThumbURL = isCustomThumbnail ? m_avalProject.thumbnail : fmt::format("https://img.youtube.com/vi/{}/maxresdefault.jpg", (std::string)videoId);
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", projThumbURL);
 

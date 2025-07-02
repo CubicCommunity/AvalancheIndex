@@ -67,8 +67,6 @@ namespace avalanche { // Avalanche Index mod namespace
         class LinkToMain {
         public:
             bool enabled; // If the link is enabled
-            std::string name; // Name of the linked team project
-            std::string url;  // Tiny YouTube URL of the showcase video of the team project
             int level_id; // ID of the in-game level for the linked project
         };
 
@@ -76,8 +74,8 @@ namespace avalanche { // Avalanche Index mod namespace
 
         std::string name; // Official name of the level
         std::string host; // Team member that hosted the level
-        std::string showcase_url; // Tiny YouTube video URL of the full showcase of the level
-        std::string custom_thumbnail; // URL for a custom thumbnail for the level
+        std::string showcase; // Tiny YouTube video URL of the full showcase of the level
+        std::string thumbnail; // Imgur URL for a custom thumbnail for the level
         Type type; // Type of project the level is featured as
         bool fame; // If the level will be highlighted on lists
 
@@ -91,7 +89,7 @@ namespace avalanche { // Avalanche Index mod namespace
             Type t = Type::NONE,
             bool f = false,
             LinkToMain ltm = LinkToMain()
-        ) : name(n), host(h), showcase_url(su), custom_thumbnail(ct), type(t), fame(f), link_to_main(ltm) {};
+        ) : name(n), host(h), showcase(su), thumbnail(ct), type(t), fame(f), link_to_main(ltm) {};
     };
 
     class Handler {

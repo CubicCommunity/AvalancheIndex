@@ -187,26 +187,22 @@ namespace avalanche {
             auto c_name = cacheStd["name"].asString().unwrapOr(und);
             auto c_host = cacheStd["host"].asString().unwrapOr(und);
             auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
-            auto c_custom_thumbnail = cacheStd["custom_thumbnail"].asString().unwrapOr("");
+            auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr("");
             auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
             auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
-            auto c_link = cacheStd["link_to_main"];
+            auto c_linked = cacheStd["project"];
             avalanche::Project::LinkToMain ltm;
 
-            if (c_link.isObject()) {
-                ltm.enabled = c_link["enabled"].asBool().unwrapOr(false);
-                ltm.name = c_link["name"].asString().unwrapOr(und);
-                ltm.url = c_link["url"].asString().unwrapOr(und);
-                ltm.level_id = c_link["level_id"].asInt().unwrapOr(0);
+            if (c_linked.isObject()) {
+                ltm.enabled = c_linked["enabled"].asBool().unwrapOr(false);
+                ltm.level_id = c_linked["id"].asInt().unwrapOr(0);
             } else {
                 ltm.enabled = false;
-                ltm.name = und;
-                ltm.url = und;
                 ltm.level_id = 0;
             };
 
-            avalanche::Project res(c_name, c_host, c_showcase, c_custom_thumbnail, c_type, c_fame, ltm);
+            avalanche::Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
             return res;
         } else {
             log::error("Project ID is invalid");

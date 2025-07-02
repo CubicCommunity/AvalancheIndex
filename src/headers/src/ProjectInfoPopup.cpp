@@ -407,7 +407,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     projThumb->ignoreAnchorPointForPosition(false);
     projThumb->setPosition({ m_clippingNode->getScaledContentWidth() / 2, m_clippingNode->getScaledContentHeight() / 2 });
 
-    bool isCustomThumbnail = false; // whether the thumbnail is a custom one or not
+    bool isCustomThumbnail = false; // whether the thumbnail is custom
 
     if (m_avalProject.thumbnail.empty()) {
       AVAL_LOG_INFO("Using default thumbnail for project '{}'", m_avalProject.name);
@@ -508,7 +508,10 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       linkedProjClippingNode->addChild(linkedProjClippingNodeBg);
 
-      auto art_bottomLeft_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      // corner art deco for linked project
+      auto corner = "rewardCorner_001.png";
+
+      auto art_bottomLeft_linkedProj = CCSprite::createWithSpriteFrameName(corner);
       art_bottomLeft_linkedProj->setID("bottom-left-corner");
       art_bottomLeft_linkedProj->setAnchorPoint({ 0, 0 });
       art_bottomLeft_linkedProj->setPosition({ 0, 0 });
@@ -519,7 +522,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       linkedProjClippingNode->addChild(art_bottomLeft_linkedProj);
 
-      auto art_bottomRight_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      auto art_bottomRight_linkedProj = CCSprite::createWithSpriteFrameName(corner);
       art_bottomRight_linkedProj->setID("bottom-right-corner");
       art_bottomRight_linkedProj->setAnchorPoint({ 1, 0 });
       art_bottomRight_linkedProj->setPosition({ linkedProjClippingNode->getScaledContentWidth(), 0 });
@@ -530,7 +533,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       linkedProjClippingNode->addChild(art_bottomRight_linkedProj);
 
-      auto art_topLeft_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      auto art_topLeft_linkedProj = CCSprite::createWithSpriteFrameName(corner);
       art_topLeft_linkedProj->setID("top-left-corner");
       art_topLeft_linkedProj->setAnchorPoint({ 0, 1 });
       art_topLeft_linkedProj->setPosition({ 0, linkedProjClippingNode->getScaledContentHeight() });
@@ -541,7 +544,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       linkedProjClippingNode->addChild(art_topLeft_linkedProj);
 
-      auto art_topRight_linkedProj = CCSprite::createWithSpriteFrameName(m_cornerArtType.c_str());
+      auto art_topRight_linkedProj = CCSprite::createWithSpriteFrameName(corner);
       art_topRight_linkedProj->setID("top-right-corner");
       art_topRight_linkedProj->setAnchorPoint({ 1, 1 });
       art_topRight_linkedProj->setPosition({ linkedProjClippingNode->getScaledContentWidth(), linkedProjClippingNode->getScaledContentHeight() });
@@ -569,14 +572,16 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
           linkedProjThumb->initWithSpriteFrameName("unavailable.png"_spr);
         };
 
+        linkedProjThumb->setScale(1.f);
         linkedProjThumb->setScale(linkedProjClippingNode->getScaledContentHeight() / linkedProjThumb->getScaledContentHeight());
+
         linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
         linkedProjThumb->ignoreAnchorPointForPosition(false);
         linkedProjThumb->setColor({ 250, 250, 250 });
         linkedProjThumb->setOpacity(250);
                                        });
 
-      bool isCustomThumbnail = false; // whether the thumbnail is a custom one or not
+      bool isCustomThumbnail = false; // whether the thumbnail is custom
 
       // check if linked project has a custom thumbnail
       if (linkedProj.thumbnail.empty()) {

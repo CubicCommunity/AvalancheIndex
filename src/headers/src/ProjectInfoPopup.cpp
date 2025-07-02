@@ -363,14 +363,14 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   hostName_label->setID("host-name-label");
   hostName_label->ignoreAnchorPointForPosition(false);
   hostName_label->setAnchorPoint({ 0, 1 });
-  hostName_label->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 50.f });
+  hostName_label->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 55.f });
   hostName_label->setScale(0.25f);
 
   auto hostName = CCLabelBMFont::create(m_avalProject.host.c_str(), "goldFont.fnt");
   hostName->setID("host-name");
   hostName->ignoreAnchorPointForPosition(false);
   hostName->setAnchorPoint({ 0, 1 });
-  hostName->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 70.f });
+  hostName->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 65.f });
   hostName->setScale(0.75f);
 
   m_overlayMenu->addChild(hostName_label);
@@ -467,7 +467,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       linkedProjMenu->setID("linked-project-menu");
       linkedProjMenu->setAnchorPoint({ 1, 1 });
       linkedProjMenu->ignoreAnchorPointForPosition(false);
-      linkedProjMenu->setPosition({ m_mainLayer->getScaledContentWidth() - 25.f, m_mainLayer->getScaledContentHeight() - 50.f });
+      linkedProjMenu->setPosition({ m_mainLayer->getScaledContentWidth() - 25.f, m_mainLayer->getScaledContentHeight() - 55.f });
       linkedProjMenu->setScaledContentSize({ 150.f, 81.f });
 
       m_clippingNode->addChild(linkedProjMenu);
@@ -481,7 +481,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         this,
         menu_selector(ProjectInfoPopup::infoPopup));
       linkedProjInfoBtn->setID("info-button");
-      linkedProjInfoBtn->setPosition({ linkedProjMenu->getScaledContentWidth() - 5.f, linkedProjMenu->getScaledContentHeight() - 5.f });
+      linkedProjInfoBtn->setPosition({ linkedProjMenu->getScaledContentWidth() - 6.25f, linkedProjMenu->getScaledContentHeight() - 6.25f });
       linkedProjInfoBtn->setZOrder(126);
 
       linkedProjMenu->addChild(linkedProjInfoBtn);
@@ -559,6 +559,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       linkedProjThumb->setAnchorPoint({ 0.5, 0.5 });
       linkedProjThumb->ignoreAnchorPointForPosition(false);
       linkedProjThumb->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() / 2.f });
+      linkedProjThumb->setScale(0.5f);
 
       linkedProjThumb->setLoadCallback([linkedProjThumb, linkedProjClippingNode](Result<> res) {
         if (res.isOk()) {
@@ -633,7 +634,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       AVAL_LOG_DEBUG("Creating label for linked project name");
       auto linkedProjName = CCLabelBMFont::create(linkedProj.name.c_str(), "goldFont.fnt");
       linkedProjName->setID("name");
-      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjShowcase->getScaledContentHeight() - 15.f });
+      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 20.f });
       linkedProjName->setScale(0.625f);
 
       linkedProjMenu->addChild(linkedProjName);

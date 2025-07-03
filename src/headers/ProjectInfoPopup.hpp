@@ -18,9 +18,11 @@ public:
 
 protected:
   std::string m_avalPublisher = "Avalanche";
+  std::string m_linkedPublisher = "Avalanche";
   std::string m_cornerArtType = "rewardCorner_001.png";
 
   Project m_avalProject;
+  Project m_linkedProject;
 
   GJGameLevel* m_level;
 
@@ -34,6 +36,9 @@ protected:
   void onFameInfo(CCObject*);
 
   void onPlayShowcase(CCObject*);
+
+  void infoPopupLinked(CCObject*);
+  void onPlayShowcaseLinked(CCObject*);
 
   bool setup() override;
 };

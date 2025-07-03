@@ -93,29 +93,9 @@ void ProjectInfoPopup::infoPopup(CCObject*) {
     true);
 };
 
-void ProjectInfoPopup::onFameInfo(CCObject*) {
-  std::ostringstream body;
-  body << "'<cg>" << m_avalProject.name << "</c>' by '<cy>" << m_avalPublisher << "</c>' is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.";
-
-  std::string resultBody = body.str();
-
-  createQuickPopup(
-    "Hall of Fame",
-    resultBody.c_str(),
-    "OK", "Learn More",
-    [](auto, bool btn2) {
-      if (btn2) {
-        AVAL_LOG_INFO("Opening Hall of Fame link in browser");
-        web::openLinkInBrowser(URL_AVALANCHE);
-      } else {
-        AVAL_LOG_DEBUG("User clicked OK");
-      }; },
-    true);
-};
-
 void ProjectInfoPopup::onPlayShowcase(CCObject*) {
   std::ostringstream body;
-  body << "Watch the full showcase video for <cy>" << m_avalPublisher << "</c> - '<cg>" << m_avalProject.name << "</c>'?";
+  body << "Watch the full showcase video for <cy>" << m_linkedPublisher << "</c> - '<cg>" << m_avalProject.name << "</c>'?";
 
   std::string resultBody = body.str();
 
@@ -129,6 +109,90 @@ void ProjectInfoPopup::onPlayShowcase(CCObject*) {
         web::openLinkInBrowser(this->m_avalProject.showcase);
       } else {
         AVAL_LOG_DEBUG("User clicked Cancel");
+      }; },
+    true);
+};
+
+void ProjectInfoPopup::infoPopupLinked(CCObject*) {
+  std::ostringstream typeOfProj;
+
+  switch (m_linkedProject.type) {
+  case Project::Type::TEAM:
+    typeOfProj << "a <cg>team project</c> hosted by <cy>" << m_linkedProject.host << "</c>";
+    break;
+
+  case Project::Type::COLLAB:
+    typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
+    break;
+
+  case Project::Type::EVENT:
+    typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
+    break;
+
+  case Project::Type::SOLO:
+    typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
+    break;
+
+  default:
+    typeOfProj << "an official <cl>Avalanche</c> project";
+    break;
+  };
+
+  std::ostringstream body;
+  body << "<cy>" << m_linkedPublisher << "</c> - '<cg>" << m_linkedProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+    m_linkedProject.name.c_str(),
+    resultBody.c_str(),
+    "OK", "Watch",
+    [this](auto, bool btn2) {
+      if (btn2) {
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_linkedProject.showcase);
+        web::openLinkInBrowser(this->m_linkedProject.showcase);
+      } else {
+        AVAL_LOG_DEBUG("User clicked OK");
+      }; },
+    true);
+};
+
+void ProjectInfoPopup::onPlayShowcaseLinked(CCObject*) {
+  std::ostringstream body;
+  body << "Watch the full showcase video for <cy>" << m_linkedPublisher << "</c> - '<cg>" << m_linkedProject.name << "</c>'?";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+    m_linkedProject.name.c_str(),
+    resultBody.c_str(),
+    "Cancel", "Watch",
+    [this](auto, bool btn2) {
+      if (btn2) {
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_linkedProject.showcase);
+        web::openLinkInBrowser(this->m_linkedProject.showcase);
+      } else {
+        AVAL_LOG_DEBUG("User clicked Cancel");
+      }; },
+    true);
+};
+
+void ProjectInfoPopup::onFameInfo(CCObject*) {
+  std::ostringstream body;
+  body << "The level '<cg>" << m_avalProject.name << "</c>' by <cy>" << m_avalPublisher << "</c> is featured in <cl>Avalanche's</c> <cy>Hall of Fame</c>. It is a special list of levels that are considered to be the best of the best from the team.";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+    "Hall of Fame",
+    resultBody.c_str(),
+    "OK", "Learn More",
+    [](auto, bool btn2) {
+      if (btn2) {
+        AVAL_LOG_INFO("Opening Hall of Fame link in browser");
+        web::openLinkInBrowser(URL_AVALANCHE);
+      } else {
+        AVAL_LOG_DEBUG("User clicked OK");
       }; },
     true);
 };
@@ -227,6 +291,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     fameIcon->setScale(0.25f);
 
     auto fameLabel = CCLabelBMFont::create("Avalanche Hall of Fame", "goldFont.fnt");
+    fameLabel->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
     fameLabel->ignoreAnchorPointForPosition(false);
     fameLabel->setAnchorPoint({ 0.5, 0.5 });
     fameLabel->setScale(0.375f);
@@ -348,27 +413,163 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   auto hostName_label = CCLabelBMFont::create(hostLabelTxt, "bigFont.fnt");
   hostName_label->setID("host-name-label");
-  hostName_label->ignoreAnchorPointForPosition(false);
   hostName_label->setAnchorPoint({ 0, 1 });
+  hostName_label->ignoreAnchorPointForPosition(false);
+  hostName_label->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
   hostName_label->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 55.f });
   hostName_label->setScale(0.25f);
 
   auto hostName = CCLabelBMFont::create(m_avalProject.host.c_str(), "goldFont.fnt");
   hostName->setID("host-name");
-  hostName->ignoreAnchorPointForPosition(false);
   hostName->setAnchorPoint({ 0, 1 });
+  hostName->ignoreAnchorPointForPosition(false);
+  hostName->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
   hostName->setPosition({ 10.f, m_mainLayer->getScaledContentHeight() - 65.f });
   hostName->setScale(0.75f);
 
   m_overlayMenu->addChild(hostName_label);
   m_overlayMenu->addChild(hostName);
 
-  auto playShowcase_label = CCLabelBMFont::create("Watch the Showcase", "chatFont.fnt");
+  AVAL_LOG_INFO("Adding showcase container to main project '{}'", m_avalProject.name);
+
+  // create showcase project button
+  AVAL_LOG_DEBUG("Creating showcase project button");
+  auto showcaseProjMenu = CCMenu::create();
+  showcaseProjMenu->setID("showcase-project-menu");
+  showcaseProjMenu->setAnchorPoint({ 0.5, 0 });
+  showcaseProjMenu->ignoreAnchorPointForPosition(false);
+  showcaseProjMenu->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, 12.5f });
+  showcaseProjMenu->setScaledContentSize({ 192.f, 108.f });
+  showcaseProjMenu->setZOrder(2);
+
+  m_clippingNode->addChild(showcaseProjMenu);
+
+  // create clipping node for showcase project
+  AVAL_LOG_DEBUG("Creating clipping node for showcase project");
+  auto showcaseProjClippingNode = CCClippingNode::create();
+  showcaseProjClippingNode->setID("clipping-node");
+  showcaseProjClippingNode->setContentSize(showcaseProjMenu->getScaledContentSize());
+  showcaseProjClippingNode->ignoreAnchorPointForPosition(false);
+  showcaseProjClippingNode->setAnchorPoint({ 0.5f, 0.5f });
+  showcaseProjClippingNode->setPosition({ showcaseProjMenu->getScaledContentWidth() / 2.f, showcaseProjMenu->getScaledContentHeight() / 2.f });
+  showcaseProjClippingNode->setStencil(CCLayerColor::create({ 250, 250, 250 }, showcaseProjMenu->getScaledContentWidth(), showcaseProjMenu->getScaledContentHeight()));;
+  showcaseProjClippingNode->setZOrder(-1);
+
+  showcaseProjMenu->addChild(showcaseProjClippingNode);
+
+  auto showcaseProjClippingNodeBg = CCScale9Sprite::create("GJ_square04.png");
+  showcaseProjClippingNodeBg->setID("background");
+  showcaseProjClippingNodeBg->setContentSize(showcaseProjClippingNode->getContentSize());
+  showcaseProjClippingNodeBg->setPosition(showcaseProjClippingNode->getPosition());
+  showcaseProjClippingNodeBg->setAnchorPoint(showcaseProjClippingNode->getAnchorPoint());
+  showcaseProjClippingNodeBg->setZOrder(-1);
+
+  showcaseProjClippingNode->addChild(showcaseProjClippingNodeBg);
+
+  // corner art deco for showcase project
+  auto corner = "rewardCorner_001.png";
+
+  auto art_bottomLeft_showcaseProj = CCSprite::createWithSpriteFrameName(corner);
+  art_bottomLeft_showcaseProj->setID("bottom-left-corner");
+  art_bottomLeft_showcaseProj->setAnchorPoint({ 0, 0 });
+  art_bottomLeft_showcaseProj->setPosition({ 0, 0 });
+  art_bottomLeft_showcaseProj->setScale(0.75f);
+  art_bottomLeft_showcaseProj->setFlipX(false);
+  art_bottomLeft_showcaseProj->setFlipY(false);
+  art_bottomLeft_showcaseProj->setZOrder(4);
+
+  showcaseProjClippingNode->addChild(art_bottomLeft_showcaseProj);
+
+  auto art_bottomRight_showcaseProj = CCSprite::createWithSpriteFrameName(corner);
+  art_bottomRight_showcaseProj->setID("bottom-right-corner");
+  art_bottomRight_showcaseProj->setAnchorPoint({ 1, 0 });
+  art_bottomRight_showcaseProj->setPosition({ showcaseProjClippingNode->getScaledContentWidth(), 0 });
+  art_bottomRight_showcaseProj->setScale(0.75f);
+  art_bottomRight_showcaseProj->setFlipX(true);
+  art_bottomRight_showcaseProj->setFlipY(false);
+  art_bottomRight_showcaseProj->setZOrder(4);
+
+  showcaseProjClippingNode->addChild(art_bottomRight_showcaseProj);
+
+  auto art_topLeft_showcaseProj = CCSprite::createWithSpriteFrameName(corner);
+  art_topLeft_showcaseProj->setID("top-left-corner");
+  art_topLeft_showcaseProj->setAnchorPoint({ 0, 1 });
+  art_topLeft_showcaseProj->setPosition({ 0, showcaseProjClippingNode->getScaledContentHeight() });
+  art_topLeft_showcaseProj->setScale(0.75f);
+  art_topLeft_showcaseProj->setFlipX(false);
+  art_topLeft_showcaseProj->setFlipY(true);
+  art_topLeft_showcaseProj->setZOrder(4);
+
+  showcaseProjClippingNode->addChild(art_topLeft_showcaseProj);
+
+  auto art_topRight_showcaseProj = CCSprite::createWithSpriteFrameName(corner);
+  art_topRight_showcaseProj->setID("top-right-corner");
+  art_topRight_showcaseProj->setAnchorPoint({ 1, 1 });
+  art_topRight_showcaseProj->setPosition({ showcaseProjClippingNode->getScaledContentWidth(), showcaseProjClippingNode->getScaledContentHeight() });
+  art_topRight_showcaseProj->setScale(0.75f);
+  art_topRight_showcaseProj->setFlipX(true);
+  art_topRight_showcaseProj->setFlipY(true);
+  art_topRight_showcaseProj->setZOrder(4);
+
+  showcaseProjClippingNode->addChild(art_topRight_showcaseProj);
+
+  // create thumbnail lazy sprite for showcase project
+  if (AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-thumb")) {
+    AVAL_LOG_DEBUG("Creating thumbnail lazy sprite for showcase project '{}'", m_avalProject.name);
+    LazySprite* showcaseProjThumb = LazySprite::create(showcaseProjMenu->getScaledContentSize(), true);
+    showcaseProjThumb->setID("thumbnail");
+    showcaseProjThumb->setAnchorPoint({ 0.5, 0.5 });
+    showcaseProjThumb->ignoreAnchorPointForPosition(false);
+    showcaseProjThumb->setPosition({ showcaseProjMenu->getScaledContentWidth() / 2.f, showcaseProjMenu->getScaledContentHeight() / 2.f });
+    showcaseProjThumb->setScale(0.5f);
+
+    showcaseProjThumb->setLoadCallback([showcaseProjThumb, showcaseProjClippingNode](Result<> res) {
+      if (res.isOk()) {
+        AVAL_LOG_INFO("Showcase project thumbnail loaded successfully");
+
+        showcaseProjThumb->setScale(1.f);
+        showcaseProjThumb->setScale(showcaseProjClippingNode->getScaledContentHeight() / showcaseProjThumb->getScaledContentHeight());
+
+        showcaseProjThumb->setPosition(showcaseProjClippingNode->getPosition());
+        showcaseProjThumb->ignoreAnchorPointForPosition(false);
+        showcaseProjThumb->setColor({ 125, 125, 125 });
+        showcaseProjThumb->setOpacity(125);
+      } else {
+        AVAL_LOG_ERROR("Failed to load showcase project thumbnail: {}", res.unwrapErr());
+        showcaseProjThumb->removeMeAndCleanup();
+      };
+                                       });
+
+    std::string encodedShowcaseUrl = url_encode(m_avalProject.showcase); // encode the showcase url for use in the thumbnail url
+    std::string showcaseProjThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/yt-thumbnails?url={}", (std::string)encodedShowcaseUrl); // custom thumbnail
+
+    AVAL_LOG_DEBUG("Getting showcase project thumbnail at {}...", (std::string)showcaseProjThumbURL);
+    showcaseProjThumb->loadFromUrl(showcaseProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
+    if (showcaseProjThumb) showcaseProjClippingNode->addChild(showcaseProjThumb);
+  } else {
+    AVAL_LOG_DEBUG("Showcase project thumbnail setting is disabled, not adding thumbnail to showcase containered project container");
+  };
+
+  // set border
+  auto showcaseProjBorder = CCScale9Sprite::create("GJ_square07.png");
+  showcaseProjBorder->setID("border");
+  showcaseProjBorder->setPosition(showcaseProjClippingNode->getPosition());
+  showcaseProjBorder->setContentSize(showcaseProjClippingNode->getScaledContentSize());
+  showcaseProjBorder->ignoreAnchorPointForPosition(false);
+  showcaseProjBorder->setAnchorPoint({ 0.5f, 0.5f });
+  showcaseProjBorder->setZOrder(3);
+
+  // add border to clipping node
+  showcaseProjClippingNode->addChild(showcaseProjBorder);
+
+  auto playShowcase_label = CCLabelBMFont::create("Watch the\nShowcase", "bigFont.fnt");
   playShowcase_label->setID("play-showcase-label");
-  playShowcase_label->ignoreAnchorPointForPosition(false);
+  playShowcase_label->setScale(0.5f);
   playShowcase_label->setAnchorPoint({ 0.5, 0.5 });
-  playShowcase_label->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, 60.f });
-  playShowcase_label->setScale(1.f);
+  playShowcase_label->ignoreAnchorPointForPosition(false);
+  playShowcase_label->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
+  playShowcase_label->setPosition({ showcaseProjMenu->getScaledContentWidth() / 2.f, 75.f });
+  playShowcase_label->setZOrder(3);
 
   auto playShowcase_sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
   playShowcase_sprite->setScale(0.5f);
@@ -377,11 +578,12 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
     playShowcase_sprite,
     this,
     menu_selector(ProjectInfoPopup::onPlayShowcase));
-  playShowcase->setID("play-showcase-button");
-  playShowcase->setPosition({ m_mainLayer->getScaledContentWidth() / 2.f, 30.f });
+  playShowcase->setID("play-showcase");
+  playShowcase->setPosition({ showcaseProjMenu->getScaledContentWidth() / 2.f, 37.5f });
+  playShowcase->setZOrder(4);
 
-  m_overlayMenu->addChild(playShowcase_label);
-  m_overlayMenu->addChild(playShowcase);
+  showcaseProjMenu->addChild(playShowcase_label);
+  showcaseProjMenu->addChild(playShowcase);
 
   // project thumbnail
   if (AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-thumb")) {
@@ -405,13 +607,6 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
         projThumb->ignoreAnchorPointForPosition(false);
         projThumb->setColor({ 125, 125, 125 });
         projThumb->setOpacity(125);
-
-        if (m_avalProject.thumbnail.empty()) {
-          projThumb->setPosition({ 0, 0 });
-          projThumb->setAnchorPoint({ 0, 0 });
-        } else {
-          AVAL_LOG_DEBUG("Custom thumbnail loaded, keeping position to center");
-        };
       } else {
         AVAL_LOG_ERROR("Failed to get project thumbnail, {}", res.unwrapErr());
         projThumb->removeMeAndCleanup();
@@ -429,12 +624,12 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
   if (m_avalProject.link_to_main.enabled) {
     AVAL_LOG_DEBUG("Project '{}' has a link to the main project", m_avalProject.name);
-    auto linkedProj = avalHandler->GetProject(m_avalProject.link_to_main.level_id);
+    m_linkedProject = avalHandler->GetProject(m_avalProject.link_to_main.level_id);
 
-    if (linkedProj.type == Project::Type::NONE) {
+    if (m_linkedProject.type == Project::Type::NONE) {
       AVAL_LOG_ERROR("Failed to get linked project with ID {}", m_avalProject.link_to_main.level_id);
     } else {
-      AVAL_LOG_INFO("Adding link to main project '{}'", linkedProj.name);
+      AVAL_LOG_INFO("Adding link to main project '{}'", m_linkedProject.name);
 
       // create linked project button
       AVAL_LOG_DEBUG("Creating linked project button");
@@ -444,6 +639,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       linkedProjMenu->ignoreAnchorPointForPosition(false);
       linkedProjMenu->setPosition({ m_mainLayer->getScaledContentWidth() - 25.f, m_mainLayer->getScaledContentHeight() - 55.f });
       linkedProjMenu->setScaledContentSize({ 150.f, 81.f });
+      linkedProjMenu->setZOrder(2);
 
       m_clippingNode->addChild(linkedProjMenu);
 
@@ -454,7 +650,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       auto linkedProjInfoBtn = CCMenuItemSpriteExtra::create(
         linkedProjInfoBtnSprite,
         this,
-        menu_selector(ProjectInfoPopup::infoPopup));
+        menu_selector(ProjectInfoPopup::infoPopupLinked));
       linkedProjInfoBtn->setID("info-button");
       linkedProjInfoBtn->setPosition({ linkedProjMenu->getScaledContentWidth() - 6.25f, linkedProjMenu->getScaledContentHeight() - 6.25f });
       linkedProjInfoBtn->setZOrder(126);
@@ -474,7 +670,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       linkedProjMenu->addChild(linkedProjClippingNode);
 
-      auto linkedProjClippingNodeBg = CCScale9Sprite::create("GJ_square01.png");
+      auto linkedProjClippingNodeBg = CCScale9Sprite::create("GJ_square02.png");
       linkedProjClippingNodeBg->setID("background");
       linkedProjClippingNodeBg->setContentSize(linkedProjClippingNode->getContentSize());
       linkedProjClippingNodeBg->setPosition(linkedProjClippingNode->getPosition());
@@ -532,7 +728,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       // create thumbnail lazy sprite for linked project
       if (AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-thumb")) {
-        AVAL_LOG_DEBUG("Creating thumbnail lazy sprite for linked project '{}'", linkedProj.name);
+        AVAL_LOG_DEBUG("Creating thumbnail lazy sprite for linked project '{}'", m_linkedProject.name);
         LazySprite* linkedProjThumb = LazySprite::create(linkedProjMenu->getScaledContentSize(), true);
         linkedProjThumb->setID("thumbnail");
         linkedProjThumb->setAnchorPoint({ 0.5, 0.5 });
@@ -557,7 +753,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
           };
                                          });
 
-        std::string encodedShowcaseUrl = url_encode(linkedProj.showcase); // encode the showcase url for use in the thumbnail url
+        std::string encodedShowcaseUrl = url_encode(m_linkedProject.showcase); // encode the showcase url for use in the thumbnail url
         std::string linkedProjThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/yt-thumbnails?url={}", (std::string)encodedShowcaseUrl); // custom thumbnail
 
         AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", (std::string)linkedProjThumbURL);
@@ -588,7 +784,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       auto linkedProjShowcase = CCMenuItemSpriteExtra::create(
         linkedProjShowcase_sprite,
         this,
-        menu_selector(ProjectInfoPopup::onPlayShowcase));
+        menu_selector(ProjectInfoPopup::onPlayShowcaseLinked));
       linkedProjShowcase->setID("button");
       linkedProjShowcase->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, 25.f });
 
@@ -598,6 +794,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       AVAL_LOG_DEBUG("Creating label for linked project showcase");
       auto linkedProjLabel = CCLabelBMFont::create("Play Now!", "bigFont.fnt");
       linkedProjLabel->setID("label");
+      linkedProjLabel->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
       linkedProjLabel->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 10.f });
       linkedProjLabel->setScale(0.25f);
 
@@ -605,9 +802,10 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
       // create name text label for linked project name
       AVAL_LOG_DEBUG("Creating label for linked project name");
-      auto linkedProjName = CCLabelBMFont::create(linkedProj.name.c_str(), "goldFont.fnt");
+      auto linkedProjName = CCLabelBMFont::create(m_linkedProject.name.c_str(), "goldFont.fnt");
       linkedProjName->setID("name");
-      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 20.f });
+      linkedProjName->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
+      linkedProjName->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 25.f });
       linkedProjName->setScale(0.625f);
 
       linkedProjMenu->addChild(linkedProjName);

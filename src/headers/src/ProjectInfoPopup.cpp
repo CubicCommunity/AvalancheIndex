@@ -38,6 +38,70 @@ inline std::string url_encode(const std::string& value) {
   return escaped.str();
 }
 
+void ProjectInfoPopup::doInfo(Project proj) {
+  std::ostringstream typeOfProj;
+
+  switch (proj.type) {
+  case Project::Type::TEAM:
+    typeOfProj << "a <cg>team project</c> hosted by <cy>" << proj.host << "</c>";
+    break;
+
+  case Project::Type::COLLAB:
+    typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
+    break;
+
+  case Project::Type::EVENT:
+    typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
+    break;
+
+  case Project::Type::SOLO:
+    typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
+    break;
+
+  default:
+    typeOfProj << "an official <cl>Avalanche</c> project";
+    break;
+  };
+
+  std::ostringstream body;
+  body << "<cy>" << m_avalPublisher << "</c> - '<cg>" << proj.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+    proj.name.c_str(),
+    resultBody.c_str(),
+    "OK", "Watch",
+    [proj](auto, bool btn2) {
+      if (btn2) {
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", proj.showcase);
+        web::openLinkInBrowser(proj.showcase);
+      } else {
+        AVAL_LOG_DEBUG("User clicked OK");
+      }; },
+    true);
+};
+
+void ProjectInfoPopup::doShowcase(Project proj) {
+  std::ostringstream body;
+  body << "Watch the full showcase video for <cy>" << m_linkedPublisher << "</c> - '<cg>" << proj.name << "</c>'?";
+
+  std::string resultBody = body.str();
+
+  createQuickPopup(
+    proj.name.c_str(),
+    resultBody.c_str(),
+    "Cancel", "Watch",
+    [proj](auto, bool btn2) {
+      if (btn2) {
+        AVAL_LOG_INFO("Opening showcase link in browser: {}", proj.showcase);
+        web::openLinkInBrowser(proj.showcase);
+      } else {
+        AVAL_LOG_DEBUG("User clicked Cancel");
+      }; },
+    true);
+};
+
 ProjectInfoPopup* ProjectInfoPopup::create() {
   auto ret = new ProjectInfoPopup;
   if (ret->initAnchored(440, 290)) {
@@ -50,131 +114,19 @@ ProjectInfoPopup* ProjectInfoPopup::create() {
 };
 
 void ProjectInfoPopup::infoPopup(CCObject*) {
-  std::ostringstream typeOfProj;
-
-  switch (m_avalProject.type) {
-  case Project::Type::TEAM:
-    typeOfProj << "a <cg>team project</c> hosted by <cy>" << m_avalProject.host << "</c>";
-    break;
-
-  case Project::Type::COLLAB:
-    typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
-    break;
-
-  case Project::Type::EVENT:
-    typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
-    break;
-
-  case Project::Type::SOLO:
-    typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
-    break;
-
-  default:
-    typeOfProj << "an official <cl>Avalanche</c> project";
-    break;
-  };
-
-  std::ostringstream body;
-  body << "<cy>" << m_avalPublisher << "</c> - '<cg>" << m_avalProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
-
-  std::string resultBody = body.str();
-
-  createQuickPopup(
-    m_avalProject.name.c_str(),
-    resultBody.c_str(),
-    "OK", "Watch",
-    [this](auto, bool btn2) {
-      if (btn2) {
-        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase);
-        web::openLinkInBrowser(this->m_avalProject.showcase);
-      } else {
-        AVAL_LOG_DEBUG("User clicked OK");
-      }; },
-    true);
+  doInfo(m_avalProject);
 };
 
 void ProjectInfoPopup::onPlayShowcase(CCObject*) {
-  std::ostringstream body;
-  body << "Watch the full showcase video for <cy>" << m_linkedPublisher << "</c> - '<cg>" << m_avalProject.name << "</c>'?";
-
-  std::string resultBody = body.str();
-
-  createQuickPopup(
-    m_avalProject.name.c_str(),
-    resultBody.c_str(),
-    "Cancel", "Watch",
-    [this](auto, bool btn2) {
-      if (btn2) {
-        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_avalProject.showcase);
-        web::openLinkInBrowser(this->m_avalProject.showcase);
-      } else {
-        AVAL_LOG_DEBUG("User clicked Cancel");
-      }; },
-    true);
+  doShowcase(m_avalProject);
 };
 
 void ProjectInfoPopup::infoPopupLinked(CCObject*) {
-  std::ostringstream typeOfProj;
-
-  switch (m_linkedProject.type) {
-  case Project::Type::TEAM:
-    typeOfProj << "a <cg>team project</c> hosted by <cy>" << m_linkedProject.host << "</c>";
-    break;
-
-  case Project::Type::COLLAB:
-    typeOfProj << "a <cb>collaboration project</c> hosted by <cl>Avalanche</c>. One or more guest creators partook in the creation of this level";
-    break;
-
-  case Project::Type::EVENT:
-    typeOfProj << "an <cs>event level</c>. It is the winner of a public or private event hosted by <cl>Avalanche</c>";
-    break;
-
-  case Project::Type::SOLO:
-    typeOfProj << "a <co>featured solo level</c>. A member of <cl>Avalanche</c> created this level on their own";
-    break;
-
-  default:
-    typeOfProj << "an official <cl>Avalanche</c> project";
-    break;
-  };
-
-  std::ostringstream body;
-  body << "<cy>" << m_linkedPublisher << "</c> - '<cg>" << m_linkedProject.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
-
-  std::string resultBody = body.str();
-
-  createQuickPopup(
-    m_linkedProject.name.c_str(),
-    resultBody.c_str(),
-    "OK", "Watch",
-    [this](auto, bool btn2) {
-      if (btn2) {
-        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_linkedProject.showcase);
-        web::openLinkInBrowser(this->m_linkedProject.showcase);
-      } else {
-        AVAL_LOG_DEBUG("User clicked OK");
-      }; },
-    true);
+  doInfo(m_linkedProject);
 };
 
 void ProjectInfoPopup::onPlayShowcaseLinked(CCObject*) {
-  std::ostringstream body;
-  body << "Watch the full showcase video for <cy>" << m_linkedPublisher << "</c> - '<cg>" << m_linkedProject.name << "</c>'?";
-
-  std::string resultBody = body.str();
-
-  createQuickPopup(
-    m_linkedProject.name.c_str(),
-    resultBody.c_str(),
-    "Cancel", "Watch",
-    [this](auto, bool btn2) {
-      if (btn2) {
-        AVAL_LOG_INFO("Opening showcase link in browser: {}", this->m_linkedProject.showcase);
-        web::openLinkInBrowser(this->m_linkedProject.showcase);
-      } else {
-        AVAL_LOG_DEBUG("User clicked Cancel");
-      }; },
-    true);
+  doShowcase(m_linkedProject);
 };
 
 void ProjectInfoPopup::onFameInfo(CCObject*) {

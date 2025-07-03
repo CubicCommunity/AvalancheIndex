@@ -4,8 +4,8 @@
 #### Changes
 - **Updated** Geode compatibility to version `4.6.3`
 - **Added** promotional container for parent Team Project, if any, in information pop-up for independent levels
-- **Reworked** showcase menu in Team Project information pop-up
-- **Fixed** thumbnail error for Team levels in Team Project information pop-up
+- **Reworked** level showcase menu in Team Project information pop-up
+- **Fixed** thumbnail loading error for Team levels in Team Project information pop-up
 - Team Projects may now show a customized thumbnail on the Team Project information pop-up
 
 #### Developers

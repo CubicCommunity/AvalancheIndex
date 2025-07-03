@@ -15,7 +15,6 @@ public:
   ProjectInfoPopup* setProject(GJGameLevel* level);
 
   void show() override;
-
 protected:
   std::string m_avalPublisher = "Avalanche";
   std::string m_linkedPublisher = "Avalanche";
@@ -29,6 +28,9 @@ protected:
   CCMenu* m_overlayMenu;
 
   CCClippingNode* m_clippingNode;
+
+  void doInfo(Project proj);
+  void doShowcase(Project proj);
 
   void infoPopup(CCObject*);
   void settingsPopup(CCObject*);

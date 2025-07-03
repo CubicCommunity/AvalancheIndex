@@ -38,7 +38,7 @@ inline std::string url_encode(const std::string& value) {
   return escaped.str();
 }
 
-void ProjectInfoPopup::doInfo(Project proj) {
+void ProjectInfoPopup::doInfo(Project proj, std::string publisher) {
   std::ostringstream typeOfProj;
 
   switch (proj.type) {
@@ -64,7 +64,7 @@ void ProjectInfoPopup::doInfo(Project proj) {
   };
 
   std::ostringstream body;
-  body << "<cy>" << m_avalPublisher << "</c> - '<cg>" << proj.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
+  body << "<cy>" << publisher << "</c> - '<cg>" << proj.name << "</c>' is " << typeOfProj.str() << ". You can watch its showcase here.";
 
   std::string resultBody = body.str();
 
@@ -82,9 +82,9 @@ void ProjectInfoPopup::doInfo(Project proj) {
     true);
 };
 
-void ProjectInfoPopup::doShowcase(Project proj) {
+void ProjectInfoPopup::doShowcase(Project proj, std::string publisher) {
   std::ostringstream body;
-  body << "Watch the full showcase video for <cy>" << m_linkedPublisher << "</c> - '<cg>" << proj.name << "</c>'?";
+  body << "Watch the full showcase video for <cy>" << publisher << "</c> - '<cg>" << proj.name << "</c>'?";
 
   std::string resultBody = body.str();
 
@@ -114,19 +114,19 @@ ProjectInfoPopup* ProjectInfoPopup::create() {
 };
 
 void ProjectInfoPopup::infoPopup(CCObject*) {
-  doInfo(m_avalProject);
+  ProjectInfoPopup::doInfo(m_avalProject, m_avalPublisher);
 };
 
 void ProjectInfoPopup::onPlayShowcase(CCObject*) {
-  doShowcase(m_avalProject);
+  ProjectInfoPopup::doShowcase(m_avalProject, m_avalPublisher);
 };
 
 void ProjectInfoPopup::infoPopupLinked(CCObject*) {
-  doInfo(m_linkedProject);
+  ProjectInfoPopup::doInfo(m_linkedProject, m_linkedPublisher);
 };
 
 void ProjectInfoPopup::onPlayShowcaseLinked(CCObject*) {
-  doShowcase(m_linkedProject);
+  ProjectInfoPopup::doShowcase(m_linkedProject, m_linkedPublisher);
 };
 
 void ProjectInfoPopup::onFameInfo(CCObject*) {

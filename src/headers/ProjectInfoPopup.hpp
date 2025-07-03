@@ -29,8 +29,8 @@ protected:
 
   CCClippingNode* m_clippingNode;
 
-  void doInfo(Project proj);
-  void doShowcase(Project proj);
+  void doInfo(Project proj, std::string publisher);
+  void doShowcase(Project proj, std::string publisher);
 
   void infoPopup(CCObject*);
   void settingsPopup(CCObject*);

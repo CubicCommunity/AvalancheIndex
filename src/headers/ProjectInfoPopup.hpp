@@ -15,12 +15,13 @@ public:
   ProjectInfoPopup* setProject(GJGameLevel* level);
 
   void show() override;
-
 protected:
   std::string m_avalPublisher = "Avalanche";
+  std::string m_linkedPublisher = "Avalanche";
   std::string m_cornerArtType = "rewardCorner_001.png";
 
   Project m_avalProject;
+  Project m_linkedProject;
 
   GJGameLevel* m_level;
 
@@ -28,12 +29,18 @@ protected:
 
   CCClippingNode* m_clippingNode;
 
+  void doInfo(Project proj, std::string publisher);
+  void doShowcase(Project proj, std::string publisher);
+
   void infoPopup(CCObject*);
   void settingsPopup(CCObject*);
 
   void onFameInfo(CCObject*);
 
   void onPlayShowcase(CCObject*);
+
+  void infoPopupLinked(CCObject*);
+  void onPlayShowcaseLinked(CCObject*);
 
   bool setup() override;
 };

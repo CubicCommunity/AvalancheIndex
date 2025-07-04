@@ -116,7 +116,7 @@ bool AvalancheFeatured::setup() {
   art_bottomLeft->setID("bottom-left-corner");
   art_bottomLeft->setAnchorPoint({ 0, 0 });
   art_bottomLeft->setPosition({ 0, 0 });
-  art_bottomLeft->setScale(1.250);
+  art_bottomLeft->setScale(1.250f);
   art_bottomLeft->setFlipX(false);
   art_bottomLeft->setFlipY(false);
   art_bottomLeft->setZOrder(0);
@@ -127,7 +127,7 @@ bool AvalancheFeatured::setup() {
   art_bottomRight->setID("bottom-right-corner");
   art_bottomRight->setAnchorPoint({ 1, 0 });
   art_bottomRight->setPosition({ m_overlayMenu->getScaledContentWidth(), 0 });
-  art_bottomRight->setScale(1.250);
+  art_bottomRight->setScale(1.250f);
   art_bottomRight->setFlipX(true);
   art_bottomRight->setFlipY(false);
   art_bottomLeft->setZOrder(0);
@@ -138,7 +138,7 @@ bool AvalancheFeatured::setup() {
   art_topLeft->setID("top-left-corner");
   art_topLeft->setAnchorPoint({ 0, 1 });
   art_topLeft->setPosition({ 0, m_overlayMenu->getScaledContentHeight() });
-  art_topLeft->setScale(1.250);
+  art_topLeft->setScale(1.250f);
   art_topLeft->setFlipX(false);
   art_topLeft->setFlipY(true);
   art_topLeft->setZOrder(0);
@@ -149,7 +149,7 @@ bool AvalancheFeatured::setup() {
   art_topRight->setID("top-right-corner");
   art_topRight->setAnchorPoint({ 1, 1 });
   art_topRight->setPosition({ m_overlayMenu->getScaledContentWidth(), m_overlayMenu->getScaledContentHeight() });
-  art_topRight->setScale(1.250);
+  art_topRight->setScale(1.250f);
   art_topRight->setFlipX(true);
   art_topRight->setFlipY(true);
   art_topRight->setZOrder(0);
@@ -209,7 +209,7 @@ bool AvalancheFeatured::setup() {
   projThumb->setPosition({ m_mainLayer->getContentWidth() / 2.f, m_mainLayer->getContentHeight() / 2.f });
 
   projThumb->setLoadCallback([this, projThumb](Result<> res) {
-    if (res) {
+    if (res.isOk()) {
       // Success: scale and position the sprite
       AVAL_LOG_INFO("Sprite loaded successfully");
     } else {
@@ -223,7 +223,7 @@ bool AvalancheFeatured::setup() {
     projThumb->setScale(scale);
                              });
 
-  projThumb->loadFromUrl("https://gh.cubicstudios.xyz/WebLPS/aval-project/thumbnail.png", LazySprite::Format::kFmtUnKnown, false);
+  projThumb->loadFromUrl("https://api.cubicstudios.xyz/avalanche/v1/featured/thumbnail", LazySprite::Format::kFmtUnKnown, false);
   m_clippingNode->addChild(projThumb);
 
   if (AVAL_GEODE_MOD->getSettingValue<bool>("dev-mode")) {

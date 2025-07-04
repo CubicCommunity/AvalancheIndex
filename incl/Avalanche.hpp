@@ -20,53 +20,76 @@ namespace avalanche { // Avalanche Index mod namespace
 
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 
-    constexpr const char* URL_CUBIC = "https://www.cubicstudios.xyz/";           // URL to Cubic Studios's official website
+    constexpr const char* URL_CUBIC = "https://www.cubicstudios.xyz/"; // URL to Cubic Studios's official website
     constexpr const char* URL_AVALANCHE = "https://avalanche.cubicstudios.xyz/"; // URL to Avalanche's official website
 
-    constexpr const char* URL_API_BADGES = "https://gh.cubicstudios.xyz/WebLPS/data/avalProfiles.json"; // URL to remote JSON file containing all data on profiles
-    constexpr const char* URL_API_LEVELS = "https://gh.cubicstudios.xyz/WebLPS/data/avalProjects.json"; // URL to remote JSON file containing all data on projects
+    constexpr const char* URL_API_BADGES = "https://api.cubicstudios.xyz/avalanche/v1/profiles"; // URL to remote JSON file containing all data on profiles
+    constexpr const char* URL_API_LEVELS = "https://api.cubicstudios.xyz/avalanche/v1/projects"; // URL to remote JSON file containing all data on projects
 
     constexpr const char* und = "undefined";
     constexpr const char* err = "404: Not Found";
 
+    // Profile class
     class Profile {
     public:
         enum class Badge {
-            NONE,         // No badge
-            CUBIC,        // Staff of Cubic Studios
-            DIRECTOR,     // Leads the whole team
-            MANAGER,      // Helps keep things in check
-            MEMBER,       // Participates in projects
+            NONE, // No badge
+            CUBIC, // Staff of Cubic Studios
+            DIRECTOR, // Leads the whole team
+            MANAGER, // Helps keep things in check
+            MEMBER, // Participates in projects
             COLLABORATOR, // Non-members of the team who also worked on a project
         };
 
         static std::map<std::string, Badge> profileBadgeEnum; // Convert a string to a Badge enum
 
         std::string name; // Official pseudonym of the member
-        Badge badge;      // ID of the member's badge
+        Badge badge; // ID of the member's badge
 
-        Profile(std::string n = "Name", Badge b = Badge::NONE) : name(n), badge(b) {};
+        Profile(
+            std::string n = "Name",
+            Badge b = Badge::NONE
+        ) : name(n), badge(b) {};
     };
 
+    // Avalanche project class
     class Project {
     public:
         enum class Type {
-            NONE,   // Not a project
-            SOLO,   // A project that a member worked on by themself
-            TEAM,   // A project that members of the team worked on
+            NONE, // Not a project
+            SOLO, // A project that a member worked on by themself
+            TEAM, // A project that members of the team worked on
             COLLAB, // A project that involves the work of Collaborators
-            EVENT,  // A project that resulted from a public or private event hosted by Avalanche
+            EVENT, // A project that resulted from a public or private event hosted by Avalanche
+        };
+
+        // Link to the main team project
+        class LinkToMain {
+        public:
+            bool enabled; // If the link is enabled
+            int level_id; // ID of the in-game level for the linked project
         };
 
         static std::map<std::string, Type> projectTypeEnum; // Convert a string to a Type enum
 
-        std::string name;         // Official name of the level
-        std::string host;         // Team member that hosted the level
-        std::string showcase_url; // Tiny YouTube video URL of the full showcase of the level
-        Type type;                // Type of project the level is featured as
-        bool fame;                // If the level will be highlighted on lists
+        std::string name; // Official name of the level
+        std::string host; // Team member that hosted the level
+        std::string showcase; // Tiny YouTube video URL of the full showcase of the level
+        std::string thumbnail; // Imgur URL for a custom thumbnail for the level
+        Type type; // Type of project the level is featured as
+        bool fame; // If the level will be highlighted on lists
 
-        Project(std::string n = "Name", std::string h = "Host", std::string su = URL_AVALANCHE, Type t = Type::NONE, bool f = false) : name(n), host(h), showcase_url(su), type(t), fame(f) {};
+        LinkToMain link_to_main; // Optional link to the main team project
+
+        Project(
+            std::string n = "Name",
+            std::string h = "Host",
+            std::string su = URL_AVALANCHE,
+            std::string ct = "",
+            Type t = Type::NONE,
+            bool f = false,
+            LinkToMain ltm = LinkToMain()
+        ) : name(n), host(h), showcase(su), thumbnail(ct), type(t), fame(f), link_to_main(ltm) {};
     };
 
     class Handler {
@@ -81,10 +104,10 @@ namespace avalanche { // Avalanche Index mod namespace
         void scanAll();
 
         static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string ID
-        static std::map<std::string, std::string> badgeSpriteName;  // Get the sprite from the string badge ID
-        static std::map<std::string, ccColor3B> badgeColor;         // Get the color from the string badge ID
-        static std::map<std::string, std::string> badgeToAPI;       // Convert badge node ID to API ID
-        static std::map<std::string, std::string> apiToString;      // Convert API-provided string to string ID
+        static std::map<std::string, std::string> badgeSpriteName; // Get the sprite from the string badge ID
+        static std::map<std::string, ccColor3B> badgeColor; // Get the color from the string badge ID
+        static std::map<std::string, std::string> badgeToAPI; // Convert badge node ID to API ID
+        static std::map<std::string, std::string> apiToString; // Convert API-provided string to string ID
 
         // Get profile data on a player
         Profile GetProfile(int id);
@@ -103,7 +126,7 @@ namespace avalanche { // Avalanche Index mod namespace
             log::debug("Creating badge for {}...", profile.name);
 
             std::string idString = avalanche::Handler::badgeStringID[profile.badge]; // gets the string equivalent
-            bool idFailTest = idString.empty();                                      // checks the map for this value to see if its invalid
+            bool idFailTest = idString.empty(); // checks the map for this value to see if its invalid
 
             if (idFailTest) {
                 log::error("Badge is invalid.");

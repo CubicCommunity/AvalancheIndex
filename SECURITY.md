@@ -4,8 +4,10 @@
 List of versions of this mod that are currently being supported with security updates.
 
 | Version | Supported |
-| ------- | --------- |
-| 1.0.x   | ✅         |
+| ------- | :-------: |
+| 1.2.x   |     ✅     |
+| 1.1.x   |     ✅     |
+| 1.0.x   |     ❌     |
 
 ## Reporting a Vulnerability
 If you discover a security vulnerability, please follow the steps below:

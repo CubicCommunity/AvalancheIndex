@@ -187,15 +187,27 @@ namespace avalanche {
             auto c_name = cacheStd["name"].asString().unwrapOr(und);
             auto c_host = cacheStd["host"].asString().unwrapOr(und);
             auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
+            auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr("");
             auto c_type = (lType != avalanche::Project::projectTypeEnum.end()) ? lType->second : avalanche::Project::Type::NONE;
             auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
-            avalanche::Project res(c_name, c_host, c_showcase, c_type, c_fame);
+            auto c_linked = cacheStd["project"];
+            avalanche::Project::LinkToMain ltm;
+
+            if (c_linked.isObject()) {
+                ltm.enabled = c_linked["enabled"].asBool().unwrapOr(false);
+                ltm.level_id = c_linked["id"].asInt().unwrapOr(0);
+            } else {
+                ltm.enabled = false;
+                ltm.level_id = 0;
+            };
+
+            avalanche::Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
             return res;
         } else {
             log::error("Project ID is invalid");
 
-            avalanche::Project res("Name", "Host", URL_AVALANCHE, avalanche::Project::Type::NONE, false);
+            avalanche::Project res("Name", "Host", URL_AVALANCHE, "", avalanche::Project::Type::NONE, false, avalanche::Project::LinkToMain());
             return res;
         };
     };

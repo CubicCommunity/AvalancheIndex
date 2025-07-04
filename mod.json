@@ -1,5 +1,5 @@
 {
-	"geode": "4.6.2",
+	"geode": "4.6.3",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,7 +8,7 @@
 	},
 	"id": "cubicstudios.avalancheindex",
 	"name": "Avalanche Index",
-	"version": "1.1.2",
+	"version": "1.2.0",
 	"developers": [
 		"Cheeseworks"
 	],

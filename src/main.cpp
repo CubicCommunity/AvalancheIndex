@@ -1,8 +1,8 @@
 #include "./Debugger.hpp"
+#include "./ParticleHelper.hpp"
 
 #include "../incl/Avalanche.hpp"
 
-#include "./headers/ParticleHelper.hpp"
 #include "./headers/AvalancheFeatured.hpp"
 
 #include "./headers/ProjectInfoPopup.hpp"
@@ -399,7 +399,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			if (showFame) {
 				if (auto bgThumbnail = CCSprite::createWithSpriteFrameName("fame-bg.png"_spr)) {
-					bgThumbnail->setOpacity(75);
+					bgThumbnail->setOpacity(125);
 					bgThumbnail->setAnchorPoint({ 0.5, 0 });
 					bgThumbnail->ignoreAnchorPointForPosition(false);
 					bgThumbnail->setPosition({ this->getContentWidth() / 2, 0 });
@@ -977,7 +977,7 @@ class $modify(Menu, MenuLayer) {
 				}; });
 
 				auto avalReq = web::WebRequest();
-				m_fields->avalWebListener.setFilter(avalReq.get("https://gh.cubicstudios.xyz/WebLPS/aval-project/code.txt"));
+				m_fields->avalWebListener.setFilter(avalReq.get("https://api.cubicstudios.xyz/avalanche/v1/featured/code"));
 		} else {
 			AVAL_LOG_ERROR("Avalanche featured project button disabled");
 		};

@@ -28,15 +28,17 @@ inline std::string url_encode(const std::string& value) {
   std::ostringstream escaped;
   escaped.fill('0');
   escaped << std::hex;
+
   for (char c : value) {
     if (isalnum(static_cast<unsigned char>(c)) || c == '-' || c == '_' || c == '.' || c == '~') {
       escaped << c;
     } else {
       escaped << '%' << std::setw(2) << int((unsigned char)c);
-    }
-  }
+    };
+  };
+
   return escaped.str();
-}
+};
 
 void ProjectInfoPopup::doInfo(Project proj, std::string publisher) {
   std::ostringstream typeOfProj;

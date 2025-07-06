@@ -1,3 +1,13 @@
+### v1.1.2
+##### Patches
+
+#### Changes
+- **Tweaked** linked project container in Team Project information pop-up
+
+###### Latest
+---
+###### Older
+
 ## v1.2.0
 #### Team Project pop-up
 
@@ -9,10 +19,6 @@
 
 #### Developers
 - **Updated** URLs to use Cubic Studios API endpoints for all web requests
-
-###### Latest
----
-###### Older
 
 ### v1.1.2
 ##### Patches

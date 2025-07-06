@@ -230,8 +230,8 @@ bool AvalancheFeatured::setup() {
     AVAL_LOG_INFO("Dev buttons are enabled");
 
     // geode changelog popup button
-    auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-    changelogBtnSprite->setScale(0.75f);
+    auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_menuBtn_001.png");
+    changelogBtnSprite->setScale(0.625f);
 
     auto changelogBtn = CCMenuItemSpriteExtra::create(
       changelogBtnSprite,

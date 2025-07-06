@@ -1,8 +1,10 @@
-### v1.1.2
+### v1.2.1
 ##### Patches
 
 #### Changes
+- **Optimized** Avalanche project button creation in level information page
 - **Tweaked** linked project container in Team Project information pop-up
+- **Tweaked** changelog button in featured project pop-up
 
 ###### Latest
 ---

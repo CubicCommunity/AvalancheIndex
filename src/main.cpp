@@ -228,17 +228,12 @@ class $modify(LevelInfo, LevelInfoLayer) {
 				auto showProjectInfo = AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-info");
 
 				if (showProjectInfo) {
-					CCSprite* avalBtnSprite = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
-					avalBtnSprite->setScale(0.944f);
-
-					CCSprite* avalBtnSpriteIcon = CCSprite::createWithSpriteFrameName("button-logo.png"_spr);
-					avalBtnSpriteIcon->setPositionX(avalBtnSprite->getContentWidth() / 2.025f);
-					avalBtnSpriteIcon->setPositionY(avalBtnSprite->getContentHeight() / 2.f);
-					avalBtnSpriteIcon->ignoreAnchorPointForPosition(false);
-					avalBtnSpriteIcon->setAnchorPoint({ 0.5, 0.5 });
-					avalBtnSpriteIcon->setScale(0.875f);
-
-					avalBtnSprite->addChild(avalBtnSpriteIcon);
+					CCSprite* avalBtnSprite = CircleButtonSprite::createWithSpriteFrameName(
+						"button-logo.png"_spr,
+						1.25f,
+						CircleBaseColor::Green,
+						CircleBaseSize::Medium
+					);
 
 					CCMenuItemSpriteExtra* avalBtn = CCMenuItemSpriteExtra::create(
 						avalBtnSprite,

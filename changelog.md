@@ -2,9 +2,13 @@
 ##### Patches
 
 #### Changes
-- **Optimized** Avalanche project button creation in level information page
-- **Tweaked** linked project container in Team Project information pop-up
-- **Tweaked** changelog button in featured project pop-up
+- **Fixed** previews not showing with [Mod Previews](mod:alphalaneous.mod_previews) mod
+- Huge code cleanup
+- Minor optimizations
+- Several tweaks
+
+#### Developers
+- **Added** Geode and Geometry Dash version information to featured project pop-up
 
 ###### Latest
 ---

@@ -207,17 +207,17 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			bool displayCollabLayers = AVAL_GEODE_MOD->getSettingValue<bool>("collab-layers");
 
 			// get main bg color layer
-			auto bg = this->getChildByID("background");
+			auto bg = getChildByID("background");
 			auto background = as<CCSprite*>(bg);
 
 			// get level name node
-			auto nameText = this->getChildByID("title-label");
+			auto nameText = getChildByID("title-label");
 			auto levelName = dynamic_cast<CCLabelBMFont*>(nameText);
 
 			// whether or not display for classics only
 			bool onlyClassic = AVAL_GEODE_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();
 
-			CCMenu* leftMenu = typeinfo_cast<CCMenu*>(this->getChildByID("left-side-menu"));
+			CCMenu* leftMenu = typeinfo_cast<CCMenu*>(getChildByID("left-side-menu"));
 
 			Project thisProj = getHandler->GetProject(level->m_levelID.value());
 
@@ -325,8 +325,8 @@ class $modify(LevelInfo, LevelInfoLayer) {
 				bgSprite->setColor({ 66, 94, 255 });
 				bgSprite->setAnchorPoint({ 0.5, 0.5 });
 				bgSprite->ignoreAnchorPointForPosition(false);
-				bgSprite->setContentSize({ this->getScaledContentWidth(), this->getScaledContentWidth() });
-				bgSprite->setPosition({ this->getScaledContentWidth() / 2, this->getScaledContentHeight() / 2 });
+				bgSprite->setContentSize({ getScaledContentWidth(), getScaledContentWidth() });
+				bgSprite->setPosition({ getScaledContentWidth() / 2, getScaledContentHeight() / 2 });
 				bgSprite->setZOrder(background->getZOrder());
 				bgSprite->setID("team_background"_spr);
 
@@ -338,7 +338,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 					bgThumbnail->setZOrder(background->getZOrder() + 1);
 					bgThumbnail->setID("team_thumbnail"_spr);
 
-					auto ogHeight = this->getContentHeight();
+					auto ogHeight = getContentHeight();
 					auto thumbHeight = bgThumbnail->getContentHeight();
 
 					// checks if the heights are valid before rescaling
@@ -349,12 +349,12 @@ class $modify(LevelInfo, LevelInfoLayer) {
 						bgThumbnail->setScale(scaleFactor);
 					};
 
-					this->addChild(bgThumbnail);
+					addChild(bgThumbnail);
 				} else {
 					AVAL_LOG_ERROR("Failed to load sprite: project-bg.png");
 				};
 
-				this->addChild(bgSprite);
+				addChild(bgSprite);
 			} else {
 				AVAL_LOG_ERROR("Failed to load sprite: game_bg_19_001.png");
 			};
@@ -397,11 +397,11 @@ class $modify(LevelInfo, LevelInfoLayer) {
 					bgThumbnail->setOpacity(125);
 					bgThumbnail->setAnchorPoint({ 0.5, 0 });
 					bgThumbnail->ignoreAnchorPointForPosition(false);
-					bgThumbnail->setPosition({ this->getContentWidth() / 2, 0 });
+					bgThumbnail->setPosition({ getContentWidth() / 2, 0 });
 					bgThumbnail->setZOrder(background->getZOrder() + 1);
 					bgThumbnail->setID("team_thumbnail"_spr);
 
-					auto ogWidth = this->getContentWidth();
+					auto ogWidth = getContentWidth();
 					auto scaledWidth = bgThumbnail->getContentWidth();
 
 					if (ogWidth <= 0 || scaledWidth <= 0) {
@@ -413,7 +413,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 						background->setZOrder(-5);
 					};
 
-					this->addChild(bgThumbnail);
+					addChild(bgThumbnail);
 				} else {
 					AVAL_LOG_ERROR("Failed to load sprite: fame-bg.png");
 				};
@@ -427,7 +427,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 	// when player presses the avalanche button
 	void onAvalancheButton(CCObject * sender) {
-		ProjectInfoPopup::create()->setProject(this->m_level)->show();
+		ProjectInfoPopup::create()->setProject(m_level)->show();
 	};
 };
 
@@ -444,7 +444,7 @@ class $modify(Level, LevelCell) {
 		bool displayCollabCells = AVAL_GEODE_MOD->getSettingValue<bool>("collab-cells");
 
 		// get main bg color layer
-		auto color = this->getChildByType<CCLayerColor>(0);
+		auto color = getChildByType<CCLayerColor>(0);
 
 		// get level name text
 		auto nameText = m_mainLayer->getChildByID("level-name");
@@ -513,7 +513,7 @@ class $modify(Level, LevelCell) {
 				newColor->setID("solo_color"_spr);
 
 				colorNode->removeMeAndCleanup();
-				this->addChild(newColor);
+				addChild(newColor);
 
 				if (fame) Level::setFame(newColor, { 255, 255, 255 });
 			} else {
@@ -536,7 +536,7 @@ class $modify(Level, LevelCell) {
 				newColor->setID("collab_color"_spr);
 
 				colorNode->removeMeAndCleanup();
-				this->addChild(newColor);
+				addChild(newColor);
 
 				if (fame) Level::setFame(newColor, { 255, 255, 255 });
 			} else {
@@ -567,7 +567,7 @@ class $modify(Level, LevelCell) {
 				levelName->setScale(levelName->getScale() * scaleDownBy);
 
 				colorNode->removeMeAndCleanup();
-				this->addChild(newColor);
+				addChild(newColor);
 
 				if (fame) Level::setFame(newColor, { 255, 244, 95 });
 			} else {
@@ -590,7 +590,7 @@ class $modify(Level, LevelCell) {
 				newColor->setID("event_color"_spr);
 
 				colorNode->removeMeAndCleanup();
-				this->addChild(newColor);
+				addChild(newColor);
 
 				if (fame) Level::setFame(newColor, { 85, 249, 255 });
 			} else {
@@ -616,10 +616,10 @@ class $modify(Level, LevelCell) {
 					fameGlow->setID("fame"_spr);
 
 					// for compact lists
-					float reScale = (this->m_height / fameGlow->getContentHeight()) * this->getScale();
+					float reScale = (m_height / fameGlow->getContentHeight()) * getScale();
 					fameGlow->setScale(reScale);
 
-					this->addChild(fameGlow);
+					addChild(fameGlow);
 				} else {
 					AVAL_LOG_ERROR("Failed to load sprite: fame-glow.png");
 				};
@@ -642,7 +642,7 @@ class $modify(Pause, PauseLayer) {
 	void customSetup() {
 		PauseLayer::customSetup();
 
-		if (auto rightMenu = this->getChildByID("right-button-menu")) {
+		if (auto rightMenu = getChildByID("right-button-menu")) {
 			if (m_fields->m_level) {
 				Project thisProj = getHandler->GetProject(m_fields->m_level->m_levelID.value());
 
@@ -741,8 +741,8 @@ class $modify(Menu, MenuLayer) {
 				AVAL_LOG_DEBUG("Changelog alert disabled");
 			};
 
-			auto winSizeX = this->getScaledContentWidth();
-			auto winSizeY = this->getScaledContentHeight();
+			auto winSizeX = getScaledContentWidth();
+			auto winSizeY = getScaledContentHeight();
 
 			bool showAvalButton = AVAL_GEODE_MOD->getSettingValue<bool>("show-aval-featured");
 
@@ -752,7 +752,7 @@ class $modify(Menu, MenuLayer) {
 				avalMenu->setPosition({ winSizeX / 2, (winSizeY / 2) - 70.f });
 				avalMenu->setScaledContentSize({ winSizeX - 75.f, 50.f });
 
-				this->addChild(avalMenu);
+				addChild(avalMenu);
 
 				auto avalBtnSprite = CCSprite::createWithSpriteFrameName("button-logo-framed.png"_spr);
 				avalBtnSprite->ignoreAnchorPointForPosition(false);

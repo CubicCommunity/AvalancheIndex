@@ -197,7 +197,7 @@ bool AvalancheFeatured::setup() {
     infoSprite,
     this,
     menu_selector(AvalancheFeatured::openApplicationPopup));
-  m_infoBtn->setPosition({ widthCS / 2.f, 5.f });
+  m_infoBtn->setPosition({ widthCS / 2.f, 2.5f });
   m_infoBtn->setVisible(true);
   m_infoBtn->setZOrder(3);
 
@@ -229,9 +229,12 @@ bool AvalancheFeatured::setup() {
   if (AVAL_GEODE_MOD->getSettingValue<bool>("dev-mode")) {
     AVAL_LOG_INFO("Dev buttons are enabled");
 
+    // geode loader
+    auto loader = Loader::get();
+
     // geode changelog popup button
-    auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-    changelogBtnSprite->setScale(0.75f);
+    auto changelogBtnSprite = CCSprite::createWithSpriteFrameName("GJ_menuBtn_001.png");
+    changelogBtnSprite->setScale(0.625f);
 
     auto changelogBtn = CCMenuItemSpriteExtra::create(
       changelogBtnSprite,
@@ -258,6 +261,23 @@ bool AvalancheFeatured::setup() {
     verLabel->setZOrder(3);
 
     m_overlayMenu->addChild(verLabel);
+
+    // game and geode version text label
+    std::ostringstream gdVerLabelText;
+    gdVerLabelText << "Geode " << loader->getVersion().toVString(true) << " for v" << loader->getGameVersion();
+
+    auto gdVerLabelTextStr = gdVerLabelText.str();
+
+    auto gdVerLabel = CCLabelBMFont::create(gdVerLabelTextStr.c_str(), "bigFont.fnt");
+    gdVerLabel->setID("gd-version-label");
+    gdVerLabel->ignoreAnchorPointForPosition(false);
+    gdVerLabel->setPosition({ m_overlayMenu->getScaledContentWidth() - 5.f, 12.5f });
+    gdVerLabel->setAnchorPoint({ 1, 0 });
+    gdVerLabel->setOpacity(100);
+    gdVerLabel->setScale(0.25f);
+    gdVerLabel->setZOrder(3);
+
+    m_overlayMenu->addChild(gdVerLabel);
   } else {
     AVAL_LOG_DEBUG("Dev buttons are disabled");
   };

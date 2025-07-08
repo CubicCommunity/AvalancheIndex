@@ -8,7 +8,7 @@
 	},
 	"id": "cubicstudios.avalancheindex",
 	"name": "Avalanche Index",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"developers": [
 		"Cheeseworks"
 	],
@@ -18,7 +18,7 @@
 		"enhancement"
 	],
 	"links": {
-		"source": "https://www.github.com/CubicCommunity/AvalancheIndex/",
+		"source": "https://github.com/CubicCommunity/AvalancheIndex",
 		"homepage": "https://avalanche.cubicstudios.xyz/",
 		"community": "https://www.dsc.gg/cubic"
 	},

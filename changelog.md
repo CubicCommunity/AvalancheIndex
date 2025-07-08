@@ -1,3 +1,19 @@
+### v1.2.1
+##### Patches
+
+#### Changes
+- **Fixed** previews not showing with [Mod Previews](mod:alphalaneous.mod_previews) mod
+- Huge code cleanup
+- Minor optimizations
+- Several tweaks
+
+#### Developers
+- **Added** Geode and Geometry Dash version information to featured project pop-up
+
+###### Latest
+---
+###### Older
+
 ## v1.2.0
 #### Team Project pop-up
 
@@ -9,10 +25,6 @@
 
 #### Developers
 - **Updated** URLs to use Cubic Studios API endpoints for all web requests
-
-###### Latest
----
-###### Older
 
 ### v1.1.2
 ##### Patches

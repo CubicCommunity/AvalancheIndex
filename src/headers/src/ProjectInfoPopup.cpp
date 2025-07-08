@@ -699,8 +699,8 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
             linkedProjThumb->setPosition(linkedProjClippingNode->getPosition());
             linkedProjThumb->ignoreAnchorPointForPosition(false);
-            linkedProjThumb->setColor({ 250, 250, 250 });
-            linkedProjThumb->setOpacity(250);
+            linkedProjThumb->setColor({ 175, 175, 175 });
+            linkedProjThumb->setOpacity(175);
           } else {
             AVAL_LOG_ERROR("Failed to load linked project thumbnail: {}", res.unwrapErr());
             linkedProjThumb->removeMeAndCleanup();
@@ -749,7 +749,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       auto linkedProjLabel = CCLabelBMFont::create("Play Now!", "bigFont.fnt");
       linkedProjLabel->setID("label");
       linkedProjLabel->setAlignment(CCTextAlignment::kCCTextAlignmentCenter);
-      linkedProjLabel->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 10.f });
+      linkedProjLabel->setPosition({ linkedProjMenu->getScaledContentWidth() / 2.f, linkedProjMenu->getScaledContentHeight() - 12.5f });
       linkedProjLabel->setScale(0.25f);
 
       linkedProjMenu->addChild(linkedProjLabel);

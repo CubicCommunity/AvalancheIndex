@@ -1,5 +1,6 @@
 #include "../Avalanche.hpp"
 
+#include <algorithm>
 #include <string>
 #include <chrono>
 #include <map>
@@ -28,51 +29,90 @@ namespace avalanche {
     EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
     EventListener<web::WebTask> levelListReq; // Web request listener for team project data
 
-    std::map<std::string, Profile::Badge> Profile::profileBadgeEnum{
-        {"cubic-studios-badge"_spr, Profile::Badge::CUBIC},
-        {"director-badge"_spr, Profile::Badge::DIRECTOR},
-        {"team-manager-badge"_spr, Profile::Badge::MANAGER},
-        {"team-member-badge"_spr, Profile::Badge::MEMBER},
-        {"collaborator-badge"_spr, Profile::Badge::COLLABORATOR},
+    const char* Handler::Badges::getBadgeID(Profile::Badge badge) {
+        switch (badge) {
+        case Profile::Badge::CUBIC: return teamStrings::Profiles::Nodes::Cubic;
+        case Profile::Badge::DIRECTOR: return teamStrings::Profiles::Nodes::Director;
+        case Profile::Badge::MANAGER: return teamStrings::Profiles::Nodes::Manager;
+        case Profile::Badge::MEMBER: return teamStrings::Profiles::Nodes::Member;
+        case Profile::Badge::COLLABORATOR: return teamStrings::Profiles::Nodes::Collaborator;
+
+        default: return nullptr;
+        };
+
+        return nullptr;
     };
 
-    std::map<std::string, Project::Type> Project::projectTypeEnum{
-        {"solo", Project::Type::SOLO},
-        {"team", Project::Type::TEAM},
-        {"collab", Project::Type::COLLAB},
-        {"event", Project::Type::EVENT},
+    Profile::Badge Handler::Badges::fromBadgeID(const std::string& id) {
+        auto i = id.c_str();
+
+        if (i == teamStrings::Profiles::Nodes::Cubic) return Profile::Badge::CUBIC;
+        if (i == teamStrings::Profiles::Nodes::Director) return Profile::Badge::DIRECTOR;
+        if (i == teamStrings::Profiles::Nodes::Manager) return Profile::Badge::MANAGER;
+        if (i == teamStrings::Profiles::Nodes::Member) return Profile::Badge::MEMBER;
+        if (i == teamStrings::Profiles::Nodes::Collaborator) return Profile::Badge::COLLABORATOR;
+
+        return Profile::Badge::NONE;
     };
 
-    std::map<Profile::Badge, std::string> Handler::badgeStringID{
-        {Profile::Badge::CUBIC, "cubic-studios-badge"_spr},
-        {Profile::Badge::DIRECTOR, "director-badge"_spr},
-        {Profile::Badge::MANAGER, "team-manager-badge"_spr},
-        {Profile::Badge::MEMBER, "team-member-badge"_spr},
-        {Profile::Badge::COLLABORATOR, "collaborator-badge"_spr},
+    const char* Handler::Badges::getSpriteName(Profile::Badge badge) {
+        switch (badge) {
+        case Profile::Badge::CUBIC: return teamStrings::Profiles::Sprites::Cubic;
+        case Profile::Badge::DIRECTOR: return teamStrings::Profiles::Sprites::Director;
+        case Profile::Badge::MANAGER: return teamStrings::Profiles::Sprites::Manager;
+        case Profile::Badge::MEMBER: return teamStrings::Profiles::Sprites::Member;
+        case Profile::Badge::COLLABORATOR: return teamStrings::Profiles::Sprites::Collaborator;
+
+        default: return nullptr;
+        };
+
+        return nullptr;
     };
 
-    std::map<std::string, std::string> Handler::badgeSpriteName{
-        {Handler::badgeStringID[Profile::Badge::CUBIC], "cubic-studios.png"_spr},
-        {Handler::badgeStringID[Profile::Badge::DIRECTOR], "director.png"_spr},
-        {Handler::badgeStringID[Profile::Badge::MANAGER], "team-manager.png"_spr},
-        {Handler::badgeStringID[Profile::Badge::MEMBER], "team-member.png"_spr},
-        {Handler::badgeStringID[Profile::Badge::COLLABORATOR], "collaborator.png"_spr},
+    ccColor3B Handler::Badges::getBadgeColor(Profile::Badge badge) {
+        switch (badge) {
+        case Profile::Badge::CUBIC: return AVAL_MOD->getSettingValue<ccColor3B>("com-cubic");
+        case Profile::Badge::DIRECTOR: return AVAL_MOD->getSettingValue<ccColor3B>("com-director");
+        case Profile::Badge::MANAGER: return AVAL_MOD->getSettingValue<ccColor3B>("com-manager");
+        case Profile::Badge::MEMBER: return AVAL_MOD->getSettingValue<ccColor3B>("com-member");
+        case Profile::Badge::COLLABORATOR: return AVAL_MOD->getSettingValue<ccColor3B>("com-collaborator");
+
+        default: return { 255,255,255 };
+        };
     };
 
-    std::map<std::string, ccColor3B> Handler::badgeColor{
-        {Handler::badgeStringID[Profile::Badge::CUBIC], AVAL_MOD->getSettingValue<ccColor3B>("com-cubic")},
-        {Handler::badgeStringID[Profile::Badge::DIRECTOR], AVAL_MOD->getSettingValue<ccColor3B>("com-director")},
-        {Handler::badgeStringID[Profile::Badge::MANAGER], AVAL_MOD->getSettingValue<ccColor3B>("com-manager")},
-        {Handler::badgeStringID[Profile::Badge::MEMBER], AVAL_MOD->getSettingValue<ccColor3B>("com-member")},
-        {Handler::badgeStringID[Profile::Badge::COLLABORATOR], AVAL_MOD->getSettingValue<ccColor3B>("com-collaborator")},
+    constexpr const char* Handler::Badges::apiToBadgeID(const std::string& apiName) {
+        auto api = apiName.c_str();
+
+        if (api == teamStrings::Profiles::API::Cubic) return getBadgeID(Profile::Badge::CUBIC);
+        if (api == teamStrings::Profiles::API::Director) return getBadgeID(Profile::Badge::DIRECTOR);
+        if (api == teamStrings::Profiles::API::Manager) return getBadgeID(Profile::Badge::MANAGER);
+        if (api == teamStrings::Profiles::API::Member) return getBadgeID(Profile::Badge::MEMBER);
+        if (api == teamStrings::Profiles::API::Collaborator) return getBadgeID(Profile::Badge::COLLABORATOR);
+
+        return nullptr;
     };
 
-    std::map<std::string, std::string> Handler::apiToString{
-        {"cubic-studios", Handler::badgeStringID[Profile::Badge::CUBIC]},
-        {"director", Handler::badgeStringID[Profile::Badge::DIRECTOR]},
-        {"team-manager", Handler::badgeStringID[Profile::Badge::MANAGER]},
-        {"team-member", Handler::badgeStringID[Profile::Badge::MEMBER]},
-        {"collaborator", Handler::badgeStringID[Profile::Badge::COLLABORATOR]},
+    Project::Type Handler::Levels::fromString(const std::string& str) {
+        auto s = str.c_str();
+
+        if (s == teamStrings::Projects::API::Solo) return Project::Type::SOLO;
+        if (s == teamStrings::Projects::API::Team) return Project::Type::TEAM;
+        if (s == teamStrings::Projects::API::Collab) return Project::Type::COLLAB;
+        if (s == teamStrings::Projects::API::Event) return Project::Type::EVENT;
+
+        return Project::Type::NONE;
+    };
+
+    constexpr const char* Handler::Levels::toString(Project::Type type) {
+        switch (type) {
+        case Project::Type::SOLO: return teamStrings::Projects::API::Solo;
+        case Project::Type::TEAM: return teamStrings::Projects::API::Team;
+        case Project::Type::COLLAB: return teamStrings::Projects::API::Collab;
+        case Project::Type::EVENT: return teamStrings::Projects::API::Event;
+
+        default: return nullptr;
+        };
     };
 
     void Handler::scanAll() {
@@ -148,64 +188,64 @@ namespace avalanche {
 
     Profile Handler::GetProfile(int id) {
         if (id > 0) {
-            std::string cacheKey = fmt::format("cache-badge-p{}", (int)id);
-
+            std::string cacheKey = fmt::format("cache-badge-p{}", (int)id); // format the save key string
             matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
-            auto lBadge = Profile::profileBadgeEnum.find(Handler::apiToString[cacheStd["badge"].asString().unwrapOr(und)]);
-
             auto c_name = cacheStd["name"].asString().unwrapOr(und);
-            auto c_badge = (lBadge != Profile::profileBadgeEnum.end()) ? lBadge->second : Profile::Badge::NONE;
+            auto c_badge = Handler::Badges::fromBadgeID(cacheStd["badge"].asString().unwrapOr(und).c_str());
 
             Profile res(c_name, c_badge);
             return res;
         } else {
             log::error("Profile ID is invalid");
-
-            Profile res("Name", Profile::Badge::NONE);
-            return res;
+            return Profile();
         };
     };
 
     Project Handler::GetProject(int id) {
         if (id > 0) {
-            std::string cacheKey = fmt::format("cache-level-p{}", (int)id);
-
+            std::string cacheKey = fmt::format("cache-level-p{}", (int)id); // format the save key string
             matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
-
-            auto lType = Project::projectTypeEnum.find(cacheStd["type"].asString().unwrapOr(und));
 
             auto c_name = cacheStd["name"].asString().unwrapOr(und);
             auto c_host = cacheStd["host"].asString().unwrapOr(und);
             auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
             auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr("");
-            auto c_type = (lType != Project::projectTypeEnum.end()) ? lType->second : Project::Type::NONE;
+            auto c_type = Handler::Levels::fromString(cacheStd["type"].asString().unwrapOr(und));
             auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 
             auto c_linked = cacheStd["project"];
             Project::LinkToMain ltm;
 
             if (c_linked.isObject()) {
-                ltm.enabled = c_linked["enabled"].asBool().unwrapOr(false);
-                ltm.level_id = c_linked["id"].asInt().unwrapOr(0);
+                ltm = Project::LinkToMain(
+                    c_linked["enabled"].asBool().unwrapOr(false),
+                    c_linked["id"].asInt().unwrapOr(0)
+                );
             } else {
-                ltm.enabled = false;
-                ltm.level_id = 0;
+                ltm = Project::LinkToMain();
             };
 
             Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
             return res;
         } else {
             log::error("Project ID is invalid");
-
-            Project res("Name", "Host", URL_AVALANCHE, "", Project::Type::NONE, false, Project::LinkToMain());
-            return res;
+            return Project();
         };
     };
 
+    bool Handler::isTeamMember(Profile::Badge badge) {
+        std::array<Profile::Badge, 3> badges = {
+            Profile::Badge::DIRECTOR,
+            Profile::Badge::MANAGER,
+            Profile::Badge::MEMBER
+        };
+
+        return std::find(badges.begin(), badges.end(), badge) != badges.end();
+    };
+
     ccColor3B Handler::getCommentColor(Profile::Badge badge) {
-        ccColor3B colorSetting = Handler::badgeColor[Handler::badgeStringID[badge]];
-        return colorSetting;
+        return Handler::Badges::getBadgeColor(badge);
     };
 
     void Handler::getBadgeInfo(Profile::Badge badge) {
@@ -259,7 +299,7 @@ namespace avalanche {
     void Handler::onInfoBadge(CCObject* sender) {
         // gets the node that triggered the function
         auto nodeObject = as<CCNode*>(sender);
-        auto badge = Profile::profileBadgeEnum[nodeObject->getID()];
+        auto badge = Handler::Badges::fromBadgeID(nodeObject->getID());
 
         Handler::getBadgeInfo(badge);
     };

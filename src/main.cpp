@@ -135,34 +135,19 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 	if (project.type == Project::Type::NONE) {
 		// get the member's badge data
 		auto profile = getHandler->GetProfile(level->m_accountID.value());
-		auto badge = profile.badge;
-		auto cacheSolo = Handler::badgeStringID[badge];
 
-		// get the badge sprite names
-		auto& badgeSpriteName = Handler::badgeSpriteName;
-		auto& collabSprite = badgeSpriteName.at(Handler::badgeStringID[Profile::Badge::COLLABORATOR]);
-		auto& cubicSprite = badgeSpriteName.at(Handler::badgeStringID[Profile::Badge::CUBIC]);
-
-		// checks if the level is a solo project
-		const auto it = badgeSpriteName.find(cacheSolo);
-		if (it == badgeSpriteName.end()) {
-			AVAL_LOG_ERROR("Key '{}' not found in badgeSpriteName!", cacheSolo);
+		if (profile.badge == Profile::Badge::NONE) {
+			AVAL_LOG_ERROR("Level creator not associated with Avalanche");
 
 			return Project::Type::NONE;
 		} else {
-			const auto& soloSprite = it->second;
-
-			bool notSolo = soloSprite.empty() && (soloSprite != collabSprite) && (soloSprite != cubicSprite);
-
-			bool notPublic = level->m_unlisted || level->m_friendsOnly;
-
 			// must be public
-			if (notPublic) {
+			if (level->m_unlisted || level->m_friendsOnly) {
 				AVAL_LOG_ERROR("Level {} is unlisted", (int)level->m_levelID.value());
 
 				return Project::Type::NONE;
 			} else {
-				AVAL_LOG_DEBUG("Level {} is publicly listed!", (int)level->m_levelID.value());
+				AVAL_LOG_DEBUG("Level {} is publicly listed", (int)level->m_levelID.value());
 
 				// checks if owned by publisher account
 				if (level->m_accountID.value() == ACC_PUBLISHER) {
@@ -171,11 +156,7 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 					return Project::Type::TEAM;
 				} else {
 					// checks if level is published by a team member
-					if (notSolo) {
-						AVAL_LOG_ERROR("Level {} not associated with Avalanche", (int)level->m_levelID.value());
-
-						return Project::Type::NONE;
-					} else {
+					if (getHandler->isTeamMember(profile.badge)) {
 						// checks if level is rated
 						if (level->m_stars.value() >= 1) {
 							AVAL_LOG_DEBUG("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
@@ -186,6 +167,10 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 
 							return Project::Type::NONE;
 						};
+					} else {
+						AVAL_LOG_ERROR("Level {} not associated with Avalanche", (int)level->m_levelID.value());
+
+						return Project::Type::NONE;
 					};
 				};
 			};

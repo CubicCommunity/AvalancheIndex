@@ -1,25 +1,17 @@
 cmake_minimum_required(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "iOS" OR IOS)
     set(CMAKE_OSX_ARCHITECTURES "arm64")
 else()
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(AvalancheIndex VERSION 1.2.1)
+project(AvalancheIndex VERSION 1.2.2)
 
-file(GLOB_RECURSE SOURCES
-    src/*.cpp
-    incl/*.cpp
-)
-
-# Set up the mod binary
-add_library(${PROJECT_NAME} SHARED
-    ${SOURCES}
-)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp incl/*.cpp)
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 if(NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
@@ -29,5 +21,4 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-# Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})

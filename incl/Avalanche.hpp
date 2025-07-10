@@ -29,9 +29,56 @@ namespace avalanche { // Avalanche Index mod namespace
     constexpr const char* und = "undefined";
     constexpr const char* err = "404: Not Found";
 
-    // Profile class
-    class Profile {
-    public:
+    // Get string equivalents for types
+    namespace teamStrings {
+        // String IDs for profiles
+        namespace Profiles {
+            // Profile type ID obtained from API
+            namespace API {
+                inline constexpr auto None = "none";
+                inline constexpr auto Cubic = "cubic-studios";
+                inline constexpr auto Director = "director";
+                inline constexpr auto Manager = "team-manager";
+                inline constexpr auto Member = "team-member";
+                inline constexpr auto Collaborator = "collaborator";
+            };
+
+            // Node IDs for badges
+            namespace Nodes {
+                inline constexpr auto None = "";
+                inline constexpr auto Cubic = "cubic-studios-badge"_spr;
+                inline constexpr auto Director = "director-badge"_spr;
+                inline constexpr auto Manager = "team-manager-badge"_spr;
+                inline constexpr auto Member = "team-member-badge"_spr;
+                inline constexpr auto Collaborator = "collaborator-badge"_spr;
+            };
+
+            // Sprite IDs for badges
+            namespace Sprites {
+                inline constexpr auto None = "";
+                inline constexpr auto Cubic = "cubic-studios.png"_spr;
+                inline constexpr auto Director = "director.png"_spr;
+                inline constexpr auto Manager = "team-manager.png"_spr;
+                inline constexpr auto Member = "team-member.png"_spr;
+                inline constexpr auto Collaborator = "collaborator.png"_spr;
+            };
+        };
+
+        // String IDs for profiles
+        namespace Projects {
+            // Profile type ID obtained from API
+            namespace API {
+                inline constexpr auto None = "none";
+                inline constexpr auto Solo = "solo";
+                inline constexpr auto Team = "team";
+                inline constexpr auto Event = "event";
+                inline constexpr auto Collab = "collaboration";
+            };
+        };
+    };
+
+    // Avalanche member profile class
+    struct Profile {
         enum class Badge {
             NONE, // No badge
             CUBIC, // Staff of Cubic Studios
@@ -41,20 +88,19 @@ namespace avalanche { // Avalanche Index mod namespace
             COLLABORATOR, // Non-members of the team who also worked on a project
         };
 
-        static std::map<std::string, Badge> profileBadgeEnum; // Convert a string to a Badge enum
+        std::string name = "Name"; // Official pseudonym of the member
+        Badge badge = Badge::NONE; // ID of the member's badge
 
-        std::string name; // Official pseudonym of the member
-        Badge badge; // ID of the member's badge
-
-        Profile(
-            std::string n = "Name",
-            Badge b = Badge::NONE
+        Profile( // Constructor
+                std::string n,
+                Badge b
         ) : name(n), badge(b) {};
+
+        Profile() = default; // Default empty constructor
     };
 
-    // Avalanche project class
-    class Project {
-    public:
+    // Avalanche project level class
+    struct Project {
         enum class Type {
             NONE, // Not a project
             SOLO, // A project that a member worked on by themself
@@ -64,32 +110,38 @@ namespace avalanche { // Avalanche Index mod namespace
         };
 
         // Link to the main team project
-        class LinkToMain {
-        public:
-            bool enabled; // If the link is enabled
-            int level_id; // ID of the in-game level for the linked project
+        struct LinkToMain {
+            bool enabled = false; // If the link is enabled
+            int level_id = 104663075; // ID of the in-game level for the linked project
+
+            LinkToMain( // Constructor
+                       bool e,
+                       int li
+            ) : enabled(e), level_id(li) {};
+
+            LinkToMain() = default; // Default empty constructor
         };
 
-        static std::map<std::string, Type> projectTypeEnum; // Convert a string to a Type enum
+        std::string name = "Name"; // Official name of the level
+        std::string host = "Host"; // Team member that hosted the level
+        std::string showcase = URL_AVALANCHE; // Tiny YouTube video URL of the full showcase of the level
+        std::string thumbnail = ""; // Imgur URL for a custom thumbnail for the level
+        Type type = Type::NONE; // Type of project the level is featured as
+        bool fame = false; // If the level will be highlighted on lists
 
-        std::string name; // Official name of the level
-        std::string host; // Team member that hosted the level
-        std::string showcase; // Tiny YouTube video URL of the full showcase of the level
-        std::string thumbnail; // Imgur URL for a custom thumbnail for the level
-        Type type; // Type of project the level is featured as
-        bool fame; // If the level will be highlighted on lists
+        LinkToMain link_to_main = LinkToMain(); // Optional link to the main team project
 
-        LinkToMain link_to_main; // Optional link to the main team project
-
-        Project(
-            std::string n = "Name",
-            std::string h = "Host",
-            std::string su = URL_AVALANCHE,
-            std::string ct = "",
-            Type t = Type::NONE,
-            bool f = false,
-            LinkToMain ltm = LinkToMain()
+        Project( // Constructor
+                std::string n,
+                std::string h,
+                std::string su,
+                std::string ct,
+                Type t,
+                bool f,
+                LinkToMain ltm
         ) : name(n), host(h), showcase(su), thumbnail(ct), type(t), fame(f), link_to_main(ltm) {};
+
+        Project() = default; // Default empty constructor
     };
 
     class Handler {
@@ -100,19 +152,43 @@ namespace avalanche { // Avalanche Index mod namespace
             return &ptr;
         };
 
+        class Badges {
+        public:
+            // Get the node ID from the badge type enum
+            static const char* getBadgeID(Profile::Badge badge);
+
+            // Get the badge type enum from the node ID
+            static Profile::Badge fromBadgeID(const std::string& id);
+
+            // Get the texture name from the badge type enum
+            static const char* getSpriteName(Profile::Badge badge);
+
+            // Get the color from the badge type enum
+            static ccColor3B getBadgeColor(Profile::Badge badge);
+
+            // Get the node id from the API code
+            static constexpr const char* apiToBadgeID(const std::string& apiName);
+        };
+
+        class Levels {
+        public:
+            // Get the project type enum from the API code
+            static Project::Type fromString(const std::string& str);
+
+            // Get the API code from the project type enum
+            static constexpr const char* toString(Project::Type type);
+        };
+
         // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
         void scanAll();
-
-        static std::map<Profile::Badge, std::string> badgeStringID; // Convert a Badge enum to a string ID
-        static std::map<std::string, std::string> badgeSpriteName; // Get the sprite from the string badge ID
-        static std::map<std::string, ccColor3B> badgeColor; // Get the color from the string badge ID
-        static std::map<std::string, std::string> badgeToAPI; // Convert badge node ID to API ID
-        static std::map<std::string, std::string> apiToString; // Convert API-provided string to string ID
 
         // Get profile data on a player
         Profile GetProfile(int id);
         // Get project data on a level
         Project GetProject(int id);
+
+        // Check if the profile belongs to a team member
+        bool isTeamMember(Profile::Badge badge);
 
         // Get the comment text color for a certain badge type
         ccColor3B getCommentColor(Profile::Badge badge);
@@ -122,15 +198,21 @@ namespace avalanche { // Avalanche Index mod namespace
 
         // Create badge and format comment for a player
         template <typename T>
-        void createBadge(T pointer, Profile profile, CCMenu* cell_menu, TextArea* cmntText = nullptr, CCLabelBMFont* cmntFont = nullptr, float size = 0.625f) {
+        void createBadge(
+            T pointer, // Parent class
+            Profile profile, // Member's profile object
+            CCMenu* cell_menu, // Username menu to add the badge to
+            TextArea* cmntText = nullptr, // Comment text node
+            CCLabelBMFont* cmntFont = nullptr, // Comment font node
+            float size = 0.625f // Scale of the badge sprite
+        ) {
             log::debug("Creating badge for {}...", profile.name);
+            auto idString = Handler::Badges::getBadgeID(profile.badge); // gets the string equivalent
 
-            std::string idString = avalanche::Handler::badgeStringID[profile.badge]; // gets the string equivalent
-            bool idFailTest = idString.empty(); // checks the map for this value to see if its invalid
+            if (idString) {
+                // get the badge item
+                auto badge = Handler::Badges::fromBadgeID(std::string(idString));
 
-            if (idFailTest) {
-                log::error("Badge is invalid.");
-            } else {
                 if (cell_menu == nullptr) {
                     log::debug("No username menu provided");
                 } else {
@@ -138,25 +220,21 @@ namespace avalanche { // Avalanche Index mod namespace
 
                     try {
                         // prevent dupes
-                        if (auto alreadyBadge = cell_menu->getChildByID(idString)) {
-                            alreadyBadge->removeMeAndCleanup();
-                        } else {
-                            log::debug("No existing badge found for {}", profile.name);
-                        };
+                        if (auto alreadyBadge = cell_menu->getChildByID(idString)) alreadyBadge->removeMeAndCleanup();
 
-                        auto newBadge = avalanche::Handler::badgeSpriteName[idString].c_str(); // gets sprite filename
+                        auto newBadge = Handler::Badges::getSpriteName(badge); // gets sprite filename
 
-                        CCSprite* badgeSprite = CCSprite::createWithSpriteFrameName(newBadge);
-                        badgeSprite->setScale(size);
+                        CCSprite* badgeBtnSprite = CCSprite::createWithSpriteFrameName(newBadge);
+                        badgeBtnSprite->setScale(size);
 
-                        CCMenuItemSpriteExtra* badge = CCMenuItemSpriteExtra::create(
-                            badgeSprite,
+                        CCMenuItemSpriteExtra* badgeBtn = CCMenuItemSpriteExtra::create(
+                            badgeBtnSprite,
                             pointer,
-                            menu_selector(avalanche::Handler::onInfoBadge));
-                        badge->setID(idString);
-                        badge->setZOrder(1);
+                            menu_selector(Handler::onInfoBadge));
+                        badgeBtn->setID(idString);
+                        badgeBtn->setZOrder(1);
 
-                        cell_menu->addChild(badge);
+                        cell_menu->addChild(badgeBtn);
                         cell_menu->updateLayout();
                     } catch (std::exception& e) {
                         log::error("Failed to create badge for {}...", profile.name);
@@ -169,8 +247,7 @@ namespace avalanche { // Avalanche Index mod namespace
                     log::debug("No comment text node provided");
                 } else {
                     log::debug("Found comment text node for {}...", profile.name);
-
-                    ccColor3B col = avalanche::Handler::badgeColor[idString];
+                    auto col = Handler::Badges::getBadgeColor(badge);
 
                     if (cmntText) {
                         cmntText->colorAllCharactersTo(col);
@@ -184,6 +261,8 @@ namespace avalanche { // Avalanche Index mod namespace
 
                     log::info("Finished changing comment text color for {}", profile.name);
                 };
+            } else {
+                log::error("Badge is invalid.");
             };
         };
     };

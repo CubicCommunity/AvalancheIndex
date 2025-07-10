@@ -1,3 +1,16 @@
+### v1.2.2
+##### API overhaul
+
+#### Developers
+- **Tweaked** constructors for `Profile` and `Project` classes
+- **Added** default empty constructors for `Profile` and `Project` classes
+- **Reworked** all badge ID-handling maps into functions under new namespaces
+- **Added** more comments to classes and methods
+
+###### Latest
+---
+###### Older
+
 ### v1.2.1
 ##### Patches
 
@@ -9,10 +22,6 @@
 
 #### Developers
 - **Added** Geode and Geometry Dash version information to featured project pop-up
-
-###### Latest
----
-###### Older
 
 ## v1.2.0
 #### Team Project pop-up

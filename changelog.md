@@ -1,6 +1,9 @@
 ### v1.2.2
 ##### API overhaul
 
+#### Changes
+- Minor code cleanup
+
 #### Developers
 - **Tweaked** constructors for `Profile` and `Project` classes
 - **Added** default empty constructors for `Profile` and `Project` classes

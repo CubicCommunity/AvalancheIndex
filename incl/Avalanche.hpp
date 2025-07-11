@@ -30,7 +30,7 @@ namespace avalanche { // Avalanche Index mod namespace
     constexpr const char* err = "404: Not Found";
 
     // Get string equivalents for types
-    namespace teamStrings {
+    namespace values {
         // String IDs for profiles
         namespace Profiles {
             // Profile type ID obtained from API

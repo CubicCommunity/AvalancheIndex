@@ -25,15 +25,6 @@
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelCell.hpp>
 
-#include <Geode/binding/MenuLayer.hpp>
-#include <Geode/binding/PauseLayer.hpp>
-#include <Geode/binding/ProfilePage.hpp>
-#include <Geode/binding/CommentCell.hpp>
-#include <Geode/binding/LevelInfoLayer.hpp>
-#include <Geode/binding/LevelCell.hpp>
-#include <Geode/binding/GameLevelManager.hpp>
-#include <Geode/binding/PlayLayer.hpp>
-
 using namespace geode::prelude;
 using namespace avalanche;
 
@@ -62,9 +53,8 @@ class $modify(ProfilePage) {
 			// gets all badge data
 			getHandler->scanAll();
 
-			// gets a copy of the main layer
-			auto mLayer = m_mainLayer;
-			CCMenu* cell_menu = typeinfo_cast<CCMenu*>(mLayer->getChildByIDRecursive("username-menu"));
+			// get the username menu and cast it
+			CCMenu* cell_menu = as<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
 
 			TextArea* fakeText = nullptr;
 			CCLabelBMFont* fakeFont = nullptr;
@@ -89,11 +79,10 @@ class $modify(CommentCell) {
 			// checks if the user is a member of avalanche
 			getHandler->scanAll();
 
-			// gets a copy of the main layer
-			auto mLayer = m_mainLayer;
-			CCMenu* cell_menu = typeinfo_cast<CCMenu*>(mLayer->getChildByIDRecursive("username-menu"));
+			// get the username menu and cast it
+			CCMenu* cell_menu = as<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
 
-			auto commentText = dynamic_cast<TextArea*>(m_mainLayer->getChildByID("comment-text-area"));	   // big comment
+			auto commentText = dynamic_cast<TextArea*>(m_mainLayer->getChildByID("comment-text-area")); // big comment
 			auto commentFont = dynamic_cast<CCLabelBMFont*>(m_mainLayer->getChildByID("comment-text-label")); // smol comment
 
 			// checks if commenter published level
@@ -223,7 +212,8 @@ class $modify(LevelInfo, LevelInfoLayer) {
 					CCMenuItemSpriteExtra* avalBtn = CCMenuItemSpriteExtra::create(
 						avalBtnSprite,
 						this,
-						menu_selector(LevelInfo::onAvalancheButton));
+						menu_selector(LevelInfo::onAvalancheButton)
+					);
 					avalBtn->setID("avalanche-button"_spr);
 					avalBtn->setZOrder(10);
 
@@ -652,7 +642,8 @@ class $modify(Pause, PauseLayer) {
 						CCMenuItemSpriteExtra* avalBtn = CCMenuItemSpriteExtra::create(
 							avalBtnSprite,
 							this,
-							menu_selector(Pause::onAvalancheButton));
+							menu_selector(Pause::onAvalancheButton)
+						);
 						avalBtn->setID("avalanche-button"_spr);
 						avalBtn->setZOrder(10);
 
@@ -747,7 +738,8 @@ class $modify(Menu, MenuLayer) {
 				auto avalBtn = CCMenuItemSpriteExtra::create(
 					avalBtnSprite,
 					this,
-					menu_selector(Menu::onAvalFeaturedButton));
+					menu_selector(Menu::onAvalFeaturedButton)
+				);
 				avalBtn->setPosition({ avalMenu->getScaledContentWidth() / 2, avalMenu->getScaledContentHeight() / 2 });
 				avalBtn->setID("avalanche-featured-button"_spr);
 				avalBtn->ignoreAnchorPointForPosition(false);

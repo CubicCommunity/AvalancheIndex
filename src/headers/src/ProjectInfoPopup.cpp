@@ -16,9 +16,6 @@
 
 #include <Geode/utils/web.hpp>
 
-#include <Geode/binding/CCMenuItemSpriteExtra.hpp>
-#include <Geode/binding/ButtonSprite.hpp>
-
 using namespace geode::prelude;
 using namespace avalanche;
 

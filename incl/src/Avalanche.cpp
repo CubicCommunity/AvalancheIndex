@@ -23,19 +23,19 @@ namespace avalanche {
     int ACC_PUBLISHER = 31079132;
     std::string URL_MOD_ISSUES = AVAL_MOD->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE); // URL to the mod's issues page on its GitHub repository
 
-    matjson::Value fetchedBadges = nullptr; // Cached profile data
-    matjson::Value fetchedLevels = nullptr; // Cached project data
+    matjson::Value fetchedBadges = matjson::Value(); // Cached profile data
+    matjson::Value fetchedLevels = matjson::Value(); // Cached project data
 
     EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
     EventListener<web::WebTask> levelListReq; // Web request listener for team project data
 
     const char* Handler::Badges::getBadgeID(Profile::Badge badge) {
         switch (badge) {
-        case Profile::Badge::CUBIC: return teamStrings::Profiles::Nodes::Cubic;
-        case Profile::Badge::DIRECTOR: return teamStrings::Profiles::Nodes::Director;
-        case Profile::Badge::MANAGER: return teamStrings::Profiles::Nodes::Manager;
-        case Profile::Badge::MEMBER: return teamStrings::Profiles::Nodes::Member;
-        case Profile::Badge::COLLABORATOR: return teamStrings::Profiles::Nodes::Collaborator;
+        case Profile::Badge::CUBIC: return values::Profiles::Nodes::Cubic;
+        case Profile::Badge::DIRECTOR: return values::Profiles::Nodes::Director;
+        case Profile::Badge::MANAGER: return values::Profiles::Nodes::Manager;
+        case Profile::Badge::MEMBER: return values::Profiles::Nodes::Member;
+        case Profile::Badge::COLLABORATOR: return values::Profiles::Nodes::Collaborator;
 
         default: return nullptr;
         };
@@ -46,22 +46,22 @@ namespace avalanche {
     Profile::Badge Handler::Badges::fromBadgeID(const std::string& id) {
         auto i = id.c_str();
 
-        if (i == teamStrings::Profiles::Nodes::Cubic) return Profile::Badge::CUBIC;
-        if (i == teamStrings::Profiles::Nodes::Director) return Profile::Badge::DIRECTOR;
-        if (i == teamStrings::Profiles::Nodes::Manager) return Profile::Badge::MANAGER;
-        if (i == teamStrings::Profiles::Nodes::Member) return Profile::Badge::MEMBER;
-        if (i == teamStrings::Profiles::Nodes::Collaborator) return Profile::Badge::COLLABORATOR;
+        if (i == values::Profiles::Nodes::Cubic) return Profile::Badge::CUBIC;
+        if (i == values::Profiles::Nodes::Director) return Profile::Badge::DIRECTOR;
+        if (i == values::Profiles::Nodes::Manager) return Profile::Badge::MANAGER;
+        if (i == values::Profiles::Nodes::Member) return Profile::Badge::MEMBER;
+        if (i == values::Profiles::Nodes::Collaborator) return Profile::Badge::COLLABORATOR;
 
         return Profile::Badge::NONE;
     };
 
     const char* Handler::Badges::getSpriteName(Profile::Badge badge) {
         switch (badge) {
-        case Profile::Badge::CUBIC: return teamStrings::Profiles::Sprites::Cubic;
-        case Profile::Badge::DIRECTOR: return teamStrings::Profiles::Sprites::Director;
-        case Profile::Badge::MANAGER: return teamStrings::Profiles::Sprites::Manager;
-        case Profile::Badge::MEMBER: return teamStrings::Profiles::Sprites::Member;
-        case Profile::Badge::COLLABORATOR: return teamStrings::Profiles::Sprites::Collaborator;
+        case Profile::Badge::CUBIC: return values::Profiles::Sprites::Cubic;
+        case Profile::Badge::DIRECTOR: return values::Profiles::Sprites::Director;
+        case Profile::Badge::MANAGER: return values::Profiles::Sprites::Manager;
+        case Profile::Badge::MEMBER: return values::Profiles::Sprites::Member;
+        case Profile::Badge::COLLABORATOR: return values::Profiles::Sprites::Collaborator;
 
         default: return nullptr;
         };
@@ -77,18 +77,20 @@ namespace avalanche {
         case Profile::Badge::MEMBER: return AVAL_MOD->getSettingValue<ccColor3B>("com-member");
         case Profile::Badge::COLLABORATOR: return AVAL_MOD->getSettingValue<ccColor3B>("com-collaborator");
 
-        default: return { 255,255,255 };
+        default: return { 255, 255, 255 };
         };
+
+        return { 255, 255, 255 };
     };
 
     constexpr const char* Handler::Badges::apiToBadgeID(const std::string& apiName) {
         auto api = apiName.c_str();
 
-        if (api == teamStrings::Profiles::API::Cubic) return getBadgeID(Profile::Badge::CUBIC);
-        if (api == teamStrings::Profiles::API::Director) return getBadgeID(Profile::Badge::DIRECTOR);
-        if (api == teamStrings::Profiles::API::Manager) return getBadgeID(Profile::Badge::MANAGER);
-        if (api == teamStrings::Profiles::API::Member) return getBadgeID(Profile::Badge::MEMBER);
-        if (api == teamStrings::Profiles::API::Collaborator) return getBadgeID(Profile::Badge::COLLABORATOR);
+        if (api == values::Profiles::API::Cubic) return getBadgeID(Profile::Badge::CUBIC);
+        if (api == values::Profiles::API::Director) return getBadgeID(Profile::Badge::DIRECTOR);
+        if (api == values::Profiles::API::Manager) return getBadgeID(Profile::Badge::MANAGER);
+        if (api == values::Profiles::API::Member) return getBadgeID(Profile::Badge::MEMBER);
+        if (api == values::Profiles::API::Collaborator) return getBadgeID(Profile::Badge::COLLABORATOR);
 
         return nullptr;
     };
@@ -96,20 +98,20 @@ namespace avalanche {
     Project::Type Handler::Levels::fromString(const std::string& str) {
         auto s = str.c_str();
 
-        if (s == teamStrings::Projects::API::Solo) return Project::Type::SOLO;
-        if (s == teamStrings::Projects::API::Team) return Project::Type::TEAM;
-        if (s == teamStrings::Projects::API::Collab) return Project::Type::COLLAB;
-        if (s == teamStrings::Projects::API::Event) return Project::Type::EVENT;
+        if (s == values::Projects::API::Solo) return Project::Type::SOLO;
+        if (s == values::Projects::API::Team) return Project::Type::TEAM;
+        if (s == values::Projects::API::Collab) return Project::Type::COLLAB;
+        if (s == values::Projects::API::Event) return Project::Type::EVENT;
 
         return Project::Type::NONE;
     };
 
     constexpr const char* Handler::Levels::toString(Project::Type type) {
         switch (type) {
-        case Project::Type::SOLO: return teamStrings::Projects::API::Solo;
-        case Project::Type::TEAM: return teamStrings::Projects::API::Team;
-        case Project::Type::COLLAB: return teamStrings::Projects::API::Collab;
-        case Project::Type::EVENT: return teamStrings::Projects::API::Event;
+        case Project::Type::SOLO: return values::Projects::API::Solo;
+        case Project::Type::TEAM: return values::Projects::API::Team;
+        case Project::Type::COLLAB: return values::Projects::API::Collab;
+        case Project::Type::EVENT: return values::Projects::API::Event;
 
         default: return nullptr;
         };
@@ -119,12 +121,12 @@ namespace avalanche {
         badgeListReq.bind([](web::WebTask::Event* e) {
             if (web::WebResponse* avalReqRes = e->getValue()) {
                 if (avalReqRes->ok()) {
-                    if (fetchedBadges == nullptr) {
+                    if (fetchedBadges.isNull()) {
                         if (avalReqRes->json().isOk()) {
                             auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
                             for (auto& [key, value] : jsonRes) {
-                                std::string cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
+                                auto cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
                                 AVAL_MOD->setSavedValue(cacheKey, value);
                             };
 
@@ -148,18 +150,18 @@ namespace avalanche {
         auto badgeReq = web::WebRequest(); // send the web request
         badgeReq.userAgent("Avalanche Index mod for Geode");
         badgeReq.timeout(std::chrono::seconds(30));
-        badgeListReq.setFilter(badgeReq.get(URL_API_BADGES));
+        badgeListReq.setFilter(badgeReq.get(std::string(URL_API_BADGES)));
 
         // fetch data for all projects
         levelListReq.bind([](web::WebTask::Event* e) {
             if (web::WebResponse* avalReqRes = e->getValue()) {
                 if (avalReqRes->ok()) {
-                    if (fetchedLevels == nullptr) {
+                    if (fetchedLevels.isNull()) {
                         if (avalReqRes->json().isOk()) {
                             auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
 
                             for (auto& [key, value] : jsonRes) {
-                                std::string cacheKey = fmt::format("cache-level-p{}", (std::string)key);
+                                auto cacheKey = fmt::format("cache-level-p{}", (std::string)key);
                                 AVAL_MOD->setSavedValue(cacheKey, value);
                             };
 
@@ -183,51 +185,87 @@ namespace avalanche {
         auto levelReq = web::WebRequest(); // send the web request
         levelReq.userAgent("Avalanche Index mod for Geode");
         levelReq.timeout(std::chrono::seconds(30));
-        levelListReq.setFilter(levelReq.get(URL_API_LEVELS));
+        levelListReq.setFilter(levelReq.get(std::string(URL_API_LEVELS)));
     };
 
     Profile Handler::GetProfile(int id) {
         if (id > 0) {
-            std::string cacheKey = fmt::format("cache-badge-p{}", (int)id); // format the save key string
+            auto cacheKey = fmt::format("cache-badge-p{}", (int)id); // format the save key string
             matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
 
-            auto c_name = cacheStd["name"].asString().unwrapOr(und);
-            auto c_badge = Handler::Badges::fromBadgeID(cacheStd["badge"].asString().unwrapOr(und).c_str());
+            if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
+                log::debug("Fetching badge data from session web cache");
 
-            Profile res(c_name, c_badge);
-            return res;
+                if (fetchedBadges.isNull()) {
+                    log::warn("Session web cache for badge data is unaccessible");
+                } else if (fetchedBadges.isObject()) {
+                    auto key = std::to_string(id);
+                    fetchedBadges.contains(key) ? cacheStd = fetchedBadges[key.c_str()] : cacheStd = nullptr;
+                };
+            } else {
+                log::warn("Fetching badge data directly from saved cache");
+            };
+
+            if (cacheStd == nullptr) {
+                log::error("Player {} is no longer associated with Avalanche", (int)id);
+                return Profile();
+            } else {
+                auto c_name = cacheStd["name"].asString().unwrapOr(und);
+                auto c_badge = Handler::Badges::fromBadgeID(cacheStd["badge"].asString().unwrapOr(und));
+
+                Profile res(c_name, c_badge);
+                return res;
+            };
         } else {
-            log::error("Profile ID is invalid");
+            log::error("Profile ID {} is invalid", (int)id);
             return Profile();
         };
     };
 
     Project Handler::GetProject(int id) {
         if (id > 0) {
-            std::string cacheKey = fmt::format("cache-level-p{}", (int)id); // format the save key string
+            auto cacheKey = fmt::format("cache-level-p{}", (int)id); // format the save key string
             matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
 
-            auto c_name = cacheStd["name"].asString().unwrapOr(und);
-            auto c_host = cacheStd["host"].asString().unwrapOr(und);
-            auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
-            auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr("");
-            auto c_type = Handler::Levels::fromString(cacheStd["type"].asString().unwrapOr(und));
-            auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
+            if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
+                log::debug("Fetching level data from session web cache");
 
-            auto c_linked = cacheStd["project"];
-            Project::LinkToMain ltm;
-
-            if (c_linked.isObject()) {
-                ltm = Project::LinkToMain(
-                    c_linked["enabled"].asBool().unwrapOr(false),
-                    c_linked["id"].asInt().unwrapOr(0)
-                );
+                if (fetchedLevels.isNull()) {
+                    log::warn("Session web cache for level data is unaccessible");
+                } else if (fetchedLevels.isObject()) {
+                    auto key = std::to_string(id);
+                    fetchedLevels.contains(key) ? cacheStd = fetchedLevels[key.c_str()] : cacheStd = nullptr;
+                };
             } else {
-                ltm = Project::LinkToMain();
+                log::warn("Fetching badge data directly from saved cache");
             };
 
-            Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
-            return res;
+            if (cacheStd == nullptr) {
+                log::error("Level {} is no longer part of Avalanche", (int)id);
+                return Project();
+            } else {
+                auto c_name = cacheStd["name"].asString().unwrapOr(und);
+                auto c_host = cacheStd["host"].asString().unwrapOr(und);
+                auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
+                auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr("");
+                auto c_type = Handler::Levels::fromString(cacheStd["type"].asString().unwrapOr(und));
+                auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
+
+                auto c_linked = cacheStd["project"];
+                Project::LinkToMain ltm;
+
+                if (c_linked.isObject()) {
+                    ltm = Project::LinkToMain(
+                        c_linked["enabled"].asBool().unwrapOr(false),
+                        c_linked["id"].asInt().unwrapOr(0)
+                    );
+                } else {
+                    ltm = Project::LinkToMain();
+                };
+
+                Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
+                return res;
+            };
         } else {
             log::error("Project ID is invalid");
             return Project();

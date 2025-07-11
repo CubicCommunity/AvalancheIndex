@@ -15,9 +15,6 @@
 #include <Geode/utils/cocos.hpp>
 #include <Geode/utils/terminate.hpp>
 
-#include <Geode/binding/CCMenuItemSpriteExtra.hpp>
-#include <Geode/binding/ButtonSprite.hpp>
-
 using namespace geode::prelude;
 
 AvalancheFeatured* AvalancheFeatured::create() {
@@ -103,7 +100,8 @@ bool AvalancheFeatured::setup() {
   auto infoBtn = CCMenuItemSpriteExtra::create(
     infoBtnSprite,
     this,
-    menu_selector(AvalancheFeatured::infoPopup));
+    menu_selector(AvalancheFeatured::infoPopup)
+  );
   infoBtn->setID("info-button");
   infoBtn->setPosition({ m_mainLayer->getScaledContentWidth() - 15.f, m_mainLayer->getScaledContentHeight() - 15.f });
   infoBtn->setZOrder(126);
@@ -196,7 +194,8 @@ bool AvalancheFeatured::setup() {
   m_infoBtn = CCMenuItemSpriteExtra::create(
     infoSprite,
     this,
-    menu_selector(AvalancheFeatured::openApplicationPopup));
+    menu_selector(AvalancheFeatured::openApplicationPopup)
+  );
   m_infoBtn->setPosition({ widthCS / 2.f, 2.5f });
   m_infoBtn->setVisible(true);
   m_infoBtn->setZOrder(3);
@@ -239,7 +238,8 @@ bool AvalancheFeatured::setup() {
     auto changelogBtn = CCMenuItemSpriteExtra::create(
       changelogBtnSprite,
       this,
-      menu_selector(AvalancheFeatured::changelogPopup));
+      menu_selector(AvalancheFeatured::changelogPopup)
+    );
     changelogBtn->setID("changelog-button");
     changelogBtn->setPosition({ 25.f, 25.f });
 

@@ -2,6 +2,7 @@
 ##### API overhaul
 
 #### Changes
+- Fixed team data cache handling from API requests
 - Minor code cleanup
 
 #### Developers

@@ -16,6 +16,7 @@
 #include <Geode/utils/web.hpp>
 
 using namespace geode::prelude;
+using namespace matjson;
 
 namespace avalanche {
     Mod* AVAL_MOD = getMod(); // Get the mod instance
@@ -23,8 +24,8 @@ namespace avalanche {
     int ACC_PUBLISHER = 31079132;
     std::string URL_MOD_ISSUES = AVAL_MOD->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE); // URL to the mod's issues page on its GitHub repository
 
-    matjson::Value fetchedBadges = matjson::Value(); // Cached profile data
-    matjson::Value fetchedLevels = matjson::Value(); // Cached project data
+    Value fetchedBadges = Value(); // Cached profile data
+    Value fetchedLevels = Value(); // Cached project data
 
     EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
     EventListener<web::WebTask> levelListReq; // Web request listener for team project data
@@ -123,11 +124,16 @@ namespace avalanche {
                 if (avalReqRes->ok()) {
                     if (fetchedBadges.isNull()) {
                         if (avalReqRes->json().isOk()) {
-                            auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+                            auto jsonRes = avalReqRes->json().unwrapOr(Value::object());
 
-                            for (auto& [key, value] : jsonRes) {
-                                auto cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
-                                AVAL_MOD->setSavedValue(cacheKey, value);
+                            if (jsonRes.contains("error")) {
+                                log::error("Profile API request returned error object");
+                                jsonRes = Value::object();
+                            } else {
+                                for (auto& [key, value] : jsonRes) {
+                                    auto cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
+                                    AVAL_MOD->setSavedValue(cacheKey, value);
+                                };
                             };
 
                             if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
@@ -137,13 +143,13 @@ namespace avalanche {
                     };
                 } else {
                     log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-                    if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
+                    if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Failed to fetch main Avalanche badges", NotificationIcon::Error, 2.5f)->show();
                 };
             } else if (web::WebProgress* p = e->getProgress()) {
                 log::debug("badge id progress: {}", (float)p->downloadProgress().value_or(0.f));
             } else if (e->isCancelled()) {
                 log::error("Badge web request failed");
-                if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch badges", NotificationIcon::Error, 2.5f)->show();
+                if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to reach API for Avalanche profiles", NotificationIcon::Error, 2.5f)->show();
             };
                           });
 
@@ -158,11 +164,16 @@ namespace avalanche {
                 if (avalReqRes->ok()) {
                     if (fetchedLevels.isNull()) {
                         if (avalReqRes->json().isOk()) {
-                            auto jsonRes = avalReqRes->json().unwrapOr(matjson::Value::object());
+                            auto jsonRes = avalReqRes->json().unwrapOr(Value::object());
 
-                            for (auto& [key, value] : jsonRes) {
-                                auto cacheKey = fmt::format("cache-level-p{}", (std::string)key);
-                                AVAL_MOD->setSavedValue(cacheKey, value);
+                            if (jsonRes.contains("error")) {
+                                log::error("Project API request returned error object");
+                                jsonRes = Value::object();
+                            } else {
+                                for (auto& [key, value] : jsonRes) {
+                                    auto cacheKey = fmt::format("cache-level-p{}", (std::string)key);
+                                    AVAL_MOD->setSavedValue(cacheKey, value);
+                                };
                             };
 
                             if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedLevels = jsonRes;
@@ -172,13 +183,13 @@ namespace avalanche {
                     };
                 } else {
                     log::error("Badge web request failed: {}", avalReqRes->string().unwrapOr(und));
-                    if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
+                    if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Failed to fetch main Avalanche levels", NotificationIcon::Error, 2.5f)->show();
                 };
             } else if (web::WebProgress* p = e->getProgress()) {
                 log::debug("level id progress: {}", (float)p->downloadProgress().value_or(0.f));
             } else if (e->isCancelled()) {
                 log::error("Badge web request failed");
-                if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to fetch levels", NotificationIcon::Error, 2.5f)->show();
+                if (AVAL_MOD->getSettingValue<bool>("err-notifs")) Notification::create("Unable to reach API for Avalanche projects", NotificationIcon::Error, 2.5f)->show();
             };
                           });
 
@@ -191,7 +202,7 @@ namespace avalanche {
     Profile Handler::GetProfile(int id) {
         if (id > 0) {
             auto cacheKey = fmt::format("cache-badge-p{}", (int)id); // format the save key string
-            matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved badge json
+            Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey); // gets locally saved badge json
 
             if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
                 log::debug("Fetching badge data from session web cache");
@@ -200,13 +211,13 @@ namespace avalanche {
                     log::warn("Session web cache for badge data is unaccessible");
                 } else if (fetchedBadges.isObject()) {
                     auto key = std::to_string(id);
-                    fetchedBadges.contains(key) ? cacheStd = fetchedBadges[key.c_str()] : cacheStd = nullptr;
+                    fetchedBadges.contains(key) ? cacheStd = fetchedBadges[key.c_str()] : cacheStd = Value::object();
                 };
             } else {
                 log::warn("Fetching badge data directly from saved cache");
             };
 
-            if (cacheStd == nullptr) {
+            if (cacheStd.isNull()) {
                 log::error("Player {} is no longer associated with Avalanche", (int)id);
                 return Profile();
             } else {
@@ -225,7 +236,7 @@ namespace avalanche {
     Project Handler::GetProject(int id) {
         if (id > 0) {
             auto cacheKey = fmt::format("cache-level-p{}", (int)id); // format the save key string
-            matjson::Value cacheStd = AVAL_MOD->getSavedValue<matjson::Value>(cacheKey); // gets locally saved level json
+            Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey); // gets locally saved level json
 
             if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
                 log::debug("Fetching level data from session web cache");
@@ -234,13 +245,13 @@ namespace avalanche {
                     log::warn("Session web cache for level data is unaccessible");
                 } else if (fetchedLevels.isObject()) {
                     auto key = std::to_string(id);
-                    fetchedLevels.contains(key) ? cacheStd = fetchedLevels[key.c_str()] : cacheStd = nullptr;
+                    fetchedLevels.contains(key) ? cacheStd = fetchedLevels[key.c_str()] : cacheStd = Value::object();
                 };
             } else {
                 log::warn("Fetching badge data directly from saved cache");
             };
 
-            if (cacheStd == nullptr) {
+            if (cacheStd.isNull()) {
                 log::error("Level {} is no longer part of Avalanche", (int)id);
                 return Project();
             } else {

@@ -64,6 +64,17 @@ In the main menu, you may see a button in the center with the Avalanche logo. Wh
 
 ---
 
+![preview](previews/preview-1.png)
+![preview](previews/preview-2.png)
+![preview](previews/preview-3.png)
+![preview](previews/preview-4.png)
+![preview](previews/preview-5.png)
+![preview](previews/preview-6.png)
+![preview](previews/preview-7.png)
+![preview](previews/preview-8.png)
+
+---
+
 ### Changelog
 ###### What's new?!
 **[📜 View the latest updates and patches](./changelog.md)**

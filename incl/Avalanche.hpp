@@ -14,9 +14,13 @@
 #include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;
+using namespace matjson;
 
 namespace avalanche { // Avalanche Index mod namespace
     extern Mod* AVAL_MOD; // Get the mod instance
+
+    extern Value fetchedBadges; // Cached profile data
+    extern Value fetchedLevels; // Cached project data
 
     extern int ACC_PUBLISHER; // Account ID of Avalanche's level publisher account
 

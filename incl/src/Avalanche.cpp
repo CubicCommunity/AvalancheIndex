@@ -21,11 +21,11 @@ using namespace matjson;
 namespace avalanche {
     Mod* AVAL_MOD = getMod(); // Get the mod instance
 
+    Value fetchedBadges = Value();
+    Value fetchedLevels = Value();
+
     int ACC_PUBLISHER = 31079132;
     std::string URL_MOD_ISSUES = AVAL_MOD->getMetadataRef().getIssues().value().url.value_or(URL_AVALANCHE); // URL to the mod's issues page on its GitHub repository
-
-    Value fetchedBadges = Value(); // Cached profile data
-    Value fetchedLevels = Value(); // Cached project data
 
     EventListener<web::WebTask> badgeListReq; // Web request listener for team profile data
     EventListener<web::WebTask> levelListReq; // Web request listener for team project data
@@ -173,7 +173,7 @@ namespace avalanche {
                                 for (auto& [key, value] : jsonRes) {
                                     auto cacheKey = fmt::format("cache-level-p{}", (std::string)key);
 
-                                    if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedBadges.set(key, value);
+                                    if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedLevels.set(key, value);
                                     AVAL_MOD->setSavedValue(cacheKey, value);
                                 };
                             };
@@ -211,7 +211,7 @@ namespace avalanche {
                     log::warn("Session web cache for badge data is unaccessible");
                 } else if (fetchedBadges.isObject()) {
                     auto key = std::to_string(id);
-                    fetchedBadges.contains(key) ? cacheStd = fetchedBadges[key.c_str()] : cacheStd = Value::object();
+                    fetchedBadges.contains(key) ? cacheStd = fetchedBadges.get(key).unwrapOr(cacheStd) : cacheStd = Value::object();
                 };
             } else {
                 log::warn("Fetching badge data directly from saved cache");
@@ -245,7 +245,7 @@ namespace avalanche {
                     log::warn("Session web cache for level data is unaccessible");
                 } else if (fetchedLevels.isObject()) {
                     auto key = std::to_string(id);
-                    fetchedLevels.contains(key) ? cacheStd = fetchedLevels[key.c_str()] : cacheStd = Value::object();
+                    fetchedLevels.contains(key) ? cacheStd = fetchedLevels.get(key).unwrapOr(cacheStd) : cacheStd = Value::object();
                 };
             } else {
                 log::warn("Fetching badge data directly from saved cache");
@@ -258,7 +258,7 @@ namespace avalanche {
                 auto c_name = cacheStd["name"].asString().unwrapOr(und);
                 auto c_host = cacheStd["host"].asString().unwrapOr(und);
                 auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
-                auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr("");
+                auto c_thumbnail = cacheStd["thumbnail"].asString().unwrapOr(und);
                 auto c_type = Handler::Levels::fromString(cacheStd["type"].asString().unwrapOr(und));
                 auto c_fame = cacheStd["fame"].asBool().unwrapOr(false);
 

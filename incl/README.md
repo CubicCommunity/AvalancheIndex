@@ -1,4 +1,4 @@
-# <img src="../logo.png" width="30" alt="The mod's logo." /> Avalanche Index
+# [<img src="../logo.png" width="30" alt="The mod's logo." />](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex) Avalanche Index
 Official Avalanche levels and profiles.
 
 ### Development

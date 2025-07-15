@@ -132,11 +132,11 @@ namespace avalanche {
                             } else {
                                 for (auto& [key, value] : jsonRes) {
                                     auto cacheKey = fmt::format("cache-badge-p{}", (std::string)key);
+
+                                    if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedBadges.set(key, value);
                                     AVAL_MOD->setSavedValue(cacheKey, value);
                                 };
                             };
-
-                            if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedBadges = jsonRes;
                         };
                     } else {
                         log::error("Already fetched remote data for badges");
@@ -172,11 +172,11 @@ namespace avalanche {
                             } else {
                                 for (auto& [key, value] : jsonRes) {
                                     auto cacheKey = fmt::format("cache-level-p{}", (std::string)key);
+
+                                    if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedBadges.set(key, value);
                                     AVAL_MOD->setSavedValue(cacheKey, value);
                                 };
                             };
-
-                            if (AVAL_MOD->getSettingValue<bool>("web-once")) fetchedLevels = jsonRes;
                         };
                     } else {
                         log::error("Already fetched remote data for levels");

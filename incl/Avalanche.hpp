@@ -1,3 +1,4 @@
+#pragma once
 #ifndef AVALANCHE_HPP
 #define AVALANCHE_HPP
 
@@ -148,7 +149,7 @@ namespace avalanche { // Avalanche Index mod namespace
         Project() = default; // Default empty constructor
     };
 
-    class Handler {
+    struct Handler {
     public:
         // Get the Handler functions
         static Handler* get() {
@@ -156,7 +157,7 @@ namespace avalanche { // Avalanche Index mod namespace
             return &ptr;
         };
 
-        class Badges {
+        struct Badges {
         public:
             // Get the node ID from the badge type enum
             static const char* getBadgeID(Profile::Badge badge);
@@ -174,7 +175,7 @@ namespace avalanche { // Avalanche Index mod namespace
             static constexpr const char* apiToBadgeID(const std::string& apiName);
         };
 
-        class Levels {
+        struct Levels {
         public:
             // Get the project type enum from the API code
             static Project::Type fromString(const std::string& str);
@@ -184,20 +185,24 @@ namespace avalanche { // Avalanche Index mod namespace
         };
 
         // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
-        void scanAll();
+        static void scanAll();
 
         // Get profile data on a player
-        Profile GetProfile(int id);
+        static Profile GetProfile(
+            int id // The player's account ID
+        );
         // Get project data on a level
-        Project GetProject(int id);
+        static Project GetProject(
+            int id // The level's ID
+        );
 
         // Check if the profile belongs to a team member
-        bool isTeamMember(Profile::Badge badge);
+        static bool isTeamMember(Profile::Badge badge);
 
         // Get the comment text color for a certain badge type
-        ccColor3B getCommentColor(Profile::Badge badge);
+        static ccColor3B getCommentColor(Profile::Badge badge);
 
-        void getBadgeInfo(Profile::Badge badge);
+        static void getBadgeInfo(Profile::Badge badge);
         void onInfoBadge(CCObject* sender);
 
         // Create badge and format comment for a player

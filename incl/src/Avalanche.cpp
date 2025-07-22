@@ -126,8 +126,11 @@ namespace avalanche {
                         if (avalReqRes->json().isOk()) {
                             auto jsonRes = avalReqRes->json().unwrapOr(Value::object());
 
-                            if (jsonRes.contains("error")) {
-                                log::error("Profile API request returned error object");
+                            if (jsonRes.contains("error")) { // if cubic's api returns an error object
+                                auto errMsg = jsonRes["error"].asString().unwrapOr(und);
+                                auto errCode = jsonRes["http_code"].asInt().unwrapOr(404);
+
+                                log::error("[{}] Profile API request returned error: {}", errCode, errMsg);
                                 jsonRes = Value::object();
                             } else {
                                 for (auto& [key, value] : jsonRes) {
@@ -166,8 +169,11 @@ namespace avalanche {
                         if (avalReqRes->json().isOk()) {
                             auto jsonRes = avalReqRes->json().unwrapOr(Value::object());
 
-                            if (jsonRes.contains("error")) {
-                                log::error("Project API request returned error object");
+                            if (jsonRes.contains("error")) { // if cubic's api returns an error object
+                                auto errMsg = jsonRes["error"].asString().unwrapOr(und);
+                                auto errCode = jsonRes["http_code"].asInt().unwrapOr(404);
+
+                                log::error("[{}] Project API request returned error: {}", errCode, errMsg);
                                 jsonRes = Value::object();
                             } else {
                                 for (auto& [key, value] : jsonRes) {

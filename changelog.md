@@ -19,7 +19,7 @@
 ##### Patches
 
 #### Changes
-- **Fixed** previews not showing with [Mod Previews](mod:alphalaneous.mod_previews) mod
+- **Fixed** previews not showing with *[Mod Previews](mod:alphalaneous.mod_previews)* mod
 - Huge code cleanup
 - Minor optimizations
 - Several tweaks
@@ -54,7 +54,7 @@
 #### Changes
 - **Updated** Geode compatibility to version `4.6.2`
 - **Added** variations to publisher label in Team Project information pop-up
-- **Added** mod *Badges API* as recommended dependency
+- **Added** mod *[Badges API](jouca.badgesapi)* as recommended dependency
 - **Tweaked** border display on pop-ups
 - **Fixed** URL strings on iOS
 

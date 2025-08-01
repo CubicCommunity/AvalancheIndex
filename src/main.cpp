@@ -38,7 +38,7 @@ using namespace avalanche;
  */
 
  // avalanche data handler
-auto getHandler = Handler::get();
+auto myHandler = Handler::get();
 
 // if the server wasn't already checked for the new avalanche project :O
 bool noProjectPing = true;
@@ -51,7 +51,7 @@ class $modify(ProfilePage) {
 
 		if (AVAL_GEODE_MOD->getSettingValue<bool>("badge-profile")) {
 			// gets all badge data
-			getHandler->scanAll();
+			myHandler->scanAll();
 
 			// get the username menu and cast it
 			CCMenu* cell_menu = static_cast<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
@@ -59,8 +59,8 @@ class $modify(ProfilePage) {
 			TextArea* fakeText = nullptr;
 			CCLabelBMFont* fakeFont = nullptr;
 
-			Profile plr = getHandler->GetProfile(user->m_accountID);
-			getHandler->createBadge(this, plr, cell_menu, fakeText, fakeFont, 0.875f);
+			Profile plr = myHandler->GetProfile(user->m_accountID);
+			myHandler->createBadge(this, plr, cell_menu, fakeText, fakeFont, 0.875f);
 
 			AVAL_LOG_DEBUG("Viewing profile of ID {}", (int)user->m_accountID);
 		} else {
@@ -77,7 +77,7 @@ class $modify(CommentCell) {
 
 		if (AVAL_GEODE_MOD->getSettingValue<bool>("badge-comments")) {
 			// checks if the user is a member of avalanche
-			getHandler->scanAll();
+			myHandler->scanAll();
 
 			// get the username menu and cast it
 			CCMenu* cell_menu = static_cast<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
@@ -107,8 +107,8 @@ class $modify(CommentCell) {
 				commentText = nullptr;
 			};
 
-			Profile plr = getHandler->GetProfile(comment->m_accountID);
-			getHandler->createBadge(this, plr, cell_menu, commentText, commentFont, 0.55f);
+			Profile plr = myHandler->GetProfile(comment->m_accountID);
+			myHandler->createBadge(this, plr, cell_menu, commentText, commentFont, 0.55f);
 
 			AVAL_LOG_DEBUG("Viewing comment profile of ID {}", (int)comment->m_accountID);
 		} else {
@@ -119,11 +119,11 @@ class $modify(CommentCell) {
 
 // attempts to fetch data on level or badge locally to verify ownership of the level
 Project::Type scanForLevelCreator(GJGameLevel* level) {
-	auto project = getHandler->GetProject(level->m_levelID.value());
+	auto project = myHandler->GetProject(level->m_levelID.value());
 
 	if (project.type == Project::Type::NONE) {
 		// get the member's badge data
-		auto profile = getHandler->GetProfile(level->m_accountID.value());
+		auto profile = myHandler->GetProfile(level->m_accountID.value());
 
 		if (profile.badge == Profile::Badge::NONE) {
 			AVAL_LOG_ERROR("Level creator not associated with Avalanche");
@@ -145,7 +145,7 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 					return Project::Type::TEAM;
 				} else {
 					// checks if level is published by a team member
-					if (getHandler->isTeamMember(profile.badge)) {
+					if (myHandler->isTeamMember(profile.badge)) {
 						// checks if level is rated
 						if (level->m_stars.value() >= 1) {
 							AVAL_LOG_DEBUG("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
@@ -193,7 +193,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			CCMenu* leftMenu = typeinfo_cast<CCMenu*>(getChildByID("left-side-menu"));
 
-			Project thisProj = getHandler->GetProject(level->m_levelID.value());
+			Project thisProj = myHandler->GetProject(level->m_levelID.value());
 
 			// if the project is not avalanche, then we don't need to do anything
 			if (thisProj.type == Project::Type::NONE) {
@@ -430,7 +430,7 @@ class $modify(Level, LevelCell) {
 
 		if ((color) && (levelName)) {
 			// checks if the level is an avalanche project
-			auto lvl = getHandler->GetProject(level->m_levelID.value());
+			auto lvl = myHandler->GetProject(level->m_levelID.value());
 			auto levelType = scanForLevelCreator(level);
 
 			// check the project type and set decoration accordingly
@@ -619,7 +619,7 @@ class $modify(Pause, PauseLayer) {
 
 		if (auto rightMenu = getChildByID("right-button-menu")) {
 			if (m_fields->m_level) {
-				Project thisProj = getHandler->GetProject(m_fields->m_level->m_levelID.value());
+				Project thisProj = myHandler->GetProject(m_fields->m_level->m_levelID.value());
 
 				if (thisProj.type == Project::Type::NONE) {
 					AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)m_fields->m_level->m_levelID.value());
@@ -837,7 +837,7 @@ class $modify(Menu, MenuLayer) {
 			};
 
 			// gets all badge data
-			getHandler->scanAll();
+			myHandler->scanAll();
 
 			return true;
 		} else {

@@ -236,7 +236,8 @@ namespace avalanche {
                 auto c_name = cacheStd["name"].asString().unwrapOr(und);
                 auto c_badge = Handler::Badges::fromBadgeID(cacheStd["badge"].asString().unwrapOr(und));
 
-                log::info("Finishing up for level {}", id);
+                log::info("Finishing up for player {}", id);
+                log::debug("{}", c_name);
 
                 Profile res(c_name, c_badge);
                 return res;
@@ -298,6 +299,7 @@ namespace avalanche {
                 };
 
                 log::info("Finishing up for level {}", id);
+                log::debug("{}, {}, {}, {}, {}", c_name, c_host, c_showcase, c_thumbnail, c_fame);
 
                 Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
                 return res;

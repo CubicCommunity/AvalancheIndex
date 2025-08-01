@@ -9,8 +9,6 @@ Official Avalanche levels and profiles.
 >  
 > [<img alt="Downloads" src="https://img.shields.io/github/downloads/CubicCommunity/AvalancheIndex/total?style=for-the-badge&logo=geode&logoColor=ffffff&label=Downloads">](https://www.geode-sdk.org/mods/cubicstudios.avalancheindex)
 
-Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
-
 > [!TIP]
 > *This mod has settings you can utilize to customize your experience.*
 

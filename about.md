@@ -1,10 +1,6 @@
 # ![Avalanche Index](frame:cubicstudios.avalancheindex/wordmark.png)
 **Official Avalanche levels and profiles.**
 
----
-
-Easily spot legitimate Avalanche profiles and projects at a glance. No more need to double-check.
-
 > ![icon](frame:collaborationIcon_001.png) <cg>*This mod has settings you can utilize to customize your experience.*</c>
 
 ---

@@ -1,5 +1,5 @@
 {
-	"geode": "4.6.3",
+	"geode": "4.7.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -22,6 +22,10 @@
 		"homepage": "https://avalanche.cubicstudios.xyz/",
 		"community": "https://www.dsc.gg/cubic"
 	},
+	"issues": {
+		"info": "You may report any significant issues you experience with this mod in the AvalancheIndex repository.",
+		"url": "https://www.github.com/CubicCommunity/AvalancheIndex/issues/"
+	},
 	"dependencies": {
 		"geode.node-ids": {
 			"importance": "required",
@@ -36,10 +40,6 @@
 		"include": [
 			"include/*.hpp"
 		]
-	},
-	"issues": {
-		"info": "You may report any significant issues you experience with this mod in the AvalancheIndex repository.",
-		"url": "https://www.github.com/CubicCommunity/AvalancheIndex/issues/"
 	},
 	"resources": {
 		"spritesheets": {

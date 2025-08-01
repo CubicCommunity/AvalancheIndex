@@ -1,14 +1,10 @@
 #pragma once
 
-#include "../../incl/Avalanche.hpp"
+#include <Geode/Geode.hpp>
 
-#include <Geode/ui/Popup.hpp>
-#include <Geode/cocos/include/cocos2d.h>
-
-using namespace avalanche;
 using namespace geode::prelude;
 
-class ProjectInfoPopup : public geode::Popup<> {
+class ProjectInfoPopup : public Popup<> {
 public:
   static ProjectInfoPopup* create();
 

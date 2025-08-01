@@ -157,7 +157,7 @@ namespace avalanche { // Avalanche Index mod namespace
             return &ptr;
         };
 
-        struct Badges {
+        class Badges {
         public:
             // Get the node ID from the badge type enum
             static const char* getBadgeID(Profile::Badge badge);
@@ -175,7 +175,7 @@ namespace avalanche { // Avalanche Index mod namespace
             static constexpr const char* apiToBadgeID(const std::string& apiName);
         };
 
-        struct Levels {
+        class Levels {
         public:
             // Get the project type enum from the API code
             static Project::Type fromString(const std::string& str);
@@ -202,7 +202,7 @@ namespace avalanche { // Avalanche Index mod namespace
         // Get the comment text color for a certain badge type
         static ccColor3B getCommentColor(Profile::Badge badge);
 
-        static void getBadgeInfo(Profile::Badge badge);
+        static void getBadgeInfo(Profile::Badge badge, CCString* name);
         void onInfoBadge(CCObject* sender);
 
         // Create badge and format comment for a player
@@ -242,6 +242,8 @@ namespace avalanche { // Avalanche Index mod namespace
                             menu_selector(Handler::onInfoBadge));
                         badgeBtn->setID(idString);
                         badgeBtn->setZOrder(1);
+
+                        badgeBtn->setUserObject("profile"_spr, CCString::create(profile.name));
 
                         cell_menu->addChild(badgeBtn);
                         cell_menu->updateLayout();

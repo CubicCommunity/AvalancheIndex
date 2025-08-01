@@ -1,14 +1,10 @@
 #pragma once
 
-#include <Geode/ui/Popup.hpp>
-
-#include <Geode/utils/web.hpp>
-
-#include <Geode/cocos/include/cocos2d.h>
+#include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 
-class AvalancheFeatured : public geode::Popup<> {
+class AvalancheFeatured : public Popup<> {
 public:
   static AvalancheFeatured* create();
   void show() override;

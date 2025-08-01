@@ -2,7 +2,8 @@
 ##### API overhaul
 
 #### Changes
-- Fixed team data cache handling from API requests
+- **Added** team member name in Badge information pop-up
+- **Fixed** team data cache handling from API requests
 - Minor code cleanup
 
 #### Developers

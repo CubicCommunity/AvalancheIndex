@@ -207,8 +207,10 @@ namespace avalanche {
 
     Profile Handler::GetProfile(int id) {
         if (id > 0) {
+            log::info("Fetching profile of ID {}", id);
+
             auto cacheKey = fmt::format("cache-badge-p{}", (int)id); // format the save key string
-            Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey); // gets locally saved badge json
+            Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey, Value()); // gets locally saved badge json
 
             if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
                 log::debug("Fetching badge data from session web cache");
@@ -216,6 +218,8 @@ namespace avalanche {
                 if (fetchedBadges.isNull()) {
                     log::warn("Session web cache for badge data is unaccessible");
                 } else if (fetchedBadges.isObject()) {
+                    log::debug("Using session web cache for badge data");
+
                     auto key = std::to_string(id);
                     fetchedBadges.contains(key) ? cacheStd = fetchedBadges.get(key).unwrapOr(cacheStd) : cacheStd = Value::object();
                 };
@@ -227,8 +231,12 @@ namespace avalanche {
                 log::error("Player {} is no longer associated with Avalanche", (int)id);
                 return Profile();
             } else {
+                log::debug("Processing cache for player {}", id);
+
                 auto c_name = cacheStd["name"].asString().unwrapOr(und);
                 auto c_badge = Handler::Badges::fromBadgeID(cacheStd["badge"].asString().unwrapOr(und));
+
+                log::info("Finishing up for level {}", id);
 
                 Profile res(c_name, c_badge);
                 return res;
@@ -241,8 +249,10 @@ namespace avalanche {
 
     Project Handler::GetProject(int id) {
         if (id > 0) {
+            log::info("Fetching project of ID {}", id);
+
             auto cacheKey = fmt::format("cache-level-p{}", (int)id); // format the save key string
-            Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey); // gets locally saved level json
+            Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey, Value()); // gets locally saved level json
 
             if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
                 log::debug("Fetching level data from session web cache");
@@ -250,6 +260,8 @@ namespace avalanche {
                 if (fetchedLevels.isNull()) {
                     log::warn("Session web cache for level data is unaccessible");
                 } else if (fetchedLevels.isObject()) {
+                    log::debug("Using session web cache for level data");
+
                     auto key = std::to_string(id);
                     fetchedLevels.contains(key) ? cacheStd = fetchedLevels.get(key).unwrapOr(cacheStd) : cacheStd = Value::object();
                 };
@@ -258,9 +270,11 @@ namespace avalanche {
             };
 
             if (cacheStd.isNull()) {
-                log::error("Level {} is no longer part of Avalanche", (int)id);
+                log::error("Level {} is no longer part of Avalanche", id);
                 return Project();
             } else {
+                log::debug("Processing cache for level {}", id);
+
                 auto c_name = cacheStd["name"].asString().unwrapOr(und);
                 auto c_host = cacheStd["host"].asString().unwrapOr(und);
                 auto c_showcase = cacheStd["showcase"].asString().unwrapOr(und);
@@ -272,13 +286,18 @@ namespace avalanche {
                 Project::LinkToMain ltm;
 
                 if (c_linked.isObject()) {
+                    log::debug("Level {} is linked to project", id);
+
                     ltm = Project::LinkToMain(
                         c_linked["enabled"].asBool().unwrapOr(false),
                         c_linked["id"].asInt().unwrapOr(0)
                     );
                 } else {
+                    log::warn("Level {} is not linked to any project", id);
                     ltm = Project::LinkToMain();
                 };
+
+                log::info("Finishing up for level {}", id);
 
                 Project res(c_name, c_host, c_showcase, c_thumbnail, c_type, c_fame, ltm);
                 return res;
@@ -303,7 +322,7 @@ namespace avalanche {
         return Handler::Badges::getBadgeColor(badge);
     };
 
-    void Handler::getBadgeInfo(Profile::Badge badge) {
+    void Handler::getBadgeInfo(Profile::Badge badge, CCString* name) {
         auto title = "Oops!";
         auto description = "This badge has <cr>no available information</c>. This is likely unintentional, please report it as an issue in the mod's repository.";
         auto button = "Learn More";
@@ -312,27 +331,27 @@ namespace avalanche {
         switch (badge) {
         case Profile::Badge::CUBIC:
             title = "Cubic Studios";
-            description = "This user is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.";
+            description = fmt::format("<cg>{}</c> is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.", name->getCString()).c_str();
             break;
 
         case Profile::Badge::DIRECTOR:
             title = "Avalanche Director";
-            description = "This user is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.";
+            description = fmt::format("<cg>{}</c> is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.", name->getCString()).c_str();
             break;
 
         case Profile::Badge::MANAGER:
             title = "Avalanche Manager";
-            description = "This user is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.";
+            description = fmt::format("<cg>{}</c> is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.", name->getCString()).c_str();
             break;
 
         case Profile::Badge::MEMBER:
             title = "Avalanche Team Member";
-            description = "This user is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.";
+            description = fmt::format("<cg>{}</c> is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.", name->getCString()).c_str();
             break;
 
         case Profile::Badge::COLLABORATOR:
             title = "Team Collaborator";
-            description = "This user is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.";
+            description = fmt::format("<cg>{}</c> is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.", name->getCString()).c_str();
             break;
 
         default:
@@ -353,9 +372,11 @@ namespace avalanche {
     // badge button event
     void Handler::onInfoBadge(CCObject* sender) {
         // gets the node that triggered the function
-        auto nodeObject = as<CCNode*>(sender);
-        auto badge = Handler::Badges::fromBadgeID(nodeObject->getID());
+        auto ptr = static_cast<CCMenuItemSpriteExtra*>(sender);
 
-        Handler::getBadgeInfo(badge);
+        auto badge = Handler::Badges::fromBadgeID(ptr->getID());
+        auto name = static_cast<CCString*>(ptr->getUserObject("profile"_spr));
+
+        Handler::getBadgeInfo(badge, name);
     };
 };

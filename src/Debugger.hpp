@@ -1,5 +1,5 @@
 #pragma once
-#include "../../incl/Avalanche.hpp"
+#include <incl/Avalanche.hpp>
 
 using namespace avalanche;
 

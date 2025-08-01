@@ -2,10 +2,10 @@
 
 #include "../ProjectInfoPopup.hpp"
 
-#include "../../incl/Avalanche.hpp"
-
 #include <iomanip>
 #include <sstream>
+
+#include <incl/Avalanche.hpp>
 
 #include <fmt/core.h>
 

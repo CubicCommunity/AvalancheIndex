@@ -1,8 +1,6 @@
 #include "./Debugger.hpp"
 #include "./ParticleHelper.hpp"
 
-#include "../incl/Avalanche.hpp"
-
 #include "./headers/AvalancheFeatured.hpp"
 
 #include "./headers/ProjectInfoPopup.hpp"
@@ -10,6 +8,8 @@
 #include <string>
 #include <chrono>
 #include <map>
+
+#include <incl/Avalanche.hpp>
 
 #include <Geode/Geode.hpp>
 
@@ -54,7 +54,7 @@ class $modify(ProfilePage) {
 			getHandler->scanAll();
 
 			// get the username menu and cast it
-			CCMenu* cell_menu = as<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
+			CCMenu* cell_menu = static_cast<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
 
 			TextArea* fakeText = nullptr;
 			CCLabelBMFont* fakeFont = nullptr;
@@ -80,7 +80,7 @@ class $modify(CommentCell) {
 			getHandler->scanAll();
 
 			// get the username menu and cast it
-			CCMenu* cell_menu = as<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
+			CCMenu* cell_menu = static_cast<CCMenu*>(m_mainLayer->getChildByIDRecursive("username-menu"));
 
 			auto commentText = dynamic_cast<TextArea*>(m_mainLayer->getChildByID("comment-text-area")); // big comment
 			auto commentFont = dynamic_cast<CCLabelBMFont*>(m_mainLayer->getChildByID("comment-text-label")); // smol comment
@@ -182,7 +182,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			// get main bg color layer
 			auto bg = getChildByID("background");
-			auto background = as<CCSprite*>(bg);
+			auto background = static_cast<CCSprite*>(bg);
 
 			// get level name node
 			auto nameText = getChildByID("title-label");
@@ -423,7 +423,7 @@ class $modify(Level, LevelCell) {
 
 		// get level name text
 		auto nameText = m_mainLayer->getChildByID("level-name");
-		auto levelName = as<CCLabelBMFont*>(nameText);
+		auto levelName = static_cast<CCLabelBMFont*>(nameText);
 
 		// whether or not display for classics only
 		bool onlyClassic = AVAL_GEODE_MOD->getSettingValue<bool>("classic-only") && level->isPlatformer();

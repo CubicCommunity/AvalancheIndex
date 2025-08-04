@@ -1,11 +1,11 @@
-#include "../../Debugger.hpp"
-
 #include "../ProjectInfoPopup.hpp"
+
+#include <Debugger.hpp>
 
 #include <iomanip>
 #include <sstream>
 
-#include <incl/Avalanche.hpp>
+#include <Avalanche.hpp>
 
 #include <fmt/core.h>
 
@@ -99,17 +99,6 @@ void ProjectInfoPopup::doShowcase(Project proj, std::string publisher) {
         AVAL_LOG_DEBUG("User clicked Cancel");
       }; },
     true);
-};
-
-ProjectInfoPopup* ProjectInfoPopup::create() {
-  auto ret = new ProjectInfoPopup;
-  if (ret->initAnchored(440, 290)) {
-    ret->autorelease();
-    return ret;
-  };
-
-  CC_SAFE_DELETE(ret);
-  return nullptr;
 };
 
 void ProjectInfoPopup::infoPopup(CCObject*) {
@@ -564,7 +553,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
       };
                                });
 
-    std::string projThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", (int)m_level->m_levelID.value()); // custom thumbnail
+    std::string projThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", m_level->m_levelID.value()); // custom thumbnail
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", (std::string)projThumbURL);
     projThumb->loadFromUrl(projThumbURL, LazySprite::Format::kFmtUnKnown, false);
@@ -783,20 +772,14 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
   return this;
 };
 
-void ProjectInfoPopup::show() {
-  if (m_noElasticity) return FLAlertLayer::show();
+ProjectInfoPopup* ProjectInfoPopup::create() {
+  auto ret = new ProjectInfoPopup();
 
-  GLubyte opacity = getOpacity();
-  m_mainLayer->setScale(0.1f);
+  if (ret && ret->initAnchored(440, 290)) {
+    ret->autorelease();
+    return ret;
+  };
 
-  m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
-
-  if (!m_scene) m_scene = CCDirector::sharedDirector()->getRunningScene();
-  if (!m_ZOrder) m_ZOrder = 105;
-
-  m_scene->addChild(this);
-
-  setOpacity(0);
-  runAction(CCFadeTo::create(0.14, opacity));
-  setVisible(true);
+  CC_SAFE_DELETE(ret);
+  return nullptr;
 };

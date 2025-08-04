@@ -5,10 +5,6 @@
 using namespace geode::prelude;
 
 class AvalancheFeatured : public Popup<> {
-public:
-  static AvalancheFeatured* create();
-  void show() override;
-
 protected:
   float m_maxHeight = 220;
 
@@ -22,4 +18,7 @@ protected:
   void infoPopup(CCObject*);
   void changelogPopup(CCObject*);
   void openApplicationPopup(CCObject* sender);
+
+public:
+  static AvalancheFeatured* create();
 };

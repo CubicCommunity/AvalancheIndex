@@ -209,7 +209,7 @@ namespace avalanche {
         if (id > 0) {
             log::info("Fetching profile of ID {}", id);
 
-            auto cacheKey = fmt::format("cache-badge-p{}", (int)id); // format the save key string
+            auto cacheKey = fmt::format("cache-badge-p{}", id); // format the save key string
             Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey, Value()); // gets locally saved badge json
 
             if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
@@ -228,7 +228,7 @@ namespace avalanche {
             };
 
             if (cacheStd.isNull()) {
-                log::error("Player {} is no longer associated with Avalanche", (int)id);
+                log::error("Player {} is no longer associated with Avalanche", id);
                 return Profile();
             } else {
                 log::debug("Processing cache for player {}", id);
@@ -243,7 +243,7 @@ namespace avalanche {
                 return res;
             };
         } else {
-            log::error("Profile ID {} is invalid", (int)id);
+            log::error("Profile ID {} is invalid", id);
             return Profile();
         };
     };
@@ -252,7 +252,7 @@ namespace avalanche {
         if (id > 0) {
             log::info("Fetching project of ID {}", id);
 
-            auto cacheKey = fmt::format("cache-level-p{}", (int)id); // format the save key string
+            auto cacheKey = fmt::format("cache-level-p{}", id); // format the save key string
             Value cacheStd = AVAL_MOD->getSavedValue<Value>(cacheKey, Value()); // gets locally saved level json
 
             if (AVAL_MOD->getSettingValue<bool>("web-once")) { // only fetch from cached web data if this setting is on
@@ -324,7 +324,7 @@ namespace avalanche {
         return Handler::Badges::getBadgeColor(badge);
     };
 
-    void Handler::getBadgeInfo(Profile::Badge badge, CCString* name) {
+    void Handler::getBadgeInfo(Profile::Badge badge, std::string name) {
         auto title = "Oops!";
         auto description = "This badge has <cr>no available information</c>. This is likely unintentional, please report it as an issue in the mod's repository.";
         auto button = "Learn More";
@@ -333,27 +333,27 @@ namespace avalanche {
         switch (badge) {
         case Profile::Badge::CUBIC:
             title = "Cubic Studios";
-            description = fmt::format("<cg>{}</c> is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.", name->getCString()).c_str();
+            description = fmt::format("<cg>{}</c> is a <cy>staff member</c> of <cj>Cubic Studios</c>. They partake in the activities of a department of Cubic, and may supervise or join projects such as <cl>Avalanche</c>.", name).c_str();
             break;
 
         case Profile::Badge::DIRECTOR:
             title = "Avalanche Director";
-            description = fmt::format("<cg>{}</c> is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.", name->getCString()).c_str();
+            description = fmt::format("<cg>{}</c> is the <co>director</c> of <cl>Avalanche</c>. They run the whole team.", name).c_str();
             break;
 
         case Profile::Badge::MANAGER:
             title = "Avalanche Manager";
-            description = fmt::format("<cg>{}</c> is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.", name->getCString()).c_str();
+            description = fmt::format("<cg>{}</c> is a <cy>manager</c> of <cl>Avalanche</c>. They manage team projects and collaborations.", name).c_str();
             break;
 
         case Profile::Badge::MEMBER:
             title = "Avalanche Team Member";
-            description = fmt::format("<cg>{}</c> is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.", name->getCString()).c_str();
+            description = fmt::format("<cg>{}</c> is a <cg>member</c> of <cl>Avalanche</c>. They partake in team projects and collaborations.", name).c_str();
             break;
 
         case Profile::Badge::COLLABORATOR:
             title = "Team Collaborator";
-            description = fmt::format("<cg>{}</c> is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.", name->getCString()).c_str();
+            description = fmt::format("<cg>{}</c> is a <cg>collaborator</c> of <cl>Avalanche</c>. They've directly worked on the crew's or team's projects as an outsider.", name).c_str();
             break;
 
         default:
@@ -369,16 +369,5 @@ namespace avalanche {
             [url](auto, bool btn2) {
                 if (btn2) web::openLinkInBrowser(url);
             }, true);
-    };
-
-    // badge button event
-    void Handler::onInfoBadge(CCObject* sender) {
-        // gets the node that triggered the function
-        auto ptr = static_cast<CCMenuItemSpriteExtra*>(sender);
-
-        auto badge = Handler::Badges::fromBadgeID(ptr->getID());
-        auto name = static_cast<CCString*>(ptr->getUserObject("profile"_spr));
-
-        Handler::getBadgeInfo(badge, name);
     };
 };

@@ -1,16 +1,17 @@
 #pragma once
 
+#include <Avalanche.hpp>
+
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
+using namespace avalanche;
 
 class ProjectInfoPopup : public Popup<> {
 public:
   static ProjectInfoPopup* create();
 
   ProjectInfoPopup* setProject(GJGameLevel* level);
-
-  void show() override;
 protected:
   std::string m_avalPublisher = "Avalanche";
   std::string m_linkedPublisher = "Avalanche";

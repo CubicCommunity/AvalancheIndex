@@ -4,7 +4,7 @@
 #### Changes
 - **Added** team member name in Badge information pop-up
 - **Fixed** team data cache handling from API requests
-- Minor code cleanup
+- Major code cleanup
 
 #### Developers
 - **Tweaked** constructors for `Profile` and `Project` classes

@@ -1,15 +1,17 @@
-#include "./Debugger.hpp"
 #include "./ParticleHelper.hpp"
 
-#include "./headers/AvalancheFeatured.hpp"
+#include "./BadgeHelper.hpp"
 
+#include "./headers/AvalancheFeatured.hpp"
 #include "./headers/ProjectInfoPopup.hpp"
+
+#include <Avalanche.hpp>
 
 #include <string>
 #include <chrono>
 #include <map>
 
-#include <incl/Avalanche.hpp>
+#include <Debugger.hpp>
 
 #include <Geode/Geode.hpp>
 
@@ -40,12 +42,13 @@ using namespace avalanche;
  // avalanche data handler
 auto myHandler = Handler::get();
 
+auto myBadgeHelper = BadgeHelper::get();
+
 // if the server wasn't already checked for the new avalanche project :O
 bool noProjectPing = true;
 
 // handles adding avalanche badges to user profiles in the profile page
 class $modify(ProfilePage) {
-	// modified vanilla loadPageFromUserInfo function
 	void loadPageFromUserInfo(GJUserScore * user) {
 		ProfilePage::loadPageFromUserInfo(user);
 
@@ -60,9 +63,9 @@ class $modify(ProfilePage) {
 			CCLabelBMFont* fakeFont = nullptr;
 
 			Profile plr = myHandler->GetProfile(user->m_accountID);
-			myHandler->createBadge(this, plr, cell_menu, fakeText, fakeFont, 0.875f);
+			myBadgeHelper->createBadge(plr, cell_menu, fakeText, fakeFont, 0.55f);
 
-			AVAL_LOG_DEBUG("Viewing profile of ID {}", (int)user->m_accountID);
+			AVAL_LOG_DEBUG("Viewing profile of ID {}", user->m_accountID);
 		} else {
 			AVAL_LOG_DEBUG("Profile badge disabled");
 		};
@@ -71,7 +74,6 @@ class $modify(ProfilePage) {
 
 // handles adding avalanche badges to comments in the comment cell
 class $modify(CommentCell) {
-	// modified vanilla loadFromComment function
 	void loadFromComment(GJComment * comment) {
 		CommentCell::loadFromComment(comment);
 
@@ -86,7 +88,7 @@ class $modify(CommentCell) {
 			auto commentFont = dynamic_cast<CCLabelBMFont*>(m_mainLayer->getChildByID("comment-text-label")); // smol comment
 
 			// checks if commenter published level
-			AVAL_LOG_DEBUG("Checking comment on level of ID {}...", (int)comment->m_levelID);
+			AVAL_LOG_DEBUG("Checking comment on level of ID {}...", comment->m_levelID);
 
 			if (AVAL_GEODE_MOD->getSettingValue<bool>("comments")) {
 				if (comment->m_hasLevelID) {
@@ -108,9 +110,9 @@ class $modify(CommentCell) {
 			};
 
 			Profile plr = myHandler->GetProfile(comment->m_accountID);
-			myHandler->createBadge(this, plr, cell_menu, commentText, commentFont, 0.55f);
+			myBadgeHelper->createBadge(plr, cell_menu, commentText, commentFont, 0.55f);
 
-			AVAL_LOG_DEBUG("Viewing comment profile of ID {}", (int)comment->m_accountID);
+			AVAL_LOG_DEBUG("Viewing comment profile of ID {}", comment->m_accountID);
 		} else {
 			AVAL_LOG_DEBUG("Comment badge disabled");
 		};
@@ -132,15 +134,15 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 		} else {
 			// must be public
 			if (level->m_unlisted || level->m_friendsOnly) {
-				AVAL_LOG_ERROR("Level {} is unlisted", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is unlisted", level->m_levelID.value());
 
 				return Project::Type::NONE;
 			} else {
-				AVAL_LOG_DEBUG("Level {} is publicly listed", (int)level->m_levelID.value());
+				AVAL_LOG_DEBUG("Level {} is publicly listed", level->m_levelID.value());
 
 				// checks if owned by publisher account
 				if (level->m_accountID.value() == ACC_PUBLISHER) {
-					AVAL_LOG_DEBUG("Level {} is Avalanche team project", (int)level->m_levelID.value());
+					AVAL_LOG_DEBUG("Level {} is Avalanche team project", level->m_levelID.value());
 
 					return Project::Type::TEAM;
 				} else {
@@ -148,16 +150,16 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 					if (myHandler->isTeamMember(profile.badge)) {
 						// checks if level is rated
 						if (level->m_stars.value() >= 1) {
-							AVAL_LOG_DEBUG("Level {} is Avalanche team member solo", (int)level->m_levelID.value());
+							AVAL_LOG_DEBUG("Level {} is Avalanche team member solo", level->m_levelID.value());
 
 							return Project::Type::SOLO;
 						} else {
-							AVAL_LOG_ERROR("Level {} is unrated", (int)level->m_levelID.value());
+							AVAL_LOG_ERROR("Level {} is unrated", level->m_levelID.value());
 
 							return Project::Type::NONE;
 						};
 					} else {
-						AVAL_LOG_ERROR("Level {} not associated with Avalanche", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Level {} not associated with Avalanche", level->m_levelID.value());
 
 						return Project::Type::NONE;
 					};
@@ -171,7 +173,6 @@ Project::Type scanForLevelCreator(GJGameLevel* level) {
 
 // handles the level info layer for avalanche featured projects
 class $modify(LevelInfo, LevelInfoLayer) {
-	// modified vanilla init function
 	bool init(GJGameLevel * level, bool challenge) {
 		if (LevelInfoLayer::init(level, challenge)) {
 			// check display settings
@@ -197,7 +198,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 			// if the project is not avalanche, then we don't need to do anything
 			if (thisProj.type == Project::Type::NONE) {
-				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is not an Avalanche project", level->m_levelID.value());
 			} else {
 				auto showProjectInfo = AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-info");
 
@@ -230,7 +231,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			if (levelType == Project::Type::SOLO) {
 				if (displaySoloLayers) {
 					if (onlyClassic) {
-						AVAL_LOG_ERROR("Solo level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Solo level {} is platformer", level->m_levelID.value());
 					} else {
 						LevelInfo::setSoloDisplay(background, thisProj.fame);
 					};
@@ -240,9 +241,9 @@ class $modify(LevelInfo, LevelInfoLayer) {
 			} else if (levelType == Project::Type::TEAM) {
 				if (displayTeamLayers) {
 					if (level->isPlatformer()) {
-						AVAL_LOG_ERROR("Team level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is platformer", level->m_levelID.value());
 					} else if (level->m_unlisted) {
-						AVAL_LOG_ERROR("Team level {} is unlisted", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is unlisted", level->m_levelID.value());
 					} else {
 						LevelInfo::setTeamDisplay(background, levelName);
 					};
@@ -262,7 +263,7 @@ class $modify(LevelInfo, LevelInfoLayer) {
 					AVAL_LOG_WARN("Collaboration layers not displayed, setting up level info layer");
 				};
 			} else {
-				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is not an Avalanche project", level->m_levelID.value());
 			};
 
 			return true;
@@ -408,7 +409,6 @@ class $modify(LevelInfo, LevelInfoLayer) {
 
 // handles the level cell for Avalanche featured projects
 class $modify(Level, LevelCell) {
-	// modified vanilla loadFromLevel function
 	void loadFromLevel(GJGameLevel * level) {
 		LevelCell::loadFromLevel(level);
 
@@ -437,7 +437,7 @@ class $modify(Level, LevelCell) {
 			if (levelType == Project::Type::SOLO) {
 				if (displaySoloCells) {
 					if (onlyClassic) {
-						AVAL_LOG_ERROR("Solo level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Solo level {} is platformer", level->m_levelID.value());
 					} else {
 						Level::setSoloDisplay(color, lvl.fame);
 					};
@@ -447,9 +447,9 @@ class $modify(Level, LevelCell) {
 			} else if (levelType == Project::Type::TEAM) {
 				if (displayTeamCells) {
 					if (level->isPlatformer()) {
-						AVAL_LOG_ERROR("Team level {} is platformer", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is platformer", level->m_levelID.value());
 					} else if (level->m_unlisted) {
-						AVAL_LOG_ERROR("Team level {} is unlisted", (int)level->m_levelID.value());
+						AVAL_LOG_ERROR("Team level {} is unlisted", level->m_levelID.value());
 					} else {
 						Level::setTeamDisplay(color, levelName, lvl.fame);
 					};
@@ -469,7 +469,7 @@ class $modify(Level, LevelCell) {
 					AVAL_LOG_WARN("Collaboration cells not displayed, setting up level cell");
 				};
 			} else {
-				AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)level->m_levelID.value());
+				AVAL_LOG_ERROR("Level {} is not an Avalanche project", level->m_levelID.value());
 			};
 		} else {
 			AVAL_LOG_ERROR("ccColor3B not found!");
@@ -613,7 +613,6 @@ class $modify(Pause, PauseLayer) {
 		GJGameLevel* m_level = PlayLayer::get()->m_level; // level to show info for
 	};
 
-	// modified vanilla customSetup function
 	void customSetup() {
 		PauseLayer::customSetup();
 
@@ -622,7 +621,7 @@ class $modify(Pause, PauseLayer) {
 				Project thisProj = myHandler->GetProject(m_fields->m_level->m_levelID.value());
 
 				if (thisProj.type == Project::Type::NONE) {
-					AVAL_LOG_ERROR("Level {} is not an Avalanche project", (int)m_fields->m_level->m_levelID.value());
+					AVAL_LOG_ERROR("Level {} is not an Avalanche project", m_fields->m_level->m_levelID.value());
 				} else {
 					auto showProjectInfo = AVAL_GEODE_MOD->getSettingValue<bool>("show-proj-info");
 
@@ -676,7 +675,6 @@ class $modify(Menu, MenuLayer) {
 		CCSprite* avalBtnMark = nullptr; // unread mark sprite for avalanche featured button
 	};
 
-	// modified vanilla init function
 	bool init() {
 		if (MenuLayer::init()) {
 			std::string ver = AVAL_GEODE_MOD->getVersion().toVString();

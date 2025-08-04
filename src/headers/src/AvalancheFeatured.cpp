@@ -1,6 +1,6 @@
-#include "../../Debugger.hpp"
-
 #include "../AvalancheFeatured.hpp"
+
+#include <Debugger.hpp>
 
 #include <sstream>
 
@@ -12,22 +12,9 @@
 #include <Geode/ui/Notification.hpp>
 
 #include <Geode/utils/web.hpp>
-#include <Geode/utils/cocos.hpp>
 #include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;
-
-AvalancheFeatured* AvalancheFeatured::create() {
-  auto ret = new AvalancheFeatured();
-
-  if (ret && ret->initAnchored(395, 225, "GJ_square05.png")) {
-    ret->autorelease();
-    return ret;
-  };
-
-  CC_SAFE_DELETE(ret);
-  return nullptr;
-};
 
 void AvalancheFeatured::infoPopup(CCObject*) {
   AVAL_LOG_INFO("Opening featured info popup");
@@ -285,20 +272,14 @@ bool AvalancheFeatured::setup() {
   return true;
 };
 
-void AvalancheFeatured::show() {
-  if (m_noElasticity) return FLAlertLayer::show();
+AvalancheFeatured* AvalancheFeatured::create() {
+  auto ret = new AvalancheFeatured();
 
-  GLubyte opacity = getOpacity();
-  m_mainLayer->setScale(0.1f);
+  if (ret && ret->initAnchored(395, 225)) {
+    ret->autorelease();
+    return ret;
+  };
 
-  m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.3f, 1.0f), 1.6f));
-
-  if (!m_scene) m_scene = CCDirector::sharedDirector()->getRunningScene();
-  if (!m_ZOrder) m_ZOrder = 105;
-
-  m_scene->addChild(this);
-
-  setOpacity(0);
-  runAction(CCFadeTo::create(0.14, opacity));
-  setVisible(true);
+  CC_SAFE_DELETE(ret);
+  return nullptr;
 };

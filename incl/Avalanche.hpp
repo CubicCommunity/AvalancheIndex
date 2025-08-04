@@ -12,7 +12,6 @@
 #include <Geode/Geode.hpp>
 
 #include <Geode/utils/web.hpp>
-#include <Geode/utils/terminate.hpp>
 
 using namespace geode::prelude;
 using namespace matjson;
@@ -50,7 +49,7 @@ namespace avalanche { // Avalanche Index mod namespace
 
             // Node IDs for badges
             namespace Nodes {
-                inline constexpr auto None = "";
+                inline constexpr auto None = "none"_spr;
                 inline constexpr auto Cubic = "cubic-studios-badge"_spr;
                 inline constexpr auto Director = "director-badge"_spr;
                 inline constexpr auto Manager = "team-manager-badge"_spr;
@@ -60,7 +59,7 @@ namespace avalanche { // Avalanche Index mod namespace
 
             // Sprite IDs for badges
             namespace Sprites {
-                inline constexpr auto None = "";
+                inline constexpr auto None = "no-badge"_spr;
                 inline constexpr auto Cubic = "cubic-studios.png"_spr;
                 inline constexpr auto Director = "director.png"_spr;
                 inline constexpr auto Manager = "team-manager.png"_spr;
@@ -84,6 +83,7 @@ namespace avalanche { // Avalanche Index mod namespace
 
     // Avalanche member profile class
     struct Profile {
+        // The type of Avalanche badge
         enum class Badge {
             NONE, // No badge
             CUBIC, // Staff of Cubic Studios
@@ -106,6 +106,7 @@ namespace avalanche { // Avalanche Index mod namespace
 
     // Avalanche project level class
     struct Project {
+        // The type of Avalanche project
         enum class Type {
             NONE, // Not a project
             SOLO, // A project that a member worked on by themself
@@ -184,98 +185,42 @@ namespace avalanche { // Avalanche Index mod namespace
             static constexpr const char* toString(Project::Type type);
         };
 
-        // Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
+        /**
+         * Fetch all remote data on badges and levels, automatically checks "Fetch Data Once" setting
+         */
         static void scanAll();
 
-        // Get profile data on a player
-        static Profile GetProfile(
-            int id // The player's account ID
-        );
-        // Get project data on a level
-        static Project GetProject(
-            int id // The level's ID
-        );
+        /**
+         * Get profile data on a player
+         *
+         * @param id The player's account ID
+         *
+         * @returns The player's team profile data
+         */
+        static Profile GetProfile(int id);
 
-        // Check if the profile belongs to a team member
+        /**
+         * Get project data on a level
+         *
+         * @param id The level's ID
+         *
+         * @returns The level's team project data
+         */
+        static Project GetProject(int id);
+
+        /**
+         * Check if the profile belongs to a team member
+         *
+         * @param badge The team member's badge type
+         *
+         * @returns Whether this member is actually a part of Avalanche
+         */
         static bool isTeamMember(Profile::Badge badge);
 
         // Get the comment text color for a certain badge type
         static ccColor3B getCommentColor(Profile::Badge badge);
 
-        static void getBadgeInfo(Profile::Badge badge, CCString* name);
-        void onInfoBadge(CCObject* sender);
-
-        // Create badge and format comment for a player
-        template <typename T>
-        void createBadge(
-            T pointer, // Parent class
-            Profile profile, // Member's profile object
-            CCMenu* cell_menu, // Username menu to add the badge to
-            TextArea* cmntText = nullptr, // Comment text node
-            CCLabelBMFont* cmntFont = nullptr, // Comment font node
-            float size = 0.625f // Scale of the badge sprite
-        ) {
-            log::debug("Creating badge for {}...", profile.name);
-            auto idString = Handler::Badges::getBadgeID(profile.badge); // gets the string equivalent
-
-            if (idString) {
-                // get the badge item
-                auto badge = Handler::Badges::fromBadgeID(std::string(idString));
-
-                if (cell_menu == nullptr) {
-                    log::debug("No username menu provided");
-                } else {
-                    log::debug("Found username menu for {}...", profile.name);
-
-                    try {
-                        // prevent dupes
-                        if (auto alreadyBadge = cell_menu->getChildByID(idString)) alreadyBadge->removeMeAndCleanup();
-
-                        auto newBadge = Handler::Badges::getSpriteName(badge); // gets sprite filename
-
-                        CCSprite* badgeBtnSprite = CCSprite::createWithSpriteFrameName(newBadge);
-                        badgeBtnSprite->setScale(size);
-
-                        CCMenuItemSpriteExtra* badgeBtn = CCMenuItemSpriteExtra::create(
-                            badgeBtnSprite,
-                            pointer,
-                            menu_selector(Handler::onInfoBadge));
-                        badgeBtn->setID(idString);
-                        badgeBtn->setZOrder(1);
-
-                        badgeBtn->setUserObject("profile"_spr, CCString::create(profile.name));
-
-                        cell_menu->addChild(badgeBtn);
-                        cell_menu->updateLayout();
-                    } catch (std::exception& e) {
-                        log::error("Failed to create badge for {}...", profile.name);
-                    };
-
-                    log::info("Finished creating badge for {}", profile.name);
-                };
-
-                if (cmntText == nullptr && cmntFont == nullptr) {
-                    log::debug("No comment text node provided");
-                } else {
-                    log::debug("Found comment text node for {}...", profile.name);
-                    auto col = Handler::Badges::getBadgeColor(badge);
-
-                    if (cmntText) {
-                        cmntText->colorAllCharactersTo(col);
-                        cmntText->setOpacity(255);
-                    } else if (cmntFont) {
-                        cmntFont->setColor(col);
-                        cmntFont->setOpacity(255);
-                    } else {
-                        log::error("No comment text node found");
-                    };
-
-                    log::info("Finished changing comment text color for {}", profile.name);
-                };
-            } else {
-                log::error("Badge is invalid.");
-            };
-        };
+        static void getBadgeInfo(Profile::Badge badge, std::string name);
     };
 };
 

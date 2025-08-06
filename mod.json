@@ -34,6 +34,10 @@
 		"jouca.badgesapi": {
 			"importance": "recommended",
 			"version": ">=1.2.0"
+		},
+		"prevter.imageplus": {
+			"importance": "suggested",
+			"version": ">=1.0.0"
 		}
 	},
 	"api": {

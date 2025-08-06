@@ -17,6 +17,8 @@ protected:
   std::string m_linkedPublisher = "Avalanche";
   std::string m_cornerArtType = "rewardCorner_001.png";
 
+  Loader* m_geodeLoader = Loader::get();
+
   Project m_avalProject;
   Project m_linkedProject;
 

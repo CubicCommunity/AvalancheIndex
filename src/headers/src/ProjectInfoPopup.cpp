@@ -482,6 +482,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
     std::string encodedShowcaseUrl = url_encode(m_avalProject.showcase); // encode the showcase url for use in the thumbnail url
     std::string showcaseProjThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/yt-thumbnails?url={}", (std::string)encodedShowcaseUrl); // custom thumbnail
+    if (m_geodeLoader->isModLoaded("prevter.imageplus")) showcaseProjThumbURL.append("?webp");
 
     AVAL_LOG_DEBUG("Getting showcase project thumbnail at {}...", (std::string)showcaseProjThumbURL);
     showcaseProjThumb->loadFromUrl(showcaseProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
@@ -554,6 +555,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
                                });
 
     std::string projThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/thumbnails?id={}", m_level->m_levelID.value()); // custom thumbnail
+    if (m_geodeLoader->isModLoaded("prevter.imageplus")) projThumbURL.append("?webp");
 
     AVAL_LOG_DEBUG("Getting thumbnail at {}...", (std::string)projThumbURL);
     projThumb->loadFromUrl(projThumbURL, LazySprite::Format::kFmtUnKnown, false);
@@ -695,6 +697,7 @@ ProjectInfoPopup* ProjectInfoPopup::setProject(GJGameLevel* level) {
 
         std::string encodedShowcaseUrl = url_encode(m_linkedProject.showcase); // encode the showcase url for use in the thumbnail url
         std::string linkedProjThumbURL = fmt::format("https://api.cubicstudios.xyz/avalanche/v1/fetch/yt-thumbnails?url={}", (std::string)encodedShowcaseUrl); // custom thumbnail
+        if (m_geodeLoader->isModLoaded("prevter.imageplus")) linkedProjThumbURL.append("?webp");
 
         AVAL_LOG_DEBUG("Getting linked project thumbnail at {}...", (std::string)linkedProjThumbURL);
         linkedProjThumb->loadFromUrl(linkedProjThumbURL, LazySprite::Format::kFmtUnKnown, false);
